@@ -52,7 +52,7 @@ export class Service<T> {
         if (token != null) {
             headers.append("Authorization", `Bearer ${token}`);
         }
-        return fetch(this.endpoint.concat("/", id.toString()), {
+        return fetch(`${this.endpoint}/${id}`, {
             headers,
             method: "DELETE",
             mode: "cors",
@@ -81,7 +81,7 @@ export class Service<T> {
         if (pagination?.sort != null) {
             pagination.sort.forEach((order, property) => query.append("sort", `${property.toString()},${order}`));
         }
-        return fetch(this.endpoint.concat("?", query.toString()), {
+        return fetch(`${this.endpoint}?${query.toString()}`, {
             headers,
             method: "GET",
             mode: "cors",
@@ -100,7 +100,7 @@ export class Service<T> {
         if (token != null) {
             headers.append("Authorization", `Bearer ${token}`);
         }
-        return fetch(this.endpoint.concat("/", id.toString()), {
+        return fetch(`${this.endpoint}/${id}`, {
             headers,
             method: "GET",
             mode: "cors",

@@ -1,5 +1,6 @@
 import * as React from "react";
-import { Box, Button, Checkbox, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Toolbar, Tooltip, Typography } from "@mui/material";
+import { Link as RouterLink } from "react-router-dom";
+import { Box, Button, Checkbox, IconButton, Link, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Toolbar, Tooltip, Typography } from "@mui/material";
 import { Add as AddIcon, Delete as DeleteIcon, FilterList as FilterListIcon } from "@mui/icons-material";
 
 import LocaleContext from "../contexts/LocaleContext";
@@ -30,12 +31,12 @@ export default function ProjectTable() {
             .catch(setError);
     }, [pagination]);
     return (
-        <Box>
+        <Box sx={{ p: 2 }}>
             <Toolbar sx={{ pl: { sm: 2 }, pr: { xs: 1, sm: 1 } }}>
                 {selection.size > 0
                     ? (
                         <Typography sx={{ flex: "1 1 100%" }} variant="subtitle1">
-                            {selection.size} {locale.components.table.selection.toLowerCase()}
+                            {locale.components.table.selection}: {selection.size}
                         </Typography>
                     )
                     : (
@@ -46,7 +47,9 @@ export default function ProjectTable() {
                 {selection.size > 0
                     ? (
                         <Tooltip title={locale.actions.delete}>
-                            <IconButton>
+                            <IconButton onClick={event => {
+
+                            }}>
                                 <DeleteIcon />
                             </IconButton>
                         </Tooltip>
@@ -81,7 +84,7 @@ export default function ProjectTable() {
                                     <TableSortLabel
                                         direction={pagination.sort?.get(property) ?? "asc"}
                                         key={property}
-                                        onClick={() => dispatch({
+                                        onClick={event => dispatch({
                                             type: "pagination.sort.toggle.one",
                                             payload: property
                                         })}
@@ -97,7 +100,7 @@ export default function ProjectTable() {
                             <TableRow
                                 hover
                                 key={`project-${project.id}`}
-                                onClick={() => dispatch({
+                                onClick={event => dispatch({
                                     type: "selection.toggle.one",
                                     payload: project
                                 })}
@@ -108,9 +111,11 @@ export default function ProjectTable() {
                                 <TableCell padding="checkbox">
                                     <Checkbox checked={selection.has(project)} />
                                 </TableCell>
-                                <TableCell>{project.name}</TableCell>
+                                <TableCell>
+                                    <Link component={RouterLink} to={`/project/${project.id}`}>{project.name}</Link>
+                                </TableCell>
                                 <TableCell>{project.description}</TableCell>
-                                <TableCell>{user!.name} {user!.surname}</TableCell>
+                                <TableCell>{project.leader.name} {project.leader.surname}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

@@ -22,7 +22,7 @@ export default function Authentication() {
             <Stack alignItems="center" component="form" gap={2} onSubmit={event => {
                 event.preventDefault();
                 const { emailField, passwordField } = event.target as HTMLFormElement;
-                userService.authenticate({
+                userService.signIn({
                     email: emailField.value,
                     password: passwordField.value
                 })

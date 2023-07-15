@@ -23,7 +23,6 @@ export function TableReducer<T>(state: State<T>, action: Action<T>): State<T> {
         case "pagination.page.change":
             return {
                 ...state,
-                selection: new Set(),
                 pagination: {
                     ...state.pagination,
                     page: action.payload
@@ -32,7 +31,6 @@ export function TableReducer<T>(state: State<T>, action: Action<T>): State<T> {
         case "pagination.size.change":
             return {
                 ...state,
-                selection: new Set(),
                 pagination: {
                     ...state.pagination,
                     page: Math.floor(state.pagination.page! * state.pagination.size! / action.payload),
@@ -61,6 +59,7 @@ export function TableReducer<T>(state: State<T>, action: Action<T>): State<T> {
         case "page.change":
             return {
                 ...state,
+                selection: new Set(),
                 page: action.payload
             }
         case "selection.change":

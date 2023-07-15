@@ -8,7 +8,11 @@ export class UserService extends Service<User> {
         super("api/user");
     }
 
-    authenticate(schema: Authentication) {
+    signUp(schema: User): Promise<Response> {
+        return this.create(schema);
+    }
+
+    signIn(schema: Authentication): Promise<Response> {
         const body = JSON.stringify(schema);
         const headers = new Headers({
             "Accept": "application/json",
@@ -18,7 +22,7 @@ export class UserService extends Service<User> {
         if (locale != null) {
             headers.append("Accept-Language", locale);
         }
-        return fetch(this.endpoint.concat("/authentication"), {
+        return fetch(`${this.endpoint}/authentication`, {
             body,
             headers,
             method: "POST",
