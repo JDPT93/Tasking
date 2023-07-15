@@ -1,0 +1,50 @@
+{
+    "actions": {
+        "create": "Crear",
+        "update": "Actualizar",
+        "delete": "Eliminar",
+        "filter": "Filtrar",
+        "signIn": "Iniciar sesión",
+        "signOut": "Cerrar sesión"
+    },
+    "application": {
+        "name": "Tasking"
+    },
+    "components": {
+        "table": {
+            "selection": "Filas seleccionadas",
+            "pagination": "Filas por página"
+        }
+    },
+    "prepositions": {
+        "of": "de"
+    },
+    "questions": {
+        "forgotPassword": "¿Olvidó su contraseña?"
+    },
+    "schemas": {
+        "project": {
+            "singular": "Proyecto",
+            "plural": "Proyectos",
+            "properties": {
+                "id": "Código",
+                "leader": "Líder",
+                "name": "Nombre",
+                "description": "Descripción",
+                "active": "Activo"
+            }
+        },
+        "user": {
+            "singular": "Usuario",
+            "plural": "Usarios",
+            "properties": {
+                "id": "Código",
+                "name": "Nombre",
+                "surname": "Apellido",
+                "email": "Correo electrónico",
+                "password": "Contraseña",
+                "active": "Activo"
+            }
+        }
+    }
+}
