@@ -33,18 +33,27 @@ public class TaskingApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        UserEntity userEntity = UserEntity.builder()
+        UserEntity userEntity1 = UserEntity.builder()
             .name("José Daniel")
             .surname("Pérez Torres")
             .email("josedanielpereztorres@gmail.com")
             .password(passwordEncoder.encode("1234567890"))
             .active(true)
             .build();
-        userRepository.save(userEntity);
+        userRepository.save(userEntity1);
+
+        UserEntity userEntity2 = UserEntity.builder()
+            .name("Ermes David")
+            .surname("Galvis Rodríguez") 
+            .email("galvushow@gmail.com")
+            .password(passwordEncoder.encode("1234567890"))
+            .active(true)
+            .build();
+        userRepository.save(userEntity2);
 
         for (Integer index = 1; index <= 100; index++) {
             ProjectEntity projectEntity = ProjectEntity.builder()
-                .leader(userEntity)
+                .leader(index % 2 == 0 ? userEntity1 : userEntity2)
                 .name("Test " + index)
                 .description("Test Project " + index)
                 .active(true)
