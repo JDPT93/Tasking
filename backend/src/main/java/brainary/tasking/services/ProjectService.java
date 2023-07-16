@@ -31,7 +31,7 @@ public class ProjectService {
     private ProjectRepository projectRepository;
 
     public ProjectSchema create(ProjectSchema projectSchema) {
-        if (projectRepository.existsById(projectSchema.getId())) {
+        if (!Objects.isNull(projectSchema.getId()) && projectRepository.existsById(projectSchema.getId())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, messageSource.getMessage("project.conflict", null, LocaleContextHolder.getLocale()));
         }
         return modelMapper.map(projectRepository.save(modelMapper.map(projectSchema, ProjectEntity.class)), ProjectSchema.class);

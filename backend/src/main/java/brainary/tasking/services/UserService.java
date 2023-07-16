@@ -43,7 +43,7 @@ public class UserService {
     private UserRepository userRepository;
 
     public UserSchema create(UserSchema userSchema) {
-        if (userRepository.existsById(userSchema.getId())) {
+        if (!Objects.isNull(userSchema.getId()) && userRepository.existsById(userSchema.getId())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT,
                 messageSource.getMessage("user.conflict", null, LocaleContextHolder.getLocale()));
         }

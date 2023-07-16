@@ -26,7 +26,7 @@ export default function Application() {
                     <BrowserRouter>
                         <Routes>
                             <Route path="/" element={user === null ? <SignIn /> : <Main />} />
-                            <Route path="/sign-in" element={<SignIn onSignIn={() => "/"} />} />
+                            <Route path="/sign-in" element={<SignIn to="/" />} />
                         </Routes>
                     </BrowserRouter>
                     <Snackbar
