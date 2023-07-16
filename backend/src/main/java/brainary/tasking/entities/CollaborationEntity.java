@@ -21,7 +21,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MembershipEntity implements Serializable {
+public class CollaborationEntity implements Serializable {
 
     @Id
     @Column(nullable = false)
@@ -34,7 +34,7 @@ public class MembershipEntity implements Serializable {
 
     @ManyToOne
     @JoinColumn(nullable = false)
-    private UserEntity member;
+    private UserEntity collaborator;
 
     @Column(nullable = false)
     private Boolean active;

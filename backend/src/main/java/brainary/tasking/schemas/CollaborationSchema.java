@@ -19,13 +19,13 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @JsonInclude(value = Include.NON_NULL)
 @Schema(name = "Membership")
-public class MembershipSchema implements Serializable {
+public class CollaborationSchema implements Serializable {
 
     private Integer id;
 
     private ProjectSchema project;
 
-    private UserSchema member;
+    private UserSchema collaborator;
 
     private Boolean active;
 
