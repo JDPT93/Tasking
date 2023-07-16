@@ -3,8 +3,8 @@ import { Box, Button, Checkbox, IconButton, Link, Paper, Table, TableBody, Table
 import { Add as AddIcon, Delete as DeleteIcon, FilterList as FilterListIcon } from "@mui/icons-material";
 
 import LocaleContext from "../contexts/LocaleContext";
-import UserContext from "../contexts/UserContext";
 import ErrorContext from "../contexts/ErrorContext";
+import UserContext from "../contexts/UserContext";
 import Page from "../payloads/Page";
 import GenericTableReducer from "../reducers/GenericTableReducer";
 import Service from "../services/Service";
@@ -131,7 +131,6 @@ export default function GenericTable<T>({ caption, columns, service }: Propertie
                 </Table>
             </TableContainer>
             <TablePagination
-                component="div"
                 count={page?.totalItems ?? 0}
                 labelDisplayedRows={({ from, to, count }) => `${from}-${to} / ${count}`}
                 labelRowsPerPage={locale.components.table.rowsPerPage}
