@@ -8,7 +8,7 @@ import Main from "./Main";
 import ErrorContext from "../contexts/ErrorContext";
 import UserContext from "../contexts/UserContext";
 import User from "../schemas/User";
-
+import DialogForm from "./DialogForm";
 export default function Application() {
     const [error, setError] = React.useState<Error | null>(null);
     const [user, setUser] = React.useState<User | null>(null);
@@ -25,8 +25,9 @@ export default function Application() {
                     <CssBaseline />
                     <BrowserRouter>
                         <Routes>
-                            <Route path="/" element={user === null ? <SignIn /> : <Main />} />
+                            {/* <Route path="/" element={user === null ? <SignIn /> : <Main />} /> */}
                             <Route path="/sign-in" element={<SignIn to="/" />} />
+                            <Route path="/project-form" element={<DialogForm open={ true } />} />
                         </Routes>
                     </BrowserRouter>
                     <Snackbar

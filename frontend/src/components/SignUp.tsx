@@ -12,7 +12,7 @@ import ServiceContext from "../contexts/ServiceContext";
 import Authorization from "../payloads/Authorization";
 import ErrorContext from "../contexts/ErrorContext";
 
-export default function Authentication() {
+export default function SignUp() {
     const locale = React.useContext(LocaleContext);
     const { userService } = React.useContext(ServiceContext);
     const { setError } = React.useContext(ErrorContext);
