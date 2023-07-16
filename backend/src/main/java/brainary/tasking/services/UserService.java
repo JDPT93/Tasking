@@ -42,12 +42,18 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public UserSchema create(UserSchema userSchema) {
+    private AuthorizationPayload authorize(UserSchema userSchema) {
+        return AuthorizationPayload.builder()
+            .user(userSchema)
+            .token(jwtFilter.authorize(userSchema.getId().toString(), List.of("ROLE_USER")))
+            .build();
+    }
+
+    public AuthorizationPayload create(UserSchema userSchema) {
         if (!Objects.isNull(userSchema.getId()) && userRepository.existsById(userSchema.getId())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT,
-                messageSource.getMessage("user.conflict", null, LocaleContextHolder.getLocale()));
+            throw new ResponseStatusException(HttpStatus.CONFLICT, messageSource.getMessage("user.conflict", null, LocaleContextHolder.getLocale()));
         }
-        return modelMapper.map(userRepository.save(modelMapper.map(userSchema, UserEntity.class)), UserSchema.class);
+        return authorize(modelMapper.map(userRepository.save(modelMapper.map(userSchema, UserEntity.class)), UserSchema.class));
     }
 
     public UserSchema deleteById(Integer userId) {
@@ -61,19 +67,11 @@ public class UserService {
     }
 
     public UserSchema findByEmail(String userEmail) {
-        return modelMapper.map(
-            userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                    messageSource.getMessage("user.not-found", null, LocaleContextHolder.getLocale()))),
-            UserSchema.class);
+        return modelMapper.map(userRepository.findByEmail(userEmail).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, messageSource.getMessage("user.not-found", null, LocaleContextHolder.getLocale()))), UserSchema.class);
     }
 
     public UserSchema findById(Integer userId) {
-        return modelMapper.map(
-            userRepository.findById(userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                    messageSource.getMessage("user.not-found", null, LocaleContextHolder.getLocale()))),
-            UserSchema.class);
+        return modelMapper.map(userRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, messageSource.getMessage("user.not-found", null, LocaleContextHolder.getLocale()))), UserSchema.class);
     }
 
     public ChangelogPayload<UserSchema> update(UserSchema newUserSchema) {
@@ -95,15 +93,10 @@ public class UserService {
 
     public AuthorizationPayload authenticate(AuthenticationPayload authenticationSchema) {
         UserSchema userSchema = findByEmail(authenticationSchema.getEmail());
-        if (userSchema.getActive()
-            && passwordEncoder.matches(authenticationSchema.getPassword(), userSchema.getPassword())) {
-            return AuthorizationPayload.builder()
-                .user(userSchema)
-                .token(jwtFilter.authorize(userSchema.getId().toString(), List.of("ROLE_USER")))
-                .build();
+        if (!(userSchema.getActive() && passwordEncoder.matches(authenticationSchema.getPassword(), userSchema.getPassword()))) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, messageSource.getMessage("user.unauthorized", null, LocaleContextHolder.getLocale()));
         }
-        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
-            messageSource.getMessage("user.unauthorized", null, LocaleContextHolder.getLocale()));
+        return authorize(userSchema);
     }
 
 }

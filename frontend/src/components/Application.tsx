@@ -8,6 +8,8 @@ import Main from "./Main";
 import ErrorContext from "../contexts/ErrorContext";
 import UserContext from "../contexts/UserContext";
 import User from "../schemas/User";
+import SignUp from "./SignUp";
+import ProjectTable from "./ProjectTable";
 
 export default function Application() {
     const [error, setError] = React.useState<Error | null>(null);
@@ -25,8 +27,12 @@ export default function Application() {
                     <CssBaseline />
                     <BrowserRouter>
                         <Routes>
-                            <Route path="/" element={user === null ? <SignIn /> : <Main />} />
-                            <Route path="/sign-in" element={<SignIn to="/" />} />
+                            <Route path="/" element={user === null
+                                ? <SignIn onError={setError} />
+                                : <Main><ProjectTable /></Main>
+                            } />
+                            <Route path="/sign-in" element={<SignIn onError={setError} to="/" />} />
+                            <Route path="/sign-up" element={<SignUp onError={setError} to="/" />} />
                         </Routes>
                     </BrowserRouter>
                     <Snackbar
