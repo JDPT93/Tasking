@@ -32,7 +32,7 @@ public class SecurityConfiguration {
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(customizer -> customizer
                 .requestMatchers(HttpMethod.OPTIONS).permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/user/authentication").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/user", "/api/user/authentication").permitAll()
                 .requestMatchers("/api/**").authenticated()
                 .anyRequest().permitAll())
             .build();
