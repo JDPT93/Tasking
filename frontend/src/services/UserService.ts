@@ -8,18 +8,18 @@ export class UserService extends Service<User> {
         super("api/user");
     }
 
-    signUp(schema: User): Promise<Response> {
-        return this.create(schema);
+    signUp(object: User): Promise<Response> {
+        return this.create(object);
     }
 
-    signIn(schema: Authentication): Promise<Response> {
-        const body = JSON.stringify(schema);
+    signIn(object: Authentication): Promise<Response> {
+        const body = JSON.stringify(object);
         const headers = new Headers({
             "Accept": "application/json",
             "Content-Type": "application/json"
         });
         const locale = localStorage.getItem("locale");
-        if (locale != null) {
+        if (locale !== null) {
             headers.append("Accept-Language", locale);
         }
         return fetch(this.endpoint.concat("/authentication"), {

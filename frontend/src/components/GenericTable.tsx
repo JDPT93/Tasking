@@ -12,7 +12,7 @@ import Service from "../services/Service";
 interface Column<T> {
     property: string;
     label: string
-    map?: (value: any, property: string, schema: T) => any;
+    map?: (value: any, property: string, object: T) => any;
 }
 
 interface Properties<T> {
@@ -24,7 +24,7 @@ interface Properties<T> {
 function queryObject<T>(object: T, query: string): any {
     const [property, subquery] = query.split(".", 2);
     const value = object[property as keyof T];
-    return subquery == null ? value : queryObject(value, subquery);
+    return subquery === null ? value : queryObject(value, subquery);
 }
 
 export default function GenericTable<T>({ caption, columns, service }: Properties<T>) {
@@ -39,8 +39,9 @@ export default function GenericTable<T>({ caption, columns, service }: Propertie
         service.findAll(pagination)
             .then(async response => {
                 const body = await response.json();
-                if (!response.ok)
+                if (!response.ok) {
                     throw body as Error;
+                }
                 dispatch({ type: "page.change", payload: body as Page<T> });
             })
             .catch(setError);
@@ -77,10 +78,10 @@ export default function GenericTable<T>({ caption, columns, service }: Propertie
                             <TableCell padding="checkbox">
                                 <Checkbox
                                     indeterminate={selection.size > 0 && selection.size < (page?.length ?? 0)}
-                                    checked={selection.size > 0 && selection.size == (page?.length ?? 0)}
+                                    checked={selection.size > 0 && selection.size === (page?.length ?? 0)}
                                     onChange={event => dispatch({
                                         type: "selection.change",
-                                        payload: event.target.checked && selection.size == 0
+                                        payload: event.target.checked && selection.size === 0
                                             ? page?.content
                                             : undefined
                                     })}
@@ -102,26 +103,26 @@ export default function GenericTable<T>({ caption, columns, service }: Propertie
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {page?.content.map((schema, index) =>
+                        {page?.content.map((object, index) =>
                             <TableRow
                                 hover
                                 key={`row-${index}`}
                                 onClick={event => dispatch({
                                     type: "selection.toggle.one",
-                                    payload: schema
+                                    payload: object
                                 })}
                                 tabIndex={-1}
-                                selected={selection.has(schema)}
+                                selected={selection.has(object)}
                                 sx={{ cursor: "pointer" }}
                             >
                                 <TableCell padding="checkbox">
-                                    <Checkbox checked={selection.has(schema)} />
+                                    <Checkbox checked={selection.has(object)} />
                                 </TableCell>
                                 {columns.map((column, index) =>
                                     <TableCell key={`cell-${index}`}>
-                                        {column.map == null
-                                            ? queryObject(schema, column.property)
-                                            : column.map(queryObject(schema, column.property), column.property, schema)}
+                                        {column.map === undefined
+                                            ? queryObject(object, column.property)
+                                            : column.map(queryObject(object, column.property), column.property, object)}
                                     </TableCell>
                                 )}
                             </TableRow>

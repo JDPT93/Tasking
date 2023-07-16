@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Alert, CssBaseline, Snackbar, ThemeProvider, createTheme } from "@mui/material";
 import { amber, yellow } from "@mui/material/colors";
 
-import Authentication from "./SignIn";
+import SignIn from "./SignIn";
 import Main from "./Main";
 import ErrorContext from "../contexts/ErrorContext";
 import UserContext from "../contexts/UserContext";
@@ -25,14 +25,8 @@ export default function Application() {
                     <CssBaseline />
                     <BrowserRouter>
                         <Routes>
-                            <Route
-                                path="/"
-                                element={
-                                    user == null
-                                        ? <Authentication />
-                                        : <Main />
-                                }
-                            />
+                            <Route path="/" element={user === null ? <SignIn /> : <Main />} />
+                            <Route path="/sign-in" element={<SignIn onSignIn={() => "/"} />} />
                         </Routes>
                     </BrowserRouter>
                     <Snackbar

@@ -4,6 +4,7 @@
         "update": "Actualizar",
         "delete": "Eliminar",
         "filter": "Filtrar",
+        "signUp": "Registrarse",
         "signIn": "Iniciar sesión",
         "signOut": "Cerrar sesión"
     },
@@ -12,7 +13,8 @@
     },
     "components": {
         "signIn": {
-            "forgotPassword": "¿Olvidó su contraseña?"
+            "doNotHaveAnAccount": "¿No tiene una cuenta?",
+            "canNotSignIn": "¿No puede iniciar sesión?"
         },
         "table": {
             "rowsPerPage": "Filas por página",

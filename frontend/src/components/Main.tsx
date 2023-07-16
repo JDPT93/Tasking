@@ -11,7 +11,7 @@ import ProjectContext from "../contexts/ProjectContext";
 import Project from "../schemas/Project";
 
 export default function Main() {
-    const { application, schemas } = React.useContext(LocaleContext);
+    const locale = React.useContext(LocaleContext);
     const { user } = React.useContext(UserContext);
     const { projectService } = React.useContext(ServiceContext);
     const [project, setProject] = React.useState<Project | null>(null);
@@ -23,7 +23,7 @@ export default function Main() {
                         <IconButton color="inherit" edge="start" sx={{ mr: 2 }}>
                             <MenuIcon />
                         </IconButton>
-                        <Typography component="h1" variant="h6" noWrap>{application.name}</Typography>
+                        <Typography component="h1" variant="h6" noWrap>{locale.application.name}</Typography>
                         <Box sx={{ flexGrow: 1 }} />
                         <Box sx={{ display: { xs: "none", md: "flex" } }}>
                             <IconButton color="inherit" size="large">
@@ -43,17 +43,17 @@ export default function Main() {
                     </Toolbar>
                 </AppBar>
                 <GenericTable
-                    caption={schemas.project.plural}
+                    caption={locale.schemas.project.plural}
                     columns={[
                         {
                             property: "name",
-                            label: schemas.project.properties.name,
-                            map: (name, property, schema) =>
-                                <Link component={RouterLink} to={"project/".concat(schema.id.toString())}>{schema.name}</Link>
+                            label: locale.schemas.project.properties.name,
+                            map: (value, property, object) =>
+                                <Link component={RouterLink} to={"project/".concat(object.id.toString())}>{object.name}</Link>
                         },
-                        { property: "description", label: schemas.project.properties.description, },
-                        { property: "leader.name", label: schemas.project.properties.leader + " (" + schemas.user.properties.name + ")" },
-                        { property: "leader.surname", label: schemas.project.properties.leader + " (" + schemas.user.properties.surname + ")" }
+                        { property: "description", label: locale.schemas.project.properties.description, },
+                        { property: "leader.name", label: locale.schemas.project.properties.leader + " (" + locale.schemas.user.properties.name + ")" },
+                        { property: "leader.surname", label: locale.schemas.project.properties.leader + " (" + locale.schemas.user.properties.surname + ")" }
                     ]}
                     service={projectService}
                 />

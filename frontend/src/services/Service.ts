@@ -15,18 +15,18 @@ export class Service<T> {
         this.path = path;
     }
 
-    create(schema: T) {
-        const body = JSON.stringify(schema);
+    create(object: T) {
+        const body = JSON.stringify(object);
         const headers = new Headers({
             "Accept": "application/json",
             "Content-Type": "application/json"
         });
         const locale = localStorage.getItem("locale");
-        if (locale != null) {
+        if (locale !== null) {
             headers.append("Accept-Language", locale);
         }
         const token = localStorage.getItem("token");
-        if (token != null) {
+        if (token !== null) {
             headers.append("Authorization", "Bearer ".concat(token));
         }
         return fetch(this.endpoint, {
@@ -42,11 +42,11 @@ export class Service<T> {
             "Accept": "application/json"
         });
         const locale = localStorage.getItem("locale");
-        if (locale != null) {
+        if (locale !== null) {
             headers.append("Accept-Language", locale);
         }
         const token = localStorage.getItem("token");
-        if (token != null) {
+        if (token !== null) {
             headers.append("Authorization", "Bearer ".concat(token));
         }
         return fetch(this.endpoint.concat("/", id.toString()), {
@@ -61,21 +61,21 @@ export class Service<T> {
             "Accept": "application/json"
         });
         const locale = localStorage.getItem("locale");
-        if (locale != null) {
+        if (locale !== null) {
             headers.append("Accept-Language", locale);
         }
         const token = localStorage.getItem("token");
-        if (token != null) {
+        if (token !== null) {
             headers.append("Authorization", "Bearer ".concat(token));
         }
         const query = new URLSearchParams();
-        if (pagination?.page != null) {
+        if (pagination?.page !== undefined) {
             query.append("page", pagination.page.toString());
         }
-        if (pagination?.size != null) {
+        if (pagination?.size !== undefined) {
             query.append("size", pagination.size.toString());
         }
-        if (pagination?.sort != null) {
+        if (pagination?.sort !== undefined) {
             pagination.sort.forEach((order, property) => query.append("sort", property.toString().concat(",", order)));
         }
         return fetch(this.endpoint.concat("?", query.toString()), {
@@ -90,11 +90,11 @@ export class Service<T> {
             "Accept": "application/json"
         });
         const locale = localStorage.getItem("locale");
-        if (locale != null) {
+        if (locale !== null) {
             headers.append("Accept-Language", locale);
         }
         const token = localStorage.getItem("token");
-        if (token != null) {
+        if (token !== null) {
             headers.append("Authorization", "Bearer ".concat(token));
         }
         return fetch(this.endpoint.concat("/", id.toString()), {
@@ -104,18 +104,18 @@ export class Service<T> {
         });
     }
 
-    update(schema: T) {
-        const body = JSON.stringify(schema);
+    update(object: T) {
+        const body = JSON.stringify(object);
         const headers = new Headers({
             "Accept": "application/json",
             "Content-Type": "application/json"
         });
         const locale = localStorage.getItem("locale");
-        if (locale != null) {
+        if (locale !== null) {
             headers.append("Accept-Language", locale);
         }
         const token = localStorage.getItem("token");
-        if (token != null) {
+        if (token !== null) {
             headers.append("Authorization", "Bearer ".concat(token));
         }
         return fetch(this.endpoint, {
