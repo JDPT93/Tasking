@@ -32,9 +32,11 @@ export default function Application() {
                                 ? <SignIn onError={setError} />
                                 : <Main><ProjectTable /></Main>
                             } />
-                            <Route path="/sign-in" element={<SignIn onError={setError} to="/" />} />
                             <Route path="/sign-up" element={<SignUp onError={setError} to="/" />} />
-                            <Route path="/project-form" element={<DialogForm open={ true } />} />
+                            <Route path="/sign-in" element={<SignIn onError={setError} to="/" />} />
+                            <Route path="/project" element={<Main><ProjectTable /></Main>} />
+                            <Route path="/project/:id" element={<Main>¡Hola, Mundo!</Main>} />
+                            <Route path="/project-form" element={<DialogForm open={true} />} />
                         </Routes>
                     </BrowserRouter>
                     <Snackbar
