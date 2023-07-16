@@ -35,7 +35,7 @@ public class UserController {
 
     @PostMapping
     @SecurityRequirement(name = "Jwt")
-    public ResponseEntity<UserSchema> create(@RequestBody UserSchema userSchema) {
+    public ResponseEntity<AuthorizationPayload> create(@RequestBody UserSchema userSchema) {
         return new ResponseEntity<>(userService.create(userSchema), HttpStatus.CREATED);
     }
 
