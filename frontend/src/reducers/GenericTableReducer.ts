@@ -10,13 +10,13 @@ export interface State<T> {
 export type Action<T>
     = { type: "pagination.page.change", payload: number }
     | { type: "pagination.size.change", payload: number }
-    | { type: "pagination.sort.toggle.one", payload: keyof T }
+    | { type: "pagination.sort.toggle.one", payload: string }
     | { type: "page.change", payload: Page<T> }
     | { type: "selection.toggle.one", payload: T }
     | { type: "selection.change", payload?: T[] }
     ;
 
-export function TableReducer<T>(state: State<T>, action: Action<T>): State<T> {
+export function GenericTableReducer<T>(state: State<T>, action: Action<T>): State<T> {
     switch (action.type) {
         default:
             throw new TypeError("Unexpected action type");
@@ -38,10 +38,11 @@ export function TableReducer<T>(state: State<T>, action: Action<T>): State<T> {
                 }
             };
         case "pagination.sort.toggle.one":
-            const sort = new Map(state.pagination.sort);
-            if (!sort.has(action.payload))
-                sort.set(action.payload, "desc");
-            else switch (sort.get(action.payload)) {
+            const sort = new Map<string, "asc" | "desc">([
+                [action.payload, "asc"],
+                ...(state.pagination.sort ?? [])
+            ]);
+            switch (sort.get(action.payload)) {
                 case "asc":
                     sort.set(action.payload, "desc");
                     break;
@@ -79,4 +80,4 @@ export function TableReducer<T>(state: State<T>, action: Action<T>): State<T> {
     }
 }
 
-export default TableReducer;
+export default GenericTableReducer;

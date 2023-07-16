@@ -11,39 +11,32 @@
         "name": "Tasking"
     },
     "components": {
+        "signIn": {
+            "forgotPassword": "¿Olvidó su contraseña?"
+        },
         "table": {
-            "selection": "Filas seleccionadas",
-            "pagination": "Filas por página"
+            "rowsPerPage": "Filas por página",
+            "selectedRows": "Filas seleccionadas"
         }
-    },
-    "prepositions": {
-        "of": "de"
-    },
-    "questions": {
-        "forgotPassword": "¿Olvidó su contraseña?"
     },
     "schemas": {
         "project": {
             "singular": "Proyecto",
             "plural": "Proyectos",
             "properties": {
-                "id": "Código",
                 "leader": "Líder",
                 "name": "Nombre",
-                "description": "Descripción",
-                "active": "Activo"
+                "description": "Descripción"
             }
         },
         "user": {
             "singular": "Usuario",
             "plural": "Usarios",
             "properties": {
-                "id": "Código",
                 "name": "Nombre",
                 "surname": "Apellido",
                 "email": "Correo electrónico",
-                "password": "Contraseña",
-                "active": "Activo"
+                "password": "Contraseña"
             }
         }
     }

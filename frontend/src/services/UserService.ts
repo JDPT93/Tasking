@@ -22,7 +22,7 @@ export class UserService extends Service<User> {
         if (locale != null) {
             headers.append("Accept-Language", locale);
         }
-        return fetch(`${this.endpoint}/authentication`, {
+        return fetch(this.endpoint.concat("/authentication"), {
             body,
             headers,
             method: "POST",

@@ -3,11 +3,8 @@ import Pagination from "../payloads/Pagination";
 export class Service<T> {
 
     secure: boolean = false;
-
     host: string = "localhost";
-
     port: number = 8080;
-
     path: string;
 
     get endpoint() {
@@ -30,7 +27,7 @@ export class Service<T> {
         }
         const token = localStorage.getItem("token");
         if (token != null) {
-            headers.append("Authorization", `Bearer ${token}`);
+            headers.append("Authorization", "Bearer ".concat(token));
         }
         return fetch(this.endpoint, {
             body,
@@ -50,9 +47,9 @@ export class Service<T> {
         }
         const token = localStorage.getItem("token");
         if (token != null) {
-            headers.append("Authorization", `Bearer ${token}`);
+            headers.append("Authorization", "Bearer ".concat(token));
         }
-        return fetch(`${this.endpoint}/${id}`, {
+        return fetch(this.endpoint.concat("/", id.toString()), {
             headers,
             method: "DELETE",
             mode: "cors",
@@ -69,7 +66,7 @@ export class Service<T> {
         }
         const token = localStorage.getItem("token");
         if (token != null) {
-            headers.append("Authorization", `Bearer ${token}`);
+            headers.append("Authorization", "Bearer ".concat(token));
         }
         const query = new URLSearchParams();
         if (pagination?.page != null) {
@@ -79,9 +76,9 @@ export class Service<T> {
             query.append("size", pagination.size.toString());
         }
         if (pagination?.sort != null) {
-            pagination.sort.forEach((order, property) => query.append("sort", `${property.toString()},${order}`));
+            pagination.sort.forEach((order, property) => query.append("sort", property.toString().concat(",", order)));
         }
-        return fetch(`${this.endpoint}?${query.toString()}`, {
+        return fetch(this.endpoint.concat("?", query.toString()), {
             headers,
             method: "GET",
             mode: "cors",
@@ -98,9 +95,9 @@ export class Service<T> {
         }
         const token = localStorage.getItem("token");
         if (token != null) {
-            headers.append("Authorization", `Bearer ${token}`);
+            headers.append("Authorization", "Bearer ".concat(token));
         }
-        return fetch(`${this.endpoint}/${id}`, {
+        return fetch(this.endpoint.concat("/", id.toString()), {
             headers,
             method: "GET",
             mode: "cors",
@@ -119,7 +116,7 @@ export class Service<T> {
         }
         const token = localStorage.getItem("token");
         if (token != null) {
-            headers.append("Authorization", `Bearer ${token}`);
+            headers.append("Authorization", "Bearer ".concat(token));
         }
         return fetch(this.endpoint, {
             body,

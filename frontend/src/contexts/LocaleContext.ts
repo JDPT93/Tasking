@@ -11,12 +11,6 @@ export interface LocaleContext {
         [component: string]: {
             [label: string]: string
         }
-    }
-    prepositions: {
-        [preposition: string]: string
-    },
-    questions: {
-        [question: string]: string
     },
     schemas: {
         [schema: string]: {

@@ -1,32 +1,47 @@
 import * as React from "react";
-import { Link as RouterLink } from "react-router-dom";
 import { Box, Button, Checkbox, IconButton, Link, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Toolbar, Tooltip, Typography } from "@mui/material";
 import { Add as AddIcon, Delete as DeleteIcon, FilterList as FilterListIcon } from "@mui/icons-material";
 
 import LocaleContext from "../contexts/LocaleContext";
 import UserContext from "../contexts/UserContext";
-import ServiceContext from "../contexts/ServiceContext";
 import ErrorContext from "../contexts/ErrorContext";
 import Page from "../payloads/Page";
-import TableReducer from "../reducers/TableReducer";
-import Project from "../schemas/Project";
+import GenericTableReducer from "../reducers/GenericTableReducer";
+import Service from "../services/Service";
 
-export default function ProjectTable() {
+interface Column<T> {
+    property: string;
+    label: string
+    map?: (value: any, property: string, schema: T) => any;
+}
+
+interface Properties<T> {
+    caption: string;
+    columns: Column<T>[];
+    service: Service<T>;
+}
+
+function queryObject<T>(object: T, query: string): any {
+    const [property, subquery] = query.split(".", 2);
+    const value = object[property as keyof T];
+    return subquery == null ? value : queryObject(value, subquery);
+}
+
+export default function GenericTable<T>({ caption, columns, service }: Properties<T>) {
     const locale = React.useContext(LocaleContext);
-    const { projectService } = React.useContext(ServiceContext);
     const { setError } = React.useContext(ErrorContext);
     const { user } = React.useContext(UserContext);
-    const [{ pagination, page, selection }, dispatch] = React.useReducer(TableReducer<Project>, {
+    const [{ pagination, page, selection }, dispatch] = React.useReducer(GenericTableReducer<T>, {
         pagination: { page: 0, size: 5 },
-        selection: new Set<Project>()
+        selection: new Set<T>()
     });
     React.useEffect(() => {
-        projectService.findAll(pagination)
+        service.findAll(pagination)
             .then(async response => {
                 const body = await response.json();
                 if (!response.ok)
                     throw body as Error;
-                dispatch({ type: "page.change", payload: body as Page<Project> });
+                dispatch({ type: "page.change", payload: body as Page<T> });
             })
             .catch(setError);
     }, [pagination]);
@@ -35,32 +50,24 @@ export default function ProjectTable() {
             <Toolbar sx={{ pl: { sm: 2 }, pr: { xs: 1, sm: 1 } }}>
                 {selection.size > 0
                     ? (
-                        <Typography sx={{ flex: "1 1 100%" }} variant="subtitle1">
-                            {locale.components.table.selection}: {selection.size}
-                        </Typography>
-                    )
-                    : (
-                        <Typography sx={{ flex: "1 1 100%" }} variant="h6">
-                            {locale.schemas.project.plural}
-                        </Typography>
-                    )}
-                {selection.size > 0
-                    ? (
-                        <Tooltip title={locale.actions.delete}>
-                            <IconButton onClick={event => {
+                        <>
+                            <Typography sx={{ flex: "1 1 100%" }} variant="subtitle1">
+                                {locale.components.table.selectedRows}: {selection.size}
+                            </Typography>
+                            <Tooltip title={locale.actions.delete}>
+                                <IconButton onClick={event => {
 
-                            }}>
-                                <DeleteIcon />
-                            </IconButton>
-                        </Tooltip>
+                                }}>
+                                    <DeleteIcon />
+                                </IconButton>
+                            </Tooltip>
+                        </>
                     )
                     : (
-                        <Button startIcon={<AddIcon />} variant="contained">{locale.actions.create}</Button>
-                        // <Tooltip title={locale.actions.filter}>
-                        //     <IconButton>
-                        //         <FilterListIcon />
-                        //     </IconButton>
-                        // </Tooltip>
+                        <>
+                            <Typography sx={{ flex: "1 1 100%" }} variant="h6">{caption}</Typography>
+                            <Button startIcon={<AddIcon />} variant="contained">{locale.actions.create}</Button>
+                        </>
                     )}
             </Toolbar>
             <TableContainer component={Paper}>
@@ -79,53 +86,54 @@ export default function ProjectTable() {
                                     })}
                                 />
                             </TableCell>
-                            {(["name", "description", "leader"] as (keyof Project)[]).map(property => (
-                                <TableCell>
+                            {columns.map((column, index) =>
+                                <TableCell key={`column-${index}`}>
                                     <TableSortLabel
-                                        direction={pagination.sort?.get(property) ?? "asc"}
-                                        key={property}
+                                        direction={pagination.sort?.get(column.property) ?? "asc"}
                                         onClick={event => dispatch({
                                             type: "pagination.sort.toggle.one",
-                                            payload: property
+                                            payload: column.property
                                         })}
                                     >
-                                        {locale.schemas.project.properties[property]}
+                                        {column.label}
                                     </TableSortLabel>
                                 </TableCell>
-                            ))}
+                            )}
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {page?.content.map(project => (
+                        {page?.content.map((schema, index) =>
                             <TableRow
                                 hover
-                                key={`project-${project.id}`}
+                                key={`row-${index}`}
                                 onClick={event => dispatch({
                                     type: "selection.toggle.one",
-                                    payload: project
+                                    payload: schema
                                 })}
                                 tabIndex={-1}
-                                selected={selection.has(project)}
+                                selected={selection.has(schema)}
                                 sx={{ cursor: "pointer" }}
                             >
                                 <TableCell padding="checkbox">
-                                    <Checkbox checked={selection.has(project)} />
+                                    <Checkbox checked={selection.has(schema)} />
                                 </TableCell>
-                                <TableCell>
-                                    <Link component={RouterLink} to={`/project/${project.id}`}>{project.name}</Link>
-                                </TableCell>
-                                <TableCell>{project.description}</TableCell>
-                                <TableCell>{project.leader.name} {project.leader.surname}</TableCell>
+                                {columns.map((column, index) =>
+                                    <TableCell key={`cell-${index}`}>
+                                        {column.map == null
+                                            ? queryObject(schema, column.property)
+                                            : column.map(queryObject(schema, column.property), column.property, schema)}
+                                    </TableCell>
+                                )}
                             </TableRow>
-                        ))}
+                        )}
                     </TableBody>
                 </Table>
             </TableContainer>
             <TablePagination
                 component="div"
                 count={page?.totalItems ?? 0}
-                labelDisplayedRows={({ from, to, count }) => `${from}-${to} ${locale.prepositions.of} ${count}`}
-                labelRowsPerPage={locale.components.table.pagination}
+                labelDisplayedRows={({ from, to, count }) => `${from}-${to} / ${count}`}
+                labelRowsPerPage={locale.components.table.rowsPerPage}
                 onPageChange={(event, page) => dispatch({
                     type: "pagination.page.change",
                     payload: page
