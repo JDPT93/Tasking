@@ -10,7 +10,7 @@ import UserContext from "../contexts/UserContext";
 import Authorization from "../payloads/Authorization";
 
 interface Properties {
-    onSignIn?: (payload: Authorization) => string | null;
+    onSignIn?: (payload: Authorization) => string | undefined;
 }
 
 export default function SignIn({ onSignIn }: Properties) {
@@ -36,9 +36,9 @@ export default function SignIn({ onSignIn }: Properties) {
                         const authorization = body as Authorization;
                         localStorage.setItem("token", authorization.token);
                         setUser(authorization.user);
-                        if (onSignIn != null) {
+                        if (onSignIn !== undefined) {
                             const path = onSignIn(authorization);
-                            if (path != null) {
+                            if (path !== undefined) {
                                 navigate(path);
                             }
                         }

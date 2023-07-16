@@ -32,7 +32,7 @@ export default function Application() {
                     <Snackbar
                         autoHideDuration={5000}
                         onClose={event => setError(null)}
-                        open={error != null}
+                        open={error !== null}
                         sx={{ width: { xs: 1, md: 320 } }}
                     >
                         <Alert severity="error">{error?.message}</Alert>
