@@ -10,7 +10,7 @@ import Authorization from "../payloads/Authorization";
 
 interface Properties {
     onError?: (error: Error) => void;
-    onSuccess?: (payload: Authorization) => void;
+    onSuccess?: (object: Authorization) => void;
     to?: string;
 }
 
@@ -25,7 +25,7 @@ export default function SignIn({ onError, onSuccess, to }: Properties) {
                 <Stack alignItems="center" component="form" gap={2} padding={4} width={400} onSubmit={event => {
                     event.preventDefault();
                     const { emailField, passwordField } = event.target as HTMLFormElement;
-                    userService.signIn({
+                    userService.authenticate({
                         email: emailField.value,
                         password: passwordField.value
                     })

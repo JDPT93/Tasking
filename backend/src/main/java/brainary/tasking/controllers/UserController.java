@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -57,15 +58,27 @@ public class UserController {
         return new ResponseEntity<>(userService.findById(userId), HttpStatus.OK);
     }
 
+    @GetMapping(path = "me")
+    @SecurityRequirement(name = "Jwt")
+    public ResponseEntity<UserSchema> findMe(UsernamePasswordAuthenticationToken token) {
+        return new ResponseEntity<>(userService.findById(Integer.parseInt(token.getPrincipal().toString())), HttpStatus.OK);
+    }
+
     @PutMapping
     @SecurityRequirement(name = "Jwt")
     public ResponseEntity<ChangelogPayload<UserSchema>> update(@RequestBody UserSchema userSchema) {
         return new ResponseEntity<>(userService.update(userSchema), HttpStatus.OK);
     }
 
-    @PostMapping(path = "authentication")
+    @PostMapping(path = "authenticatation")
     public ResponseEntity<AuthorizationPayload> authenticate(@RequestBody AuthenticationPayload authenticationSchema) {
         return new ResponseEntity<>(userService.authenticate(authenticationSchema), HttpStatus.OK);
+    }
+
+    @PostMapping(path = "authorization")
+    @SecurityRequirement(name = "Jwt")
+    public ResponseEntity<AuthorizationPayload> authorize(UsernamePasswordAuthenticationToken token) {
+        return new ResponseEntity<>(userService.authorize(token.getPrincipal().toString()), HttpStatus.OK);
     }
 
 }

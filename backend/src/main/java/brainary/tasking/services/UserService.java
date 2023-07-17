@@ -42,7 +42,13 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    private AuthorizationPayload authorize(UserSchema userSchema) {
+    public AuthorizationPayload authorize(String userId) {
+        return AuthorizationPayload.builder()
+            .token(jwtFilter.authorize(userId, List.of("ROLE_USER")))
+            .build();
+    }
+
+    public AuthorizationPayload authorize(UserSchema userSchema) {
         return AuthorizationPayload.builder()
             .user(userSchema)
             .token(jwtFilter.authorize(userSchema.getId().toString(), List.of("ROLE_USER")))

@@ -8,11 +8,7 @@ export class UserService extends Service<User> {
         super("api/user");
     }
 
-    signUp(object: User): Promise<Response> {
-        return this.create(object);
-    }
-
-    signIn(object: Authentication): Promise<Response> {
+    authenticate(object: Authentication): Promise<Response> {
         const body = JSON.stringify(object);
         const headers = new Headers({
             "Accept": "application/json",
@@ -24,6 +20,26 @@ export class UserService extends Service<User> {
         }
         return fetch(this.endpoint.concat("/authentication"), {
             body,
+            headers,
+            method: "POST",
+            mode: "cors",
+        });
+    }
+
+    authorize(): Promise<Response> {
+        const headers = new Headers({
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+        });
+        const locale = localStorage.getItem("locale");
+        if (locale !== null) {
+            headers.append("Accept-Language", locale);
+        }
+        const token = localStorage.getItem("token");
+        if (token !== null) {
+            headers.append("Authorization", "Bearer ".concat(token));
+        }
+        return fetch(this.endpoint.concat("/authorization"), {
             headers,
             method: "POST",
             mode: "cors",
