@@ -11,7 +11,7 @@ export type Action<T>
     = { type: "pagination.page.change", payload: number }
     | { type: "pagination.size.change", payload: number }
     | { type: "pagination.sort.toggle.one", payload: string }
-    | { type: "page.change", payload?: Page<T> }
+    | { type: "page.change", payload: Page<T> }
     | { type: "selection.toggle.one", payload: T }
     | { type: "selection.change", payload?: T[] }
     ;
@@ -56,13 +56,13 @@ export function GenericTableReducer<T>(state: State<T>, action: Action<T>): Stat
                     ...state.pagination,
                     sort
                 }
-            }
+            };
         case "page.change":
             return {
                 ...state,
                 selection: new Set(),
                 page: action.payload
-            }
+            };
         case "selection.change":
             return {
                 ...state,
