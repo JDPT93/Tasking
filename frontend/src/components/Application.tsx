@@ -11,6 +11,7 @@ import User from "../schemas/User";
 import DialogForm from "./DialogForm";
 import SignUp from "./SignUp";
 import ProjectTable from "./ProjectTable";
+import Board from "./Board";
 
 export default function Application() {
     const [error, setError] = React.useState<Error | null>(null);
@@ -35,8 +36,8 @@ export default function Application() {
                             <Route path="/sign-up" element={<SignUp onError={setError} to="/" />} />
                             <Route path="/sign-in" element={<SignIn onError={setError} to="/" />} />
                             <Route path="/project" element={<Main><ProjectTable /></Main>} />
-                            <Route path="/project/:id" element={<Main >¡Hola, Mundo!</Main>} />
-                            <Route path="/project/:id/board" element={<Main >¡Hola, Mundo!</Main>} />
+                            <Route path="/project/:id" element={<Main ><Board></Board></Main>} />
+                            <Route path="/project/:id/board" element={<Main ><Board></Board></Main>} />
                             <Route path="/project-form" element={<DialogForm open={true} />} />
                         </Routes>
                     </BrowserRouter>
