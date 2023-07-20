@@ -1,7 +1,7 @@
 import * as React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Alert, CssBaseline, Snackbar, ThemeProvider, createTheme } from "@mui/material";
-import { amber, yellow } from "@mui/material/colors";
+import { amber, blue, cyan, yellow } from "@mui/material/colors";
 
 import SignIn from "./SignIn";
 import Main from "./Main";
@@ -39,8 +39,8 @@ export default function Application() {
         <ThemeProvider theme={createTheme({
             palette: {
                 mode: "dark",
-                primary: amber,
-                secondary: yellow
+                primary: blue,
+                secondary: cyan
             }
         })}>
             <ErrorContext.Provider value={{ error, setError }}>

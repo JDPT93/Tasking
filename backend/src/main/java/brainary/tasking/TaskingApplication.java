@@ -34,8 +34,7 @@ public class TaskingApplication implements CommandLineRunner {
     public void run(String... args) throws Exception {
 
         UserEntity userEntity1 = UserEntity.builder()
-            .name("José Daniel")
-            .surname("Pérez Torres")
+            .fullname("José Daniel Pérez Torres")
             .email("josedanielpereztorres@gmail.com")
             .password(passwordEncoder.encode("1234567890"))
             .active(true)
@@ -43,8 +42,7 @@ public class TaskingApplication implements CommandLineRunner {
         userRepository.save(userEntity1);
 
         UserEntity userEntity2 = UserEntity.builder()
-            .name("Ermes David")
-            .surname("Galvis Rodríguez") 
+            .fullname("Ermes David Galvis Rodríguez")
             .email("galvushow@gmail.com")
             .password(passwordEncoder.encode("1234567890"))
             .active(true)

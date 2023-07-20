@@ -34,7 +34,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping(path = "authenticatation")
+    @PostMapping(path = "authentication")
     public ResponseEntity<AuthorizationPayload> authenticate(@RequestBody AuthenticationPayload authenticationSchema) {
         return new ResponseEntity<>(userService.authenticate(authenticationSchema), HttpStatus.OK);
     }
@@ -46,7 +46,6 @@ public class UserController {
     }
 
     @PostMapping
-    @SecurityRequirement(name = "Jwt")
     public ResponseEntity<AuthorizationPayload> create(@RequestBody UserSchema userSchema) {
         return new ResponseEntity<>(userService.create(userSchema), HttpStatus.CREATED);
     }

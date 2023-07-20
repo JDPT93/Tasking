@@ -27,10 +27,7 @@ public class UserEntity implements Serializable {
     private Integer id;
 
     @Column(nullable = false)
-    private String name;
-
-    @Column(nullable = true)
-    private String surname;
+    private String fullname;
 
     @Column(nullable = false, unique = true)
     private String email;
