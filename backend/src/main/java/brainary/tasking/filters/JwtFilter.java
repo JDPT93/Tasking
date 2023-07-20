@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,8 +28,6 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
-    private static final String HEADER = "Authorization";
-
     private static final String PREFIX = "Bearer ";
 
     @Value(value = "${tasking.jwt.signing-key}")
@@ -40,7 +39,7 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
         try {
-            String authorization = request.getHeader(HEADER);
+            String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
             if (Objects.isNull(authorization) || !authorization.startsWith(PREFIX)) {
                 SecurityContextHolder.clearContext();
             } else {
