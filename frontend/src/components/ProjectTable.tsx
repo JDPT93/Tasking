@@ -22,8 +22,7 @@ export default function ProjectTable() {
                     <Link component={RouterLink} to={"project/".concat(object.id!.toString())}>{object.name}</Link>
             },
             { property: "description", label: locale.schemas.project.properties.description, },
-            { property: "leader.name", label: locale.schemas.project.properties.leader + " (" + locale.schemas.user.properties.name + ")" },
-            { property: "leader.surname", label: locale.schemas.project.properties.leader + " (" + locale.schemas.user.properties.surname + ")" }
+            { property: "leader.fullname", label: locale.schemas.project.properties.leader },
         ]}
         onError={setError}
         onRead={pagination => projectService.findAll(pagination)}

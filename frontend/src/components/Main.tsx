@@ -34,7 +34,7 @@ export default function Main({ children }: React.PropsWithChildren) {
                                 </Badge>
                             </IconButton>
                             <IconButton color="inherit" size="small">
-                                <Avatar alt={user?.name} src="#" />
+                                <Avatar alt={user?.fullname} src="#" />
                             </IconButton>
                         </Box>
                     </Toolbar>
