@@ -42,6 +42,14 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    public AuthorizationPayload authenticate(AuthenticationPayload authenticationSchema) {
+        UserSchema userSchema = findByEmail(authenticationSchema.getEmail());
+        if (!(userSchema.getActive() && passwordEncoder.matches(authenticationSchema.getPassword(), userSchema.getPassword()))) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, messageSource.getMessage("user.unauthorized", null, LocaleContextHolder.getLocale()));
+        }
+        return authorize(userSchema);
+    }
+
     public AuthorizationPayload authorize(UserSchema userSchema) {
         return AuthorizationPayload.builder()
             .user(userSchema)
@@ -53,14 +61,6 @@ public class UserService {
         return AuthorizationPayload.builder()
             .token(jwtFilter.authorize(userId, List.of("ROLE_USER")))
             .build();
-    }
-
-    public AuthorizationPayload authenticate(AuthenticationPayload authenticationSchema) {
-        UserSchema userSchema = findByEmail(authenticationSchema.getEmail());
-        if (!(userSchema.getActive() && passwordEncoder.matches(authenticationSchema.getPassword(), userSchema.getPassword()))) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, messageSource.getMessage("user.unauthorized", null, LocaleContextHolder.getLocale()));
-        }
-        return authorize(userSchema);
     }
 
     public AuthorizationPayload create(UserSchema userSchema) {

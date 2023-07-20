@@ -43,8 +43,8 @@ public class CollaborationService {
         return collaborationSchema;
     }
 
-    public Page<CollaborationSchema> findAll(Pageable Pageable) {
-        return collaborationRepository.findAll(Pageable).map(collaborationEntity -> modelMapper.map(collaborationEntity, CollaborationSchema.class));
+    public Page<CollaborationSchema> findAll(Pageable pageable) {
+        return collaborationRepository.findAll(pageable).map(collaborationEntity -> modelMapper.map(collaborationEntity, CollaborationSchema.class));
     }
 
     public CollaborationSchema findById(Integer collaborationId) {

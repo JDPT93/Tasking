@@ -43,8 +43,8 @@ public class ProjectService {
         return projectSchema;
     }
 
-    public Page<ProjectSchema> findAll(Pageable Pageable) {
-        return projectRepository.findAll(Pageable).map(projectEntity -> modelMapper.map(projectEntity, ProjectSchema.class));
+    public Page<ProjectSchema> findAll(Pageable pageable) {
+        return projectRepository.findAll(pageable).map(projectEntity -> modelMapper.map(projectEntity, ProjectSchema.class));
     }
 
     public ProjectSchema findById(Integer projectId) {
