@@ -48,14 +48,13 @@ public class JwtFilter extends OncePerRequestFilter {
                 if (Objects.isNull(claims.get("authorities"))) {
                     SecurityContextHolder.clearContext();
                 } else {
-                    SecurityContextHolder.getContext()
-                        .setAuthentication(
-                            new UsernamePasswordAuthenticationToken(
-                                claims.getSubject(),
-                                null,
-                                Stream.of(claims.get("authorities"))
-                                    .map(authority -> new SimpleGrantedAuthority(authority.toString()))
-                                    .toList()));
+                    SecurityContextHolder.getContext().setAuthentication(
+                        new UsernamePasswordAuthenticationToken(
+                            claims.getSubject(),
+                            null,
+                            Stream.of(claims.get("authorities"))
+                                .map(authority -> new SimpleGrantedAuthority(authority.toString()))
+                                .toList()));
                 }
             }
             chain.doFilter(request, response);
@@ -64,12 +63,12 @@ public class JwtFilter extends OncePerRequestFilter {
         }
     }
 
-    public String authorize(String subject, List<String> authorities) {
+    public String authorize(String subject, String... authorities) {
         Long currentTime = System.currentTimeMillis();
         return Jwts.builder()
             .setId(currentTime.toString().concat(":").concat(subject))
             .setSubject(subject)
-            .claim("authorities", authorities)
+            .claim("authorities", List.of(authorities))
             .setIssuedAt(new Date(currentTime))
             .setExpiration(new Date(currentTime + expirationTime))
             .signWith(SignatureAlgorithm.HS256, signingKey.getBytes())

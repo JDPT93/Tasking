@@ -1,6 +1,5 @@
 package brainary.tasking.services;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -53,13 +52,13 @@ public class UserService {
     private AuthorizationPayload authorize(UserSchema userSchema) {
         return AuthorizationPayload.builder()
             .user(userSchema)
-            .token(jwtFilter.authorize(userSchema.getId().toString(), List.of("ROLE_USER")))
+            .token(jwtFilter.authorize(userSchema.getId().toString(), "ROLE_USER"))
             .build();
     }
 
     public AuthorizationPayload authorize(String userId) {
         return AuthorizationPayload.builder()
-            .token(jwtFilter.authorize(userId, List.of("ROLE_USER")))
+            .token(jwtFilter.authorize(userId, "ROLE_USER"))
             .build();
     }
 
