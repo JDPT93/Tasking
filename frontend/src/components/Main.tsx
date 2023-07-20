@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { AppBar, Avatar, Badge, Box, IconButton, Link, Toolbar, Typography } from "@mui/material";
 import { Mail as MailIcon, Menu as MenuIcon, Notifications as NotificationsIcon } from "@mui/icons-material";
 
@@ -38,6 +39,7 @@ export default function Main({ children }: React.PropsWithChildren) {
                         </Box>
                     </Toolbar>
                 </AppBar>
+                <Link component={RouterLink} to="/project-form" variant="body2">{locale.actions.signIn}</Link>
                 {children}
             </Box >
         </ProjectContext.Provider>

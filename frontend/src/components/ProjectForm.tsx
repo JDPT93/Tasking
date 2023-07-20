@@ -1,55 +1,48 @@
 import * as React from "react";
-
-import { Link as RouterLink } from "react-router-dom";
-
-import { Alert, Avatar, Button, Link, Paper, Snackbar, Stack, TextField, Typography } from "@mui/material";
-import { StickyNote2 as StickyNoteIcon } from "@mui/icons-material";
+import { Button, Stack, TextField } from "@mui/material";
 
 import LocaleContext from "../contexts/LocaleContext";
 import UserContext from "../contexts/UserContext";
-import ServiceContext from "../contexts/ServiceContext";
+import ProjectService from "../contexts/ServiceContext";
+import Project from "../schemas/Project";
 
-import Authorization from "../payloads/Authorization";
-import ErrorContext from "../contexts/ErrorContext";
+interface Properties {
+    onError?: (error: Error) => void;
+    onSuccess?: (object: Project) => void;
+}
 
-export default function ProjectForm() {
+export default function ProjectForm({ onError, onSuccess }: Properties) {
     const locale = React.useContext(LocaleContext);
-    const { userService } = React.useContext(ServiceContext);
-    const { setError } = React.useContext(ErrorContext);
-    const { setUser } = React.useContext(UserContext);
+    const { projectService } = React.useContext(ProjectService);
+    const { user } = React.useContext(UserContext);
+    const [name, setName] = React.useState<String | null>('');
+    const [description, setDescription] = React.useState<String | null>('');
     return (
-        <Paper component="main" elevation={2} sx={{ maxWidth: 380, padding: 4 }} square>
-            <Stack alignItems="center" component="form" gap={2} onSubmit={event => {
-                event.preventDefault();
-                const {emailField, nameField, passwordField, surnameField } = event.target as HTMLFormElement;
-                userService.create({
-                    name: nameField.value,
-                    surname: surnameField.value,
-                    email: emailField.value,
-                    password: passwordField.value,
-                    active: true
+        <Stack padding="4px 0px" width={450} alignItems="center" component="form" gap={2} onSubmit={event => {
+            event.preventDefault();
+            const { nameField, descriptionField } = event.target as HTMLFormElement;
+            projectService.create({
+                leader: user!,
+                name: nameField.value,
+                description: descriptionField.value,
+                active: true
+            })
+                .then(async response => {
+                    const body = await response.json();
+                    if (!response.ok) {
+                        throw body as Error;
+                    }
+                    setName('');
+                    setDescription('');
+                    if (onSuccess !== undefined) {
+                        onSuccess(body as Project)
+                    }
                 })
-                    .then(async response => {
-                        const body = await response.json();
-                        if (!response.ok)
-                            throw body as Error;
-                        const { user, token } = body as Authorization;
-                        setUser(user);
-                        localStorage.setItem("token", token);
-                    })
-                    .catch(setError);
-            }}>
-                <Avatar sx={{ backgroundColor: "primary.main" }}>
-                    <StickyNoteIcon />
-                </Avatar>
-                <Typography component="h1" variant="h5">{locale.application.name}</Typography>
-                <TextField value="Ermes David" fullWidth label={locale.schemas.user.properties.name} name="nameField" required type="text" variant="outlined" />
-                <TextField value="Galvis Rodriguez" fullWidth label={locale.schemas.user.properties.surname} name="surnameField" required type="text" variant="outlined" />
-                <TextField value="galvushow@gmail.com" fullWidth label={locale.schemas.user.properties.email} name="emailField" required type="email" variant="outlined" />
-                <TextField value="123456" autoComplete="current-password" fullWidth label={locale.schemas.user.properties.password} name="passwordField" required type="password" variant="outlined" />
-                <Button fullWidth type="submit" variant="contained">{locale.actions.signUp}</Button>
-                <Link component={RouterLink} to="/" variant="body2">{locale.actions.signIn}</Link>
-            </Stack>
-        </Paper>
+                .catch(onError);
+        }}>
+            <TextField onChange={(event) => setName(event.target.value) } value={name} fullWidth label={locale.schemas.project.properties.name} name="nameField" required type="text" variant="outlined" />
+            <TextField onChange={(event) => setDescription(event.target.value) } value={description} fullWidth label={locale.schemas.project.properties.description} name="descriptionField" required type="text" variant="outlined" multiline rows={4} />
+            <Button fullWidth type="submit" variant="contained">{locale.actions.btnSaveProject}</Button>
+        </Stack>
     );
 }

@@ -53,10 +53,10 @@ export default function SignIn({ onError, onSuccess, to }: Properties) {
                         <StickyNoteIcon />
                     </Avatar>
                     <Typography component="h1" variant="h5">{locale.application.name}</Typography>
-                    <TextField value="Ermes David" fullWidth label={locale.schemas.user.properties.name} name="nameField" required type="text" variant="outlined" />
-                    <TextField value="Galvis Rodriguez" fullWidth label={locale.schemas.user.properties.surname} name="surnameField" required type="text" variant="outlined" />
-                    <TextField value="galvushow@gmail.com" fullWidth label={locale.schemas.user.properties.email} name="emailField" required type="email" variant="outlined" />
-                    <TextField value="123456" autoComplete="current-password" fullWidth label={locale.schemas.user.properties.password} name="passwordField" required type="password" variant="outlined" />
+                    <TextField  fullWidth label={locale.schemas.user.properties.name} name="nameField" required type="text" variant="outlined" />
+                    <TextField  fullWidth label={locale.schemas.user.properties.surname} name="surnameField" required type="text" variant="outlined" />
+                    <TextField  fullWidth label={locale.schemas.user.properties.email} name="emailField" required type="email" variant="outlined" />
+                    <TextField autoComplete="current-password" fullWidth label={locale.schemas.user.properties.password} name="passwordField" required type="password" variant="outlined" />
                     <Button fullWidth type="submit" variant="contained">{locale.actions.signUp}</Button>
                     <Link component={RouterLink} to="/sign-in" variant="body2">{locale.actions.signIn}</Link>
                 </Stack>

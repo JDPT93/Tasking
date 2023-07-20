@@ -6,7 +6,9 @@
         "filter": "Filtrar",
         "signUp": "Registrarse",
         "signIn": "Iniciar sesión",
-        "signOut": "Cerrar sesión"
+        "signOut": "Cerrar sesión",
+        "btnSaveProject": "Guardar",
+        "addProject": "Crear un nuevo proyecto"
     },
     "application": {
         "name": "Tasking"
