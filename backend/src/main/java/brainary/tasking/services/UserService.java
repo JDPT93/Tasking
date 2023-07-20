@@ -50,7 +50,7 @@ public class UserService {
         return authorize(userSchema);
     }
 
-    public AuthorizationPayload authorize(UserSchema userSchema) {
+    private AuthorizationPayload authorize(UserSchema userSchema) {
         return AuthorizationPayload.builder()
             .user(userSchema)
             .token(jwtFilter.authorize(userSchema.getId().toString(), List.of("ROLE_USER")))
