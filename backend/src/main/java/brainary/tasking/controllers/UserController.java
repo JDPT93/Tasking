@@ -34,6 +34,17 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @PostMapping(path = "authenticatation")
+    public ResponseEntity<AuthorizationPayload> authenticate(@RequestBody AuthenticationPayload authenticationSchema) {
+        return new ResponseEntity<>(userService.authenticate(authenticationSchema), HttpStatus.OK);
+    }
+
+    @PostMapping(path = "authorization")
+    @SecurityRequirement(name = "Jwt")
+    public ResponseEntity<AuthorizationPayload> authorize(UsernamePasswordAuthenticationToken token) {
+        return new ResponseEntity<>(userService.authorize(token.getPrincipal().toString()), HttpStatus.OK);
+    }
+
     @PostMapping
     @SecurityRequirement(name = "Jwt")
     public ResponseEntity<AuthorizationPayload> create(@RequestBody UserSchema userSchema) {
@@ -68,17 +79,6 @@ public class UserController {
     @SecurityRequirement(name = "Jwt")
     public ResponseEntity<ChangelogPayload<UserSchema>> update(@RequestBody UserSchema userSchema) {
         return new ResponseEntity<>(userService.update(userSchema), HttpStatus.OK);
-    }
-
-    @PostMapping(path = "authenticatation")
-    public ResponseEntity<AuthorizationPayload> authenticate(@RequestBody AuthenticationPayload authenticationSchema) {
-        return new ResponseEntity<>(userService.authenticate(authenticationSchema), HttpStatus.OK);
-    }
-
-    @PostMapping(path = "authorization")
-    @SecurityRequirement(name = "Jwt")
-    public ResponseEntity<AuthorizationPayload> authorize(UsernamePasswordAuthenticationToken token) {
-        return new ResponseEntity<>(userService.authorize(token.getPrincipal().toString()), HttpStatus.OK);
     }
 
 }

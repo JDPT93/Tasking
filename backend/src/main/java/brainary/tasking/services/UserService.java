@@ -42,17 +42,25 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    public AuthorizationPayload authorize(UserSchema userSchema) {
+        return AuthorizationPayload.builder()
+            .user(userSchema)
+            .token(jwtFilter.authorize(userSchema.getId().toString(), List.of("ROLE_USER")))
+            .build();
+    }
+
     public AuthorizationPayload authorize(String userId) {
         return AuthorizationPayload.builder()
             .token(jwtFilter.authorize(userId, List.of("ROLE_USER")))
             .build();
     }
 
-    public AuthorizationPayload authorize(UserSchema userSchema) {
-        return AuthorizationPayload.builder()
-            .user(userSchema)
-            .token(jwtFilter.authorize(userSchema.getId().toString(), List.of("ROLE_USER")))
-            .build();
+    public AuthorizationPayload authenticate(AuthenticationPayload authenticationSchema) {
+        UserSchema userSchema = findByEmail(authenticationSchema.getEmail());
+        if (!(userSchema.getActive() && passwordEncoder.matches(authenticationSchema.getPassword(), userSchema.getPassword()))) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, messageSource.getMessage("user.unauthorized", null, LocaleContextHolder.getLocale()));
+        }
+        return authorize(userSchema);
     }
 
     public AuthorizationPayload create(UserSchema userSchema) {
@@ -68,8 +76,8 @@ public class UserService {
         return userSchema;
     }
 
-    public Page<UserSchema> findAll(Pageable Pageable) {
-        return userRepository.findAll(Pageable).map(userEntity -> modelMapper.map(userEntity, UserSchema.class));
+    public Page<UserSchema> findAll(Pageable pageable) {
+        return userRepository.findAll(pageable).map(userEntity -> modelMapper.map(userEntity, UserSchema.class));
     }
 
     public UserSchema findByEmail(String userEmail) {
@@ -95,14 +103,6 @@ public class UserService {
             .before(oldUserSchema)
             .after(newUserSchema)
             .build();
-    }
-
-    public AuthorizationPayload authenticate(AuthenticationPayload authenticationSchema) {
-        UserSchema userSchema = findByEmail(authenticationSchema.getEmail());
-        if (!(userSchema.getActive() && passwordEncoder.matches(authenticationSchema.getPassword(), userSchema.getPassword()))) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, messageSource.getMessage("user.unauthorized", null, LocaleContextHolder.getLocale()));
-        }
-        return authorize(userSchema);
     }
 
 }
