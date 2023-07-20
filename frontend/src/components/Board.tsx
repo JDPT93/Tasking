@@ -101,9 +101,9 @@ const issues = [
 ];
 
 const CardIssue = ({ name, stage }: Properties) => (
-    <CardActionArea onAuxClick={(event) => {
-        event.preventDefault
-        alert("asdas")
+    <CardActionArea onClick={(event) => {
+        event.preventDefault();
+        
     }}>
         <Card sx={{ width: "100%", padding: "8px", margin: "0px !important" }}>
             <Link underline="none" variant="body2" sx={{ fontWeight: 500 }}>

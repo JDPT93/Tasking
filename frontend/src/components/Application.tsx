@@ -3,12 +3,12 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Alert, CssBaseline, Snackbar, ThemeProvider, createTheme } from "@mui/material";
 import { amber, blue, cyan, yellow } from "@mui/material/colors";
 
+import DialogForm from "./Dialog";
 import SignIn from "./SignIn";
 import Main from "./Main";
 import ErrorContext from "../contexts/ErrorContext";
 import UserContext from "../contexts/UserContext";
 import User from "../schemas/User";
-import DialogForm from "./DialogForm";
 import SignUp from "./SignUp";
 import ProjectTable from "./ProjectTable";
 import ServiceContext from "../contexts/ServiceContext";
