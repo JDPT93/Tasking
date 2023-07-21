@@ -42,6 +42,9 @@ public class StageEntity implements Serializable {
     private String name;
 
     @Column(nullable = false)
+    private Integer position;
+
+    @Column(nullable = false)
     private Boolean active;
 
 }

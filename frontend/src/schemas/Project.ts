@@ -7,7 +7,7 @@ export interface Project {
     name?: string;
     description?: string;
     active?: boolean;
-    stages?: Set<Stage>
+    stages?: Stage[];
 }
 
 export default Project;

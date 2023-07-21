@@ -1,13 +1,10 @@
 import * as React from "react";
-import { Box, Button, Checkbox, IconButton, Link, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Toolbar, Tooltip, Typography } from "@mui/material";
-import { Add as AddIcon, Delete as DeleteIcon, FilterList as FilterListIcon } from "@mui/icons-material";
+import { Box, Button, Checkbox, Container, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Toolbar, Tooltip, Typography } from "@mui/material";
+import { Delete as DeleteIcon } from "@mui/icons-material";
 
 import LocaleContext from "../contexts/LocaleContext";
-import ErrorContext from "../contexts/ErrorContext";
-import UserContext from "../contexts/UserContext";
 import Page from "../payloads/Page";
 import GenericTableReducer from "../reducers/GenericTableReducer";
-import Service from "../services/Service";
 import Pagination from "../payloads/Pagination";
 
 interface Column<T> {
@@ -20,24 +17,26 @@ interface Properties<T> {
     caption: string;
     columns: Column<T>[];
     onError?: (error: Error) => void
-    onRead: (pagination: Pagination<T>) => Promise<Response>;
-    onDelete?: (object: T) => Promise<Response>;
+    onDelete?: (selection: Set<T>) => Promise<Response>;
+    onRetrieve: (pagination: Pagination<T>) => Promise<Response>;
+    tools: React.ReactNode;
 }
 
 function queryObject<T>(object: T, query: string): any {
-    const [property, subquery] = query.split(".", 2);
-    const value = object[property as keyof T];
-    return subquery === undefined ? value : queryObject(value, subquery);
+    const [key, subquery] = query.split(".", 2);
+    return subquery === undefined
+        ? object[key as keyof T]
+        : queryObject(object[key as keyof T], subquery);
 }
 
-export default function GenericTable<T>({ caption, columns, onRead, onDelete, onError }: Properties<T>) {
+export default function GenericTable<T>({ caption, columns, onError, onDelete, onRetrieve, tools }: Properties<T>) {
     const locale = React.useContext(LocaleContext);
     const [{ pagination, page, selection }, dispatch] = React.useReducer(GenericTableReducer<T>, {
         pagination: { page: 0, size: 5 },
         selection: new Set<T>()
     });
     React.useEffect(() => {
-        onRead(pagination)
+        onRetrieve(pagination)
             .then(async response => {
                 const body = await response.json();
                 if (!response.ok) {
@@ -51,26 +50,31 @@ export default function GenericTable<T>({ caption, columns, onRead, onDelete, on
         <Box sx={{ p: 2 }}>
             <Toolbar sx={{ pl: { sm: 2 }, pr: { xs: 1, sm: 1 } }}>
                 {selection.size > 0
-                    ? (
-                        <>
-                            <Typography sx={{ flex: "1 1 100%" }} variant="subtitle1">
-                                {locale.components.table.selectedRows}: {selection.size}
-                            </Typography>
-                            <Tooltip title={locale.actions.delete}>
-                                <IconButton onClick={event => {
-
-                                }}>
-                                    <DeleteIcon />
-                                </IconButton>
-                            </Tooltip>
-                        </>
-                    )
-                    : (
-                        <>
-                            <Typography sx={{ flex: "1 1 100%" }} variant="h6">{caption}</Typography>
-                            <Button startIcon={<AddIcon />} variant="contained">{locale.actions.create}</Button>
-                        </>
-                    )}
+                    ? <>
+                        <Typography flex="1 1 100%" variant="subtitle1">
+                            {locale.components.table.selectedRows}: {selection.size}
+                        </Typography>
+                        {onDelete !== undefined && <Tooltip title={locale.actions.delete}>
+                            <IconButton onClick={event => {
+                                // TODO: show confirm dialog
+                                onDelete(selection)
+                                    .then(async response => {
+                                        const body = await response.json();
+                                        if (!response.ok) {
+                                            throw body as Error;
+                                        }
+                                        dispatch({ type: "selection.delete" });
+                                    })
+                                    .catch(onError);
+                            }}>
+                                <DeleteIcon />
+                            </IconButton>
+                        </Tooltip>}
+                    </>
+                    : <>
+                        <Typography flex="1 1 100%" variant="h6">{caption}</Typography>
+                        {tools}
+                    </>}
             </Toolbar>
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }}>
@@ -127,7 +131,7 @@ export default function GenericTable<T>({ caption, columns, onRead, onDelete, on
                                                 queryObject(object, column.property),
                                                 column.property,
                                                 object
-                                        )}
+                                            )}
                                     </TableCell>
                                 )}
                             </TableRow>
@@ -152,6 +156,6 @@ export default function GenericTable<T>({ caption, columns, onRead, onDelete, on
                 rowsPerPage={pagination.size!}
                 rowsPerPageOptions={[5, 10, 20]}
             />
-        </Box >
+        </Box>
     );
 }

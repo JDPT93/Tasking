@@ -20,9 +20,14 @@ export default function ProjectForm({ onError, onSuccess }: Properties) {
             event.preventDefault();
             const { nameField, descriptionField, reset } = event.target as HTMLFormElement;
             projectService.create({
-                leader: user!,
                 name: nameField.value,
+                leader: user!,
                 description: descriptionField.value,
+                stages: [
+                    { name: "Por Hacer", position: 0, active: true },
+                    { name: "En progreso", position: 1, active: true },
+                    { name: "Listo", position: 2, active: true }
+                ],
                 active: true
             })
                 .then(async response => {

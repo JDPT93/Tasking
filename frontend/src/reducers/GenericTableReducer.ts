@@ -12,8 +12,9 @@ export type Action<T>
     | { type: "pagination.size.change", payload: number }
     | { type: "pagination.sort.toggle.one", payload: string }
     | { type: "page.change", payload: Page<T> }
-    | { type: "selection.toggle.one", payload: T }
     | { type: "selection.change", payload?: T[] }
+    | { type: "selection.delete" }
+    | { type: "selection.toggle.one", payload: T }
     ;
 
 export function GenericTableReducer<T>(state: State<T>, action: Action<T>): State<T> {
@@ -60,18 +61,30 @@ export function GenericTableReducer<T>(state: State<T>, action: Action<T>): Stat
         case "page.change":
             return {
                 ...state,
-                selection: new Set(),
-                page: action.payload
+                page: action.payload,
+                selection: new Set()
             };
         case "selection.change":
             return {
                 ...state,
                 selection: new Set(action.payload)
             };
+        case "selection.delete":
+            // TODO: change pagination
+            return {
+                ...state,
+                pagination: {
+                    ...state.pagination
+                },
+                selection: new Set()
+            };
         case "selection.toggle.one": {
             const selection = new Set(state.selection);
-            if (selection.has(action.payload)) selection.delete(action.payload);
-            else selection.add(action.payload);
+            if (selection.has(action.payload)) {
+                selection.delete(action.payload);
+            } else {
+                selection.add(action.payload);
+            }
             return {
                 ...state,
                 selection
