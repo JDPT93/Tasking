@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,7 +20,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
-
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,8 +27,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
-
-    private static final String HEADER = "Authorization";
 
     private static final String PREFIX = "Bearer ";
 
@@ -41,7 +39,7 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
         try {
-            String authorization = request.getHeader(HEADER);
+            String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
             if (Objects.isNull(authorization) || !authorization.startsWith(PREFIX)) {
                 SecurityContextHolder.clearContext();
             } else {
@@ -49,14 +47,13 @@ public class JwtFilter extends OncePerRequestFilter {
                 if (Objects.isNull(claims.get("authorities"))) {
                     SecurityContextHolder.clearContext();
                 } else {
-                    SecurityContextHolder.getContext()
-                        .setAuthentication(
-                            new UsernamePasswordAuthenticationToken(
-                                claims.getSubject(),
-                                null,
-                                Stream.of(claims.get("authorities"))
-                                    .map(authority -> new SimpleGrantedAuthority(authority.toString()))
-                                    .toList()));
+                    SecurityContextHolder.getContext().setAuthentication(
+                        new UsernamePasswordAuthenticationToken(
+                            claims.getSubject(),
+                            null,
+                            Stream.of(claims.get("authorities"))
+                                .map(authority -> new SimpleGrantedAuthority(authority.toString()))
+                                .toList()));
                 }
             }
             chain.doFilter(request, response);
@@ -65,12 +62,12 @@ public class JwtFilter extends OncePerRequestFilter {
         }
     }
 
-    public String authorize(String subject, List<String> authorities) {
+    public String authorize(String subject, String... authorities) {
         Long currentTime = System.currentTimeMillis();
         return Jwts.builder()
             .setId(currentTime.toString().concat(":").concat(subject))
             .setSubject(subject)
-            .claim("authorities", authorities)
+            .claim("authorities", List.of(authorities))
             .setIssuedAt(new Date(currentTime))
             .setExpiration(new Date(currentTime + expirationTime))
             .signWith(SignatureAlgorithm.HS256, signingKey.getBytes())

@@ -32,7 +32,7 @@ public class IssueTypeService {
 
     public IssueTypeSchema create(IssueTypeSchema issueTypeSchema) {
         if (issueTypeRepository.existsById(issueTypeSchema.getId())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, messageSource.getMessage("issueType.conflict", null, LocaleContextHolder.getLocale()));
+            throw new ResponseStatusException(HttpStatus.CONFLICT, messageSource.getMessage("issue-type.conflict", null, LocaleContextHolder.getLocale()));
         }
         return modelMapper.map(issueTypeRepository.save(modelMapper.map(issueTypeSchema, IssueTypeEntity.class)), IssueTypeSchema.class);
     }
@@ -48,7 +48,7 @@ public class IssueTypeService {
     }
 
     public IssueTypeSchema findById(Integer issueTypeId) {
-        return modelMapper.map(issueTypeRepository.findById(issueTypeId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, messageSource.getMessage("issueType.not-found", null, LocaleContextHolder.getLocale()))), IssueTypeSchema.class);
+        return modelMapper.map(issueTypeRepository.findById(issueTypeId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, messageSource.getMessage("issue-type.not-found", null, LocaleContextHolder.getLocale()))), IssueTypeSchema.class);
     }
 
     public ChangelogPayload<IssueTypeSchema> update(IssueTypeSchema newIssueTypeSchema) {

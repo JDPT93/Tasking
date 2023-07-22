@@ -30,6 +30,8 @@ public class StageSchema implements Serializable {
 
     private String name;
 
+    private Integer position;
+
     private Boolean active;
 
 }

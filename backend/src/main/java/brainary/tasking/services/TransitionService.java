@@ -28,27 +28,27 @@ public class TransitionService {
     private ModelMapper modelMapper;
 
     @Autowired
-    private TransitionRepository issueRepository;
+    private TransitionRepository transitionRepository;
 
-    public TransitionSchema create(TransitionSchema issueSchema) {
-        if (issueRepository.existsById(issueSchema.getId())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, messageSource.getMessage("issue.conflict", null, LocaleContextHolder.getLocale()));
+    public TransitionSchema create(TransitionSchema transitionSchema) {
+        if (transitionRepository.existsById(transitionSchema.getId())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, messageSource.getMessage("transition.conflict", null, LocaleContextHolder.getLocale()));
         }
-        return modelMapper.map(issueRepository.save(modelMapper.map(issueSchema, TransitionEntity.class)), TransitionSchema.class);
+        return modelMapper.map(transitionRepository.save(modelMapper.map(transitionSchema, TransitionEntity.class)), TransitionSchema.class);
     }
 
-    public TransitionSchema deleteById(Integer issueId) {
-        TransitionSchema issueSchema = findById(issueId);
-        issueRepository.deleteById(issueId);
-        return issueSchema;
+    public TransitionSchema deleteById(Integer transitionId) {
+        TransitionSchema transitionSchema = findById(transitionId);
+        transitionRepository.deleteById(transitionId);
+        return transitionSchema;
     }
 
     public Page<TransitionSchema> findAll(Pageable pageable) {
-        return issueRepository.findAll(pageable).map(issueEntity -> modelMapper.map(issueEntity, TransitionSchema.class));
+        return transitionRepository.findAll(pageable).map(transitionEntity -> modelMapper.map(transitionEntity, TransitionSchema.class));
     }
 
-    public TransitionSchema findById(Integer issueId) {
-        return modelMapper.map(issueRepository.findById(issueId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, messageSource.getMessage("issue.not-found", null, LocaleContextHolder.getLocale()))), TransitionSchema.class);
+    public TransitionSchema findById(Integer transitionId) {
+        return modelMapper.map(transitionRepository.findById(transitionId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, messageSource.getMessage("transition.not-found", null, LocaleContextHolder.getLocale()))), TransitionSchema.class);
     }
 
     public ChangelogPayload<TransitionSchema> update(TransitionSchema newTransitionSchema) {
@@ -61,7 +61,7 @@ public class TransitionService {
                     return true;
                 }
             }).map(descriptor -> descriptor.getName()).toArray(String[]::new));
-        issueRepository.save(modelMapper.map(newTransitionSchema, TransitionEntity.class));
+        transitionRepository.save(modelMapper.map(newTransitionSchema, TransitionEntity.class));
         return ChangelogPayload.<TransitionSchema>builder()
             .before(oldTransitionSchema)
             .after(newTransitionSchema)

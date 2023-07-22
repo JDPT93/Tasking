@@ -1,5 +1,7 @@
 package brainary.tasking.controllers;
 
+import java.util.List;
+
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -35,6 +37,12 @@ public class ProjectController {
     @SecurityRequirement(name = "Jwt")
     public ResponseEntity<ProjectSchema> create(@RequestBody ProjectSchema projectSchema) {
         return new ResponseEntity<>(projectService.create(projectSchema), HttpStatus.CREATED);
+    }
+
+    @DeleteMapping
+    @SecurityRequirement(name = "Jwt")
+    public ResponseEntity<List<ProjectSchema>> deleteAll(@RequestBody List<Integer> projectSchemas) {
+        return new ResponseEntity<>(projectService.deleteAll(projectSchemas), HttpStatus.OK);
     }
 
     @DeleteMapping(path = "{projectId}")

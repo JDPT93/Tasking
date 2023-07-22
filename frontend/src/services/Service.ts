@@ -37,6 +37,28 @@ export class Service<T> {
         });
     }
 
+    deleteAll(...list: T[]) {
+        const body = JSON.stringify(list);
+        const headers = new Headers({
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+        });
+        const locale = localStorage.getItem("locale");
+        if (locale !== null) {
+            headers.append("Accept-Language", locale);
+        }
+        const token = localStorage.getItem("token");
+        if (token !== null) {
+            headers.append("Authorization", "Bearer ".concat(token));
+        }
+        return fetch(this.endpoint, {
+            body,
+            headers,
+            method: "DELETE",
+            mode: "cors",
+        });
+    }
+
     deleteById(id: number) {
         const headers = new Headers({
             "Accept": "application/json"

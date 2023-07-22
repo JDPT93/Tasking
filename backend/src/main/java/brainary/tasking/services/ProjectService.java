@@ -1,5 +1,6 @@
 package brainary.tasking.services;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -35,6 +36,10 @@ public class ProjectService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, messageSource.getMessage("project.conflict", null, LocaleContextHolder.getLocale()));
         }
         return modelMapper.map(projectRepository.save(modelMapper.map(projectSchema, ProjectEntity.class)), ProjectSchema.class);
+    }
+
+    public List<ProjectSchema> deleteAll(List<Integer> projectIdList) {
+        return projectIdList.stream().map(projectId -> deleteById(projectId)).toList();
     }
 
     public ProjectSchema deleteById(Integer projectId) {

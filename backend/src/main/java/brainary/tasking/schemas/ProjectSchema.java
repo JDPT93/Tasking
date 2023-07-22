@@ -1,6 +1,7 @@
 package brainary.tasking.schemas;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -30,5 +31,7 @@ public class ProjectSchema implements Serializable {
     private String description;
 
     private Boolean active;
+
+    private Set<StageSchema> stages;
 
 }
