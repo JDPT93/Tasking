@@ -1,5 +1,6 @@
 import React from 'react';
-import { Box, Card, Link, Typography, Divider, Stack, ImageList, ImageListItem, CardActionArea } from '@mui/material';
+import { Box, Card, Link, Typography, Divider, Stack, ImageList, ImageListItem, CardActionArea, Menu, MenuItem, ListItemText,ListItemIcon } from '@mui/material';
+import Cloud from '@mui/icons-material/Cloud';
 
 interface Properties {
     name?: string;
@@ -100,21 +101,62 @@ const issues = [
     },
 ];
 
-const CardIssue = ({ name, stage }: Properties) => (
-    <CardActionArea onClick={(event) => {
-        event.preventDefault();
-        
-    }}>
-        <Card sx={{ width: "100%", padding: "8px", margin: "0px !important" }}>
-            <Link underline="none" variant="body2" sx={{ fontWeight: 500 }}>
-                {name}
-            </Link>
-            <Typography variant="body2" color="text.secondary">
-                Stage: {stage}
-            </Typography>
-        </Card>
-    </CardActionArea>
-);
+const CardIssue = ({ name, stage }: Properties) => {
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const open = Boolean(anchorEl);
+    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+    return (
+        <>
+            <CardActionArea
+                id="demo-positioned-button"
+                aria-controls={open ? 'demo-positioned-menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? 'true' : undefined}
+                onClick={handleClick}
+            >
+                <Card sx={{ width: "100%", padding: "8px", margin: "0px !important" }}>
+                    <Link underline="none" variant="body2" sx={{ fontWeight: 500 }}>
+                        {name}
+                    </Link>
+                    <Typography variant="body2" color="text.secondary">
+                        Stage: {stage}
+                    </Typography>
+                </Card>
+            </CardActionArea>
+
+            <Menu
+                id="demo-positioned-menu"
+                aria-labelledby="demo-positioned-button"
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                }}
+            >
+                <MenuItem onClick={handleClose}>Profile</MenuItem>
+                <MenuItem onClick={handleClose}>My account</MenuItem>
+                <MenuItem onClick={handleClose}>Logout</MenuItem>
+                <MenuItem>
+                    <ListItemIcon>
+                        <Cloud fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>Web Clipboard</ListItemText>
+                </MenuItem>
+            </Menu>
+        </>
+    )
+};
 
 const Board = () => (
     <Box sx={{ minWidth: 275 }} padding={3}>
@@ -145,5 +187,35 @@ const Board = () => (
         </ImageList>
     </Box>
 );
+
+const MenuOption = () => {
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const open = Boolean(anchorEl);
+    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+    <Menu
+        id="demo-positioned-menu"
+        aria-labelledby="demo-positioned-button"
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'left',
+        }}
+        transformOrigin={{
+            vertical: 'top',
+            horizontal: 'left',
+        }}
+    >
+        <MenuItem onClick={handleClose}>Profile</MenuItem>
+        <MenuItem onClick={handleClose}>My account</MenuItem>
+        <MenuItem onClick={handleClose}>Logout</MenuItem>
+    </Menu>
+}
 
 export default Board;
