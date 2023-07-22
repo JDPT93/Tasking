@@ -6,6 +6,7 @@ export interface Project {
     leader: User;
     name: string;
     description: string;
+    active?: boolean;
     stages?: Stage[];
 }
 

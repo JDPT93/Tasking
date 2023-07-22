@@ -74,10 +74,13 @@ public class UserService {
         return modelMapper.map(userRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, messageSource.getMessage("user.not-found", null, LocaleContextHolder.getLocale()))), UserSchema.class);
     }
 
-    public ChangelogPayload<UserSchema> update(UserSchema userSchema) {
+    public ChangelogPayload<UserSchema> update(UserSchema newUserSchema) {
+        UserSchema oldUserSchema = findById(newUserSchema.getId());
+        newUserSchema.setActive(oldUserSchema.getActive());
+        userRepository.save(modelMapper.map(newUserSchema, UserEntity.class));
         return ChangelogPayload.<UserSchema>builder()
-            .before(findById(userSchema.getId()))
-            .after(modelMapper.map(userRepository.save(modelMapper.map(userSchema, UserEntity.class)), UserSchema.class))
+            .before(oldUserSchema)
+            .after(newUserSchema)
             .build();
     }
 

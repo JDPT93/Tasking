@@ -3,6 +3,7 @@ export interface User {
     fullname: string;
     email: string;
     password: string;
+    avtive?: boolean;
 }
 
 export default User;

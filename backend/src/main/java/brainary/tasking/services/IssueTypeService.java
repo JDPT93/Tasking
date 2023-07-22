@@ -17,6 +17,7 @@ import brainary.tasking.schemas.IssueTypeSchema;
 
 @Service
 public class IssueTypeService {
+
     @Autowired
     private MessageSource messageSource;
 
@@ -48,10 +49,13 @@ public class IssueTypeService {
         return modelMapper.map(issueTypeRepository.findById(issueTypeId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, messageSource.getMessage("issue-type.not-found", null, LocaleContextHolder.getLocale()))), IssueTypeSchema.class);
     }
 
-    public ChangelogPayload<IssueTypeSchema> update(IssueTypeSchema issueTypeSchema) {
+    public ChangelogPayload<IssueTypeSchema> update(IssueTypeSchema newIssueTypeSchema) {
+        IssueTypeSchema oldIssueTypeSchema = findById(newIssueTypeSchema.getId());
+        newIssueTypeSchema.setActive(oldIssueTypeSchema.getActive());
+        issueTypeRepository.save(modelMapper.map(newIssueTypeSchema, IssueTypeEntity.class));
         return ChangelogPayload.<IssueTypeSchema>builder()
-            .before(findById(issueTypeSchema.getId()))
-            .after(modelMapper.map(issueTypeRepository.save(modelMapper.map(issueTypeSchema, IssueTypeEntity.class)), IssueTypeSchema.class))
+            .before(oldIssueTypeSchema)
+            .after(newIssueTypeSchema)
             .build();
     }
 

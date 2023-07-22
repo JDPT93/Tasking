@@ -17,6 +17,7 @@ import brainary.tasking.schemas.TransitionSchema;
 
 @Service
 public class TransitionService {
+
     @Autowired
     private MessageSource messageSource;
 
@@ -48,10 +49,13 @@ public class TransitionService {
         return modelMapper.map(transitionRepository.findById(transitionId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, messageSource.getMessage("transition.not-found", null, LocaleContextHolder.getLocale()))), TransitionSchema.class);
     }
 
-    public ChangelogPayload<TransitionSchema> update(TransitionSchema transitionSchema) {
+    public ChangelogPayload<TransitionSchema> update(TransitionSchema newTransitionSchema) {
+        TransitionSchema oldTransitionSchema = findById(newTransitionSchema.getId());
+        newTransitionSchema.setActive(oldTransitionSchema.getActive());
+        transitionRepository.save(modelMapper.map(newTransitionSchema, TransitionEntity.class));
         return ChangelogPayload.<TransitionSchema>builder()
-            .before(findById(transitionSchema.getId()))
-            .after(modelMapper.map(transitionRepository.save(modelMapper.map(transitionSchema, TransitionEntity.class)), TransitionSchema.class))
+            .before(oldTransitionSchema)
+            .after(newTransitionSchema)
             .build();
     }
 

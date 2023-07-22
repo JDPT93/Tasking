@@ -17,6 +17,7 @@ import brainary.tasking.schemas.StageSchema;
 
 @Service
 public class StageService {
+
     @Autowired
     private MessageSource messageSource;
 
@@ -48,10 +49,13 @@ public class StageService {
         return modelMapper.map(stageRepository.findById(stageId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, messageSource.getMessage("stage.not-found", null, LocaleContextHolder.getLocale()))), StageSchema.class);
     }
 
-    public ChangelogPayload<StageSchema> update(StageSchema stageSchema) {
+    public ChangelogPayload<StageSchema> update(StageSchema newStageSchema) {
+        StageSchema oldStageSchema = findById(newStageSchema.getId());
+        newStageSchema.setActive(oldStageSchema.getActive());
+        stageRepository.save(modelMapper.map(newStageSchema, StageEntity.class));
         return ChangelogPayload.<StageSchema>builder()
-            .before(findById(stageSchema.getId()))
-            .after(modelMapper.map(stageRepository.save(modelMapper.map(stageSchema, StageEntity.class)), StageSchema.class))
+            .before(oldStageSchema)
+            .after(newStageSchema)
             .build();
     }
 

@@ -17,6 +17,7 @@ import brainary.tasking.schemas.CollaborationSchema;
 
 @Service
 public class CollaborationService {
+
     @Autowired
     private MessageSource messageSource;
 
@@ -48,10 +49,13 @@ public class CollaborationService {
         return modelMapper.map(collaborationRepository.findById(collaborationId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, messageSource.getMessage("collaboration.not-found", null, LocaleContextHolder.getLocale()))), CollaborationSchema.class);
     }
 
-    public ChangelogPayload<CollaborationSchema> update(CollaborationSchema collaborationSchema) {
+    public ChangelogPayload<CollaborationSchema> update(CollaborationSchema newCollaborationSchema) {
+        CollaborationSchema oldCollaborationSchema = findById(newCollaborationSchema.getId());
+        newCollaborationSchema.setActive(oldCollaborationSchema.getActive());
+        collaborationRepository.save(modelMapper.map(newCollaborationSchema, CollaborationEntity.class));
         return ChangelogPayload.<CollaborationSchema>builder()
-            .before(findById(collaborationSchema.getId()))
-            .after(modelMapper.map(collaborationRepository.save(modelMapper.map(collaborationSchema, CollaborationEntity.class)), CollaborationSchema.class))
+            .before(oldCollaborationSchema)
+            .after(newCollaborationSchema)
             .build();
     }
 

@@ -20,6 +20,7 @@ import brainary.tasking.schemas.ProjectSchema;
 
 @Service
 public class ProjectService {
+
     @Autowired
     private MessageSource messageSource;
 
@@ -55,10 +56,13 @@ public class ProjectService {
         return modelMapper.map(projectRepository.findById(projectId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, messageSource.getMessage("project.not-found", null, LocaleContextHolder.getLocale()))), ProjectSchema.class);
     }
 
-    public ChangelogPayload<ProjectSchema> update(ProjectSchema projectSchema) {
+    public ChangelogPayload<ProjectSchema> update(ProjectSchema newProjectSchema) {
+        ProjectSchema oldProjectSchema = findById(newProjectSchema.getId());
+        newProjectSchema.setActive(oldProjectSchema.getActive());
+        projectRepository.save(modelMapper.map(newProjectSchema, ProjectEntity.class));
         return ChangelogPayload.<ProjectSchema>builder()
-            .before(findById(projectSchema.getId()))
-            .after(modelMapper.map(projectRepository.save(modelMapper.map(projectSchema, ProjectEntity.class)), ProjectSchema.class))
+            .before(oldProjectSchema)
+            .after(newProjectSchema)
             .build();
     }
 
