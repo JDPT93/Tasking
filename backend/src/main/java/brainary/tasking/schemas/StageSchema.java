@@ -2,6 +2,7 @@ package brainary.tasking.schemas;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -31,6 +32,7 @@ public class StageSchema implements Serializable {
 
     @Valid
     @NotNull(message = "${stage.field.project.not-null}")
+    @JsonBackReference
     private ProjectSchema project;
 
     @Valid
