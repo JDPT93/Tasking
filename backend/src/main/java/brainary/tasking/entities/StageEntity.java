@@ -2,8 +2,6 @@ package brainary.tasking.entities;
 
 import java.io.Serializable;
 
-import org.hibernate.annotations.Where;
-
 import brainary.tasking.enumerations.StageType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -25,7 +23,6 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@Where(clause = "active")
 public class StageEntity implements Serializable {
 
     @Id
