@@ -3,12 +3,13 @@ package brainary.tasking.schemas;
 import java.io.Serializable;
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
-import brainary.tasking.enumerations.Priority;
+import brainary.tasking.enumerations.IssuePriority;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Future;
@@ -34,6 +35,7 @@ public class IssueSchema implements Serializable {
 
     @Valid
     @NotNull(message = "${issue.field.type.not-null}")
+    @JsonIgnoreProperties(value = { "project" })
     private IssueTypeSchema type;
 
     @NotBlank(message = "${issue.field.name.not-blank}")
@@ -43,8 +45,9 @@ public class IssueSchema implements Serializable {
     private String description;
 
     @NotNull(message = "${issue.field.priority.not-null}")
-    private Priority priority;
+    private IssuePriority priority;
 
+    @NotNull(message = "${issue.field.complexity.not-null}")
     private Integer complexity;
 
     @NotNull(message = "${issue.field.start.not-null}")
@@ -65,6 +68,7 @@ public class IssueSchema implements Serializable {
 
     @Valid
     @NotNull(message = "${issue.field.stage.not-null}")
+    @JsonIgnoreProperties(value = { "issues" })
     private StageSchema stage;
 
     @JsonProperty(access = Access.READ_ONLY)

@@ -1,6 +1,7 @@
 package brainary.tasking.entities;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import brainary.tasking.enumerations.StageType;
 import jakarta.persistence.Column;
@@ -11,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -46,5 +48,8 @@ public class StageEntity implements Serializable {
 
     @Column(nullable = false)
     private Boolean active;
+
+    @OneToMany(mappedBy = "stage")
+    private Set<IssueEntity> issues;
 
 }

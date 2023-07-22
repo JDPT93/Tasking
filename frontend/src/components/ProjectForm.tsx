@@ -18,16 +18,11 @@ export default function ProjectForm({ onError, onSuccess }: Properties) {
     return (
         <Stack padding="4px 0px" width={450} alignItems="center" component="form" gap={2} onSubmit={event => {
             event.preventDefault();
-            const { nameField, descriptionField, reset } = event.target as HTMLFormElement;
+            const { nameField, descriptionField } = event.target as HTMLFormElement;
             projectService.create({
-                name: nameField.value,
                 leader: user!,
-                description: descriptionField.value,
-                stages: [
-                    { name: "Por Hacer", position: 0 },
-                    { name: "En progreso", position: 1 },
-                    { name: "Listo", position: 2 }
-                ]
+                name: nameField.value,
+                description: descriptionField.value
             })
                 .then(async response => {
                     const body = await response.json();
@@ -37,7 +32,6 @@ export default function ProjectForm({ onError, onSuccess }: Properties) {
                     if (onSuccess !== undefined) {
                         onSuccess(body as Project)
                     }
-                    reset();
                 })
                 .catch(error => {
                     if (onError !== undefined) {
@@ -47,7 +41,7 @@ export default function ProjectForm({ onError, onSuccess }: Properties) {
         }}>
             <TextField fullWidth label={locale.schemas.project.properties.name} name="nameField" required type="text" variant="outlined" />
             <TextField fullWidth label={locale.schemas.project.properties.description} name="descriptionField" required type="text" variant="outlined" multiline rows={4} />
-            <Button fullWidth type="submit" variant="contained">{locale.actions.btnSaveProject}</Button>
+            <Button fullWidth type="submit" variant="contained">{locale.actions.save}</Button>
         </Stack>
     );
 }

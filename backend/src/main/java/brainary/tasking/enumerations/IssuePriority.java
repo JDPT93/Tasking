@@ -1,6 +1,6 @@
 package brainary.tasking.enumerations;
 
-public enum Priority {
+public enum IssuePriority {
 
     HIGHER, HIGH, MEDIUM, LOW, LOWER
 
