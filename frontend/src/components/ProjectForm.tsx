@@ -24,11 +24,10 @@ export default function ProjectForm({ onError, onSuccess }: Properties) {
                 leader: user!,
                 description: descriptionField.value,
                 stages: [
-                    { name: "Por Hacer", position: 0, active: true },
-                    { name: "En progreso", position: 1, active: true },
-                    { name: "Listo", position: 2, active: true }
-                ],
-                active: true
+                    { name: "Por Hacer", position: 0 },
+                    { name: "En progreso", position: 1 },
+                    { name: "Listo", position: 2 }
+                ]
             })
                 .then(async response => {
                     const body = await response.json();
@@ -40,7 +39,11 @@ export default function ProjectForm({ onError, onSuccess }: Properties) {
                     }
                     reset();
                 })
-                .catch(onError);
+                .catch(error => {
+                    if (onError !== undefined) {
+                        onError(error);
+                    }
+                });
         }}>
             <TextField fullWidth label={locale.schemas.project.properties.name} name="nameField" required type="text" variant="outlined" />
             <TextField fullWidth label={locale.schemas.project.properties.description} name="descriptionField" required type="text" variant="outlined" multiline rows={4} />

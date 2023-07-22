@@ -45,7 +45,11 @@ export default function GenericTable<T>({ caption, columns, onError, onDelete, o
                 }
                 dispatch({ type: "page.change", payload: body as Page<T> });
             })
-            .catch(onError);
+            .catch(error => {
+                if (onError !== undefined) {
+                    onError(error);
+                }
+            });
     }, [pagination]);
     return (
         <Box sx={{ p: 2 }}>
@@ -56,9 +60,7 @@ export default function GenericTable<T>({ caption, columns, onError, onDelete, o
                             {locale.components.table.selectedRows}: {selection.size}
                         </Typography>
                         {onDelete !== undefined && <Tooltip title={locale.actions.delete}>
-                            <IconButton onClick={event => {
-                                setOpen(true);
-                            }}>
+                            <IconButton onClick={event => setOpen(true)}>
                                 <DeleteIcon />
                             </IconButton>
                         </Tooltip>}

@@ -2,10 +2,8 @@ package brainary.tasking.services;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -22,6 +20,7 @@ import brainary.tasking.schemas.ProjectSchema;
 
 @Service
 public class ProjectService {
+
     @Autowired
     private MessageSource messageSource;
 
@@ -35,6 +34,7 @@ public class ProjectService {
         if (!Objects.isNull(projectSchema.getId()) && projectRepository.existsById(projectSchema.getId())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, messageSource.getMessage("project.conflict", null, LocaleContextHolder.getLocale()));
         }
+        projectSchema.setActive(true);
         return modelMapper.map(projectRepository.save(modelMapper.map(projectSchema, ProjectEntity.class)), ProjectSchema.class);
     }
 
@@ -58,14 +58,7 @@ public class ProjectService {
 
     public ChangelogPayload<ProjectSchema> update(ProjectSchema newProjectSchema) {
         ProjectSchema oldProjectSchema = findById(newProjectSchema.getId());
-        BeanUtils.copyProperties(oldProjectSchema, newProjectSchema,
-            Stream.of(BeanUtils.getPropertyDescriptors(ProjectSchema.class)).filter(descriptor -> {
-                try {
-                    return !Objects.isNull(descriptor.getReadMethod().invoke(newProjectSchema));
-                } catch (Exception exception) {
-                    return true;
-                }
-            }).map(descriptor -> descriptor.getName()).toArray(String[]::new));
+        newProjectSchema.setActive(oldProjectSchema.getActive());
         projectRepository.save(modelMapper.map(newProjectSchema, ProjectEntity.class));
         return ChangelogPayload.<ProjectSchema>builder()
             .before(oldProjectSchema)

@@ -1,10 +1,6 @@
 package brainary.tasking.services;
 
-import java.util.Objects;
-import java.util.stream.Stream;
-
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -21,6 +17,7 @@ import brainary.tasking.schemas.IssueTypeSchema;
 
 @Service
 public class IssueTypeService {
+
     @Autowired
     private MessageSource messageSource;
 
@@ -34,6 +31,7 @@ public class IssueTypeService {
         if (issueTypeRepository.existsById(issueTypeSchema.getId())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, messageSource.getMessage("issue-type.conflict", null, LocaleContextHolder.getLocale()));
         }
+        issueTypeSchema.setActive(true);
         return modelMapper.map(issueTypeRepository.save(modelMapper.map(issueTypeSchema, IssueTypeEntity.class)), IssueTypeSchema.class);
     }
 
@@ -53,14 +51,7 @@ public class IssueTypeService {
 
     public ChangelogPayload<IssueTypeSchema> update(IssueTypeSchema newIssueTypeSchema) {
         IssueTypeSchema oldIssueTypeSchema = findById(newIssueTypeSchema.getId());
-        BeanUtils.copyProperties(oldIssueTypeSchema, newIssueTypeSchema,
-            Stream.of(BeanUtils.getPropertyDescriptors(IssueTypeSchema.class)).filter(descriptor -> {
-                try {
-                    return !Objects.isNull(descriptor.getReadMethod().invoke(newIssueTypeSchema));
-                } catch (Exception exception) {
-                    return true;
-                }
-            }).map(descriptor -> descriptor.getName()).toArray(String[]::new));
+        newIssueTypeSchema.setActive(oldIssueTypeSchema.getActive());
         issueTypeRepository.save(modelMapper.map(newIssueTypeSchema, IssueTypeEntity.class));
         return ChangelogPayload.<IssueTypeSchema>builder()
             .before(oldIssueTypeSchema)

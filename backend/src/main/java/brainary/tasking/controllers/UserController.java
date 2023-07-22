@@ -19,6 +19,7 @@ import brainary.tasking.schemas.UserSchema;
 import brainary.tasking.services.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -30,30 +31,30 @@ public class UserController {
     private UserService userService;
 
     @PostMapping(path = "authentication")
-    public ResponseEntity<AuthorizationPayload> authenticate(@RequestBody AuthenticationPayload authenticationSchema) {
+    public ResponseEntity<AuthorizationPayload> authenticate(@RequestBody @Valid AuthenticationPayload authenticationSchema) {
         return new ResponseEntity<>(userService.authenticate(authenticationSchema), HttpStatus.OK);
     }
 
     @PostMapping(path = "authorization")
     @SecurityRequirement(name = "Jwt")
     public ResponseEntity<AuthorizationPayload> authorize(UsernamePasswordAuthenticationToken token) {
-        return new ResponseEntity<>(userService.authorize(token.getPrincipal().toString()), HttpStatus.OK);
+        return new ResponseEntity<>(userService.authorize((Integer) token.getPrincipal()), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<AuthorizationPayload> create(@RequestBody UserSchema userSchema) {
+    public ResponseEntity<AuthorizationPayload> create(@RequestBody @Valid UserSchema userSchema) {
         return new ResponseEntity<>(userService.create(userSchema), HttpStatus.CREATED);
     }
 
     @GetMapping(path = "me")
     @SecurityRequirement(name = "Jwt")
     public ResponseEntity<UserSchema> findMe(UsernamePasswordAuthenticationToken token) {
-        return new ResponseEntity<>(userService.findById(Integer.parseInt(token.getPrincipal().toString())), HttpStatus.OK);
+        return new ResponseEntity<>(userService.findById((Integer) token.getPrincipal()), HttpStatus.OK);
     }
 
     @PutMapping(path = "me")
     @SecurityRequirement(name = "Jwt")
-    public ResponseEntity<ChangelogPayload<UserSchema>> update(UsernamePasswordAuthenticationToken token, @RequestBody UserSchema userSchema) {
+    public ResponseEntity<ChangelogPayload<UserSchema>> updateMe(@RequestBody @Valid UserSchema userSchema, UsernamePasswordAuthenticationToken token) {
         return new ResponseEntity<>(userService.update(userSchema), HttpStatus.OK);
     }
 

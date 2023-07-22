@@ -1,10 +1,6 @@
 package brainary.tasking.services;
 
-import java.util.Objects;
-import java.util.stream.Stream;
-
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -21,6 +17,7 @@ import brainary.tasking.schemas.CollaborationSchema;
 
 @Service
 public class CollaborationService {
+
     @Autowired
     private MessageSource messageSource;
 
@@ -34,6 +31,7 @@ public class CollaborationService {
         if (collaborationRepository.existsById(collaborationSchema.getId())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, messageSource.getMessage("collaboration.conflict", null, LocaleContextHolder.getLocale()));
         }
+        collaborationSchema.setActive(true);
         return modelMapper.map(collaborationRepository.save(modelMapper.map(collaborationSchema, CollaborationEntity.class)), CollaborationSchema.class);
     }
 
@@ -53,14 +51,7 @@ public class CollaborationService {
 
     public ChangelogPayload<CollaborationSchema> update(CollaborationSchema newCollaborationSchema) {
         CollaborationSchema oldCollaborationSchema = findById(newCollaborationSchema.getId());
-        BeanUtils.copyProperties(oldCollaborationSchema, newCollaborationSchema,
-            Stream.of(BeanUtils.getPropertyDescriptors(CollaborationSchema.class)).filter(descriptor -> {
-                try {
-                    return !Objects.isNull(descriptor.getReadMethod().invoke(newCollaborationSchema));
-                } catch (Exception exception) {
-                    return true;
-                }
-            }).map(descriptor -> descriptor.getName()).toArray(String[]::new));
+        newCollaborationSchema.setActive(oldCollaborationSchema.getActive());
         collaborationRepository.save(modelMapper.map(newCollaborationSchema, CollaborationEntity.class));
         return ChangelogPayload.<CollaborationSchema>builder()
             .before(oldCollaborationSchema)

@@ -5,9 +5,16 @@ import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import brainary.tasking.enumerations.Priority;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,26 +32,42 @@ public class IssueSchema implements Serializable {
 
     private Integer id;
 
+    @Valid
+    @NotNull(message = "${issue.field.type.not-null}")
     private IssueTypeSchema type;
 
+    @NotBlank(message = "${issue.field.name.not-blank}")
     private String name;
 
+    @NotBlank(message = "${issue.field.description.not-blank}")
     private String description;
 
+    @NotNull(message = "${issue.field.priority.not-null}")
     private Priority priority;
 
     private Integer complexity;
 
+    @NotNull(message = "${issue.field.start.not-null}")
+    @FutureOrPresent(message = "${issue.field.end.future-or-present}")
     private LocalDate start;
 
+    @NotNull(message = "${issue.field.end.not-null}")
+    @Future(message = "${issue.field.end.future}")
     private LocalDate end;
 
+    @Valid
+    @NotNull(message = "${issue.field.reporter.not-null}")
     private UserSchema reporter;
 
+    @Valid
+    @NotNull(message = "${issue.field.assignee.not-null}")
     private UserSchema assignee;
 
+    @Valid
+    @NotNull(message = "${issue.field.stage.not-null}")
     private StageSchema stage;
 
+    @JsonProperty(access = Access.READ_ONLY)
     private Boolean active;
 
 }

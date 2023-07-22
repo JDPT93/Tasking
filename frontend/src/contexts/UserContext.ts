@@ -7,4 +7,6 @@ export interface UserContext {
     setUser: (user: User | null) => void;
 }
 
-export default React.createContext<UserContext>({} as UserContext);
+export default React.createContext<UserContext>({
+    // TODO: Load current session
+} as UserContext);

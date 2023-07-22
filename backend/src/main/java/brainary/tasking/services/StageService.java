@@ -1,10 +1,6 @@
 package brainary.tasking.services;
 
-import java.util.Objects;
-import java.util.stream.Stream;
-
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -21,6 +17,7 @@ import brainary.tasking.schemas.StageSchema;
 
 @Service
 public class StageService {
+
     @Autowired
     private MessageSource messageSource;
 
@@ -34,6 +31,7 @@ public class StageService {
         if (stageRepository.existsById(stageSchema.getId())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, messageSource.getMessage("stage.conflict", null, LocaleContextHolder.getLocale()));
         }
+        stageSchema.setActive(true);
         return modelMapper.map(stageRepository.save(modelMapper.map(stageSchema, StageEntity.class)), StageSchema.class);
     }
 
@@ -53,14 +51,7 @@ public class StageService {
 
     public ChangelogPayload<StageSchema> update(StageSchema newStageSchema) {
         StageSchema oldStageSchema = findById(newStageSchema.getId());
-        BeanUtils.copyProperties(oldStageSchema, newStageSchema,
-            Stream.of(BeanUtils.getPropertyDescriptors(StageSchema.class)).filter(descriptor -> {
-                try {
-                    return !Objects.isNull(descriptor.getReadMethod().invoke(newStageSchema));
-                } catch (Exception exception) {
-                    return true;
-                }
-            }).map(descriptor -> descriptor.getName()).toArray(String[]::new));
+        newStageSchema.setActive(oldStageSchema.getActive());
         stageRepository.save(modelMapper.map(newStageSchema, StageEntity.class));
         return ChangelogPayload.<StageSchema>builder()
             .before(oldStageSchema)

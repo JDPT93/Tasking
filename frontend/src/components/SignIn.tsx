@@ -44,14 +44,18 @@ export default function SignIn({ onError, onSuccess, to }: Properties) {
                                 navigate(to);
                             }
                         })
-                        .catch(onError);
+                        .catch(error => {
+                            if (onError !== undefined) {
+                                onError(error);
+                            }
+                        });
                 }}>
                     <Avatar sx={{ backgroundColor: "primary.main" }}>
                         <StickyNoteIcon />
                     </Avatar>
                     <Typography component="h1" variant="h5">{locale.application.name}</Typography>
                     <TextField defaultValue="josedanielpereztorres@gmail.com" fullWidth label={locale.schemas.user.properties.email} name="emailField" required type="email" variant="outlined" />
-                    <TextField defaultValue="1234567890" autoComplete="current-password" fullWidth label={locale.schemas.user.properties.password} name="passwordField" required type="password" variant="outlined" />
+                    <TextField defaultValue="Az1234567890*" autoComplete="current-password" fullWidth label={locale.schemas.user.properties.password} name="passwordField" required type="password" variant="outlined" />
                     <Button fullWidth type="submit" variant="contained">{locale.actions.signIn}</Button>
                     <Link component={RouterLink} to="/recovery" variant="body2">{locale.components.signIn.canNotSignIn}</Link>
                     <Link component={RouterLink} to="/sign-up" variant="body2">{locale.components.signIn.doNotHaveAnAccount}</Link>

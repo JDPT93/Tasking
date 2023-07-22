@@ -1,10 +1,6 @@
 package brainary.tasking.services;
 
-import java.util.Objects;
-import java.util.stream.Stream;
-
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -21,6 +17,7 @@ import brainary.tasking.schemas.TransitionSchema;
 
 @Service
 public class TransitionService {
+
     @Autowired
     private MessageSource messageSource;
 
@@ -34,6 +31,7 @@ public class TransitionService {
         if (transitionRepository.existsById(transitionSchema.getId())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, messageSource.getMessage("transition.conflict", null, LocaleContextHolder.getLocale()));
         }
+        transitionSchema.setActive(true);
         return modelMapper.map(transitionRepository.save(modelMapper.map(transitionSchema, TransitionEntity.class)), TransitionSchema.class);
     }
 
@@ -53,14 +51,7 @@ public class TransitionService {
 
     public ChangelogPayload<TransitionSchema> update(TransitionSchema newTransitionSchema) {
         TransitionSchema oldTransitionSchema = findById(newTransitionSchema.getId());
-        BeanUtils.copyProperties(oldTransitionSchema, newTransitionSchema,
-            Stream.of(BeanUtils.getPropertyDescriptors(TransitionSchema.class)).filter(descriptor -> {
-                try {
-                    return !Objects.isNull(descriptor.getReadMethod().invoke(newTransitionSchema));
-                } catch (Exception exception) {
-                    return true;
-                }
-            }).map(descriptor -> descriptor.getName()).toArray(String[]::new));
+        newTransitionSchema.setActive(oldTransitionSchema.getActive());
         transitionRepository.save(modelMapper.map(newTransitionSchema, TransitionEntity.class));
         return ChangelogPayload.<TransitionSchema>builder()
             .before(oldTransitionSchema)
