@@ -2,10 +2,8 @@ package brainary.tasking.services;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -35,6 +33,9 @@ public class ProjectService {
         if (!Objects.isNull(projectSchema.getId()) && projectRepository.existsById(projectSchema.getId())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, messageSource.getMessage("project.conflict", null, LocaleContextHolder.getLocale()));
         }
+        if (Objects.isNull(projectSchema.getActive())) {
+            projectSchema.setActive(true);
+        }
         return modelMapper.map(projectRepository.save(modelMapper.map(projectSchema, ProjectEntity.class)), ProjectSchema.class);
     }
 
@@ -56,20 +57,10 @@ public class ProjectService {
         return modelMapper.map(projectRepository.findById(projectId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, messageSource.getMessage("project.not-found", null, LocaleContextHolder.getLocale()))), ProjectSchema.class);
     }
 
-    public ChangelogPayload<ProjectSchema> update(ProjectSchema newProjectSchema) {
-        ProjectSchema oldProjectSchema = findById(newProjectSchema.getId());
-        BeanUtils.copyProperties(oldProjectSchema, newProjectSchema,
-            Stream.of(BeanUtils.getPropertyDescriptors(ProjectSchema.class)).filter(descriptor -> {
-                try {
-                    return !Objects.isNull(descriptor.getReadMethod().invoke(newProjectSchema));
-                } catch (Exception exception) {
-                    return true;
-                }
-            }).map(descriptor -> descriptor.getName()).toArray(String[]::new));
-        projectRepository.save(modelMapper.map(newProjectSchema, ProjectEntity.class));
+    public ChangelogPayload<ProjectSchema> update(ProjectSchema projectSchema) {
         return ChangelogPayload.<ProjectSchema>builder()
-            .before(oldProjectSchema)
-            .after(newProjectSchema)
+            .before(findById(projectSchema.getId()))
+            .after(modelMapper.map(projectRepository.save(modelMapper.map(projectSchema, ProjectEntity.class)), ProjectSchema.class))
             .build();
     }
 

@@ -36,7 +36,7 @@ public class TaskingApplication implements CommandLineRunner {
         UserEntity userEntity1 = UserEntity.builder()
             .fullname("José Daniel Pérez Torres")
             .email("josedanielpereztorres@gmail.com")
-            .password(passwordEncoder.encode("1234567890"))
+            .password(passwordEncoder.encode("Az1234567890*"))
             .active(true)
             .build();
         userRepository.save(userEntity1);
@@ -44,7 +44,7 @@ public class TaskingApplication implements CommandLineRunner {
         UserEntity userEntity2 = UserEntity.builder()
             .fullname("Ermes David Galvis Rodríguez")
             .email("galvushow@gmail.com")
-            .password(passwordEncoder.encode("1234567890"))
+            .password(passwordEncoder.encode("Az1234567890*"))
             .active(true)
             .build();
         userRepository.save(userEntity2);

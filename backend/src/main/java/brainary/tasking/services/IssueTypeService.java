@@ -1,10 +1,8 @@
 package brainary.tasking.services;
 
 import java.util.Objects;
-import java.util.stream.Stream;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -34,6 +32,9 @@ public class IssueTypeService {
         if (issueTypeRepository.existsById(issueTypeSchema.getId())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, messageSource.getMessage("issue-type.conflict", null, LocaleContextHolder.getLocale()));
         }
+        if (Objects.isNull(issueTypeSchema.getActive())) {
+            issueTypeSchema.setActive(true);
+        }
         return modelMapper.map(issueTypeRepository.save(modelMapper.map(issueTypeSchema, IssueTypeEntity.class)), IssueTypeSchema.class);
     }
 
@@ -51,20 +52,10 @@ public class IssueTypeService {
         return modelMapper.map(issueTypeRepository.findById(issueTypeId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, messageSource.getMessage("issue-type.not-found", null, LocaleContextHolder.getLocale()))), IssueTypeSchema.class);
     }
 
-    public ChangelogPayload<IssueTypeSchema> update(IssueTypeSchema newIssueTypeSchema) {
-        IssueTypeSchema oldIssueTypeSchema = findById(newIssueTypeSchema.getId());
-        BeanUtils.copyProperties(oldIssueTypeSchema, newIssueTypeSchema,
-            Stream.of(BeanUtils.getPropertyDescriptors(IssueTypeSchema.class)).filter(descriptor -> {
-                try {
-                    return !Objects.isNull(descriptor.getReadMethod().invoke(newIssueTypeSchema));
-                } catch (Exception exception) {
-                    return true;
-                }
-            }).map(descriptor -> descriptor.getName()).toArray(String[]::new));
-        issueTypeRepository.save(modelMapper.map(newIssueTypeSchema, IssueTypeEntity.class));
+    public ChangelogPayload<IssueTypeSchema> update(IssueTypeSchema issueTypeSchema) {
         return ChangelogPayload.<IssueTypeSchema>builder()
-            .before(oldIssueTypeSchema)
-            .after(newIssueTypeSchema)
+            .before(findById(issueTypeSchema.getId()))
+            .after(modelMapper.map(issueTypeRepository.save(modelMapper.map(issueTypeSchema, IssueTypeEntity.class)), IssueTypeSchema.class))
             .build();
     }
 

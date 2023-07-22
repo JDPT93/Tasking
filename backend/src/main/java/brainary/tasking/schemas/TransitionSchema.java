@@ -6,6 +6,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,10 +26,15 @@ public class TransitionSchema implements Serializable {
 
     private Integer id;
 
+    @Valid
+    @NotNull(message = "${transition.field.source.not-null}")
     private StageSchema source;
 
+    @Valid
+    @NotNull(message = "${transition.field.target.not-null}")
     private StageSchema target;
 
+    @NotBlank(message = "${transition.field.name.not-blank}")
     private String name;
 
     private Boolean active;

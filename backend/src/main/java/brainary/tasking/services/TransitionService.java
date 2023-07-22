@@ -1,10 +1,8 @@
 package brainary.tasking.services;
 
 import java.util.Objects;
-import java.util.stream.Stream;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -34,6 +32,9 @@ public class TransitionService {
         if (transitionRepository.existsById(transitionSchema.getId())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, messageSource.getMessage("transition.conflict", null, LocaleContextHolder.getLocale()));
         }
+        if (Objects.isNull(transitionSchema.getActive())) {
+            transitionSchema.setActive(true);
+        }
         return modelMapper.map(transitionRepository.save(modelMapper.map(transitionSchema, TransitionEntity.class)), TransitionSchema.class);
     }
 
@@ -51,20 +52,10 @@ public class TransitionService {
         return modelMapper.map(transitionRepository.findById(transitionId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, messageSource.getMessage("transition.not-found", null, LocaleContextHolder.getLocale()))), TransitionSchema.class);
     }
 
-    public ChangelogPayload<TransitionSchema> update(TransitionSchema newTransitionSchema) {
-        TransitionSchema oldTransitionSchema = findById(newTransitionSchema.getId());
-        BeanUtils.copyProperties(oldTransitionSchema, newTransitionSchema,
-            Stream.of(BeanUtils.getPropertyDescriptors(TransitionSchema.class)).filter(descriptor -> {
-                try {
-                    return !Objects.isNull(descriptor.getReadMethod().invoke(newTransitionSchema));
-                } catch (Exception exception) {
-                    return true;
-                }
-            }).map(descriptor -> descriptor.getName()).toArray(String[]::new));
-        transitionRepository.save(modelMapper.map(newTransitionSchema, TransitionEntity.class));
+    public ChangelogPayload<TransitionSchema> update(TransitionSchema transitionSchema) {
         return ChangelogPayload.<TransitionSchema>builder()
-            .before(oldTransitionSchema)
-            .after(newTransitionSchema)
+            .before(findById(transitionSchema.getId()))
+            .after(modelMapper.map(transitionRepository.save(modelMapper.map(transitionSchema, TransitionEntity.class)), TransitionSchema.class))
             .build();
     }
 

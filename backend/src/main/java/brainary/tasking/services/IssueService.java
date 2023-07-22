@@ -1,10 +1,8 @@
 package brainary.tasking.services;
 
 import java.util.Objects;
-import java.util.stream.Stream;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -34,6 +32,9 @@ public class IssueService {
         if (issueRepository.existsById(issueSchema.getId())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, messageSource.getMessage("issue.conflict", null, LocaleContextHolder.getLocale()));
         }
+        if (Objects.isNull(issueSchema.getActive())) {
+            issueSchema.setActive(true);
+        }
         return modelMapper.map(issueRepository.save(modelMapper.map(issueSchema, IssueEntity.class)), IssueSchema.class);
     }
 
@@ -51,20 +52,10 @@ public class IssueService {
         return modelMapper.map(issueRepository.findById(issueId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, messageSource.getMessage("issue.not-found", null, LocaleContextHolder.getLocale()))), IssueSchema.class);
     }
 
-    public ChangelogPayload<IssueSchema> update(IssueSchema newIssueSchema) {
-        IssueSchema oldIssueSchema = findById(newIssueSchema.getId());
-        BeanUtils.copyProperties(oldIssueSchema, newIssueSchema,
-            Stream.of(BeanUtils.getPropertyDescriptors(IssueSchema.class)).filter(descriptor -> {
-                try {
-                    return !Objects.isNull(descriptor.getReadMethod().invoke(newIssueSchema));
-                } catch (Exception exception) {
-                    return true;
-                }
-            }).map(descriptor -> descriptor.getName()).toArray(String[]::new));
-        issueRepository.save(modelMapper.map(newIssueSchema, IssueEntity.class));
+    public ChangelogPayload<IssueSchema> update(IssueSchema issueSchema) {
         return ChangelogPayload.<IssueSchema>builder()
-            .before(oldIssueSchema)
-            .after(newIssueSchema)
+            .before(findById(issueSchema.getId()))
+            .after(modelMapper.map(issueRepository.save(modelMapper.map(issueSchema, IssueEntity.class)), IssueSchema.class))
             .build();
     }
 

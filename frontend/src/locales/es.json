@@ -1,5 +1,6 @@
 {
     "actions": {
+        "add": "Agregar",
         "create": "Crear",
         "update": "Actualizar",
         "delete": "Eliminar",
@@ -7,8 +8,7 @@
         "signUp": "Registrarse",
         "signIn": "Iniciar sesión",
         "signOut": "Cerrar sesión",
-        "btnSaveProject": "Guardar",
-        "addProject": "Crear un nuevo proyecto"
+        "save": "Guardar"
     },
     "application": {
         "name": "Tasking"

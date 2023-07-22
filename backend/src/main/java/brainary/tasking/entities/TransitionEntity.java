@@ -2,6 +2,8 @@ package brainary.tasking.entities;
 
 import java.io.Serializable;
 
+import org.hibernate.annotations.Where;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -21,6 +23,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
+@Where(clause = "active")
 public class TransitionEntity implements Serializable {
 
     @Id

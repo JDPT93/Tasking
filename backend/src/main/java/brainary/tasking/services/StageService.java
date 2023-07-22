@@ -1,10 +1,8 @@
 package brainary.tasking.services;
 
 import java.util.Objects;
-import java.util.stream.Stream;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -34,6 +32,9 @@ public class StageService {
         if (stageRepository.existsById(stageSchema.getId())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, messageSource.getMessage("stage.conflict", null, LocaleContextHolder.getLocale()));
         }
+        if (Objects.isNull(stageSchema.getActive())) {
+            stageSchema.setActive(true);
+        }
         return modelMapper.map(stageRepository.save(modelMapper.map(stageSchema, StageEntity.class)), StageSchema.class);
     }
 
@@ -51,20 +52,10 @@ public class StageService {
         return modelMapper.map(stageRepository.findById(stageId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, messageSource.getMessage("stage.not-found", null, LocaleContextHolder.getLocale()))), StageSchema.class);
     }
 
-    public ChangelogPayload<StageSchema> update(StageSchema newStageSchema) {
-        StageSchema oldStageSchema = findById(newStageSchema.getId());
-        BeanUtils.copyProperties(oldStageSchema, newStageSchema,
-            Stream.of(BeanUtils.getPropertyDescriptors(StageSchema.class)).filter(descriptor -> {
-                try {
-                    return !Objects.isNull(descriptor.getReadMethod().invoke(newStageSchema));
-                } catch (Exception exception) {
-                    return true;
-                }
-            }).map(descriptor -> descriptor.getName()).toArray(String[]::new));
-        stageRepository.save(modelMapper.map(newStageSchema, StageEntity.class));
+    public ChangelogPayload<StageSchema> update(StageSchema stageSchema) {
         return ChangelogPayload.<StageSchema>builder()
-            .before(oldStageSchema)
-            .after(newStageSchema)
+            .before(findById(stageSchema.getId()))
+            .after(modelMapper.map(stageRepository.save(modelMapper.map(stageSchema, StageEntity.class)), StageSchema.class))
             .build();
     }
 

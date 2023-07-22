@@ -1,15 +1,11 @@
 package brainary.tasking.services;
 
 import java.util.Objects;
-import java.util.stream.Stream;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -52,31 +48,24 @@ public class UserService {
     private AuthorizationPayload authorize(UserSchema userSchema) {
         return AuthorizationPayload.builder()
             .user(userSchema)
-            .token(jwtFilter.authorize(userSchema.getId().toString(), "ROLE_USER"))
+            .token(jwtFilter.authorize(userSchema.getId().toString()))
             .build();
     }
 
-    public AuthorizationPayload authorize(String userId) {
+    public AuthorizationPayload authorize(Integer userId) {
         return AuthorizationPayload.builder()
-            .token(jwtFilter.authorize(userId, "ROLE_USER"))
+            .token(jwtFilter.authorize(userId.toString()))
             .build();
     }
 
     public AuthorizationPayload create(UserSchema userSchema) {
-        if (!Objects.isNull(userSchema.getId()) && userRepository.existsById(userSchema.getId())) {
+        if (!Objects.isNull(userSchema.getId()) && userRepository.existsById(userSchema.getId()) || userRepository.existsByEmail(userSchema.getEmail())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, messageSource.getMessage("user.conflict", null, LocaleContextHolder.getLocale()));
         }
+        if (Objects.isNull(userSchema.getActive())) {
+            userSchema.setActive(true);
+        }
         return authorize(modelMapper.map(userRepository.save(modelMapper.map(userSchema, UserEntity.class)), UserSchema.class));
-    }
-
-    public UserSchema deleteById(Integer userId) {
-        UserSchema userSchema = findById(userId);
-        userRepository.deleteById(userId);
-        return userSchema;
-    }
-
-    public Page<UserSchema> findAll(Pageable pageable) {
-        return userRepository.findAll(pageable).map(userEntity -> modelMapper.map(userEntity, UserSchema.class));
     }
 
     public UserSchema findByEmail(String userEmail) {
@@ -87,20 +76,10 @@ public class UserService {
         return modelMapper.map(userRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, messageSource.getMessage("user.not-found", null, LocaleContextHolder.getLocale()))), UserSchema.class);
     }
 
-    public ChangelogPayload<UserSchema> update(UserSchema newUserSchema) {
-        UserSchema oldUserSchema = findById(newUserSchema.getId());
-        BeanUtils.copyProperties(oldUserSchema, newUserSchema,
-            Stream.of(BeanUtils.getPropertyDescriptors(UserSchema.class)).filter(descriptor -> {
-                try {
-                    return !Objects.isNull(descriptor.getReadMethod().invoke(newUserSchema));
-                } catch (Exception exception) {
-                    return true;
-                }
-            }).map(descriptor -> descriptor.getName()).toArray(String[]::new));
-        userRepository.save(modelMapper.map(newUserSchema, UserEntity.class));
+    public ChangelogPayload<UserSchema> update(UserSchema userSchema) {
         return ChangelogPayload.<UserSchema>builder()
-            .before(oldUserSchema)
-            .after(newUserSchema)
+            .before(findById(userSchema.getId()))
+            .after(modelMapper.map(userRepository.save(modelMapper.map(userSchema, UserEntity.class)), UserSchema.class))
             .build();
     }
 
