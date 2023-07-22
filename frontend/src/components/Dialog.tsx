@@ -20,7 +20,7 @@ export default function DialogForm({ open }: Properties) {
       
     >
       <DialogTitle id="alert-dialog-title">
-        {locale.actions.addProject}
+        {locale.actions.add} {locale.schemas.project.singular} 
       </DialogTitle>
       <DialogContent>
         <ProjectForm onError={setError}/>

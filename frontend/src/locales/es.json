@@ -8,7 +8,8 @@
         "signIn": "Iniciar sesión",
         "signOut": "Cerrar sesión",
         "btnSaveProject": "Guardar",
-        "addProject": "Crear un nuevo proyecto"
+        "add": "Agregar",
+        "cancel": "Cancelar"
     },
     "application": {
         "name": "Tasking"

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Box, Button, Checkbox, Container, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Toolbar, Tooltip, Typography } from "@mui/material";
+import { Box, Button, Checkbox, Container, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Toolbar, Tooltip, Typography, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@mui/material";
 import { Delete as DeleteIcon } from "@mui/icons-material";
 
 import LocaleContext from "../contexts/LocaleContext";
@@ -30,6 +30,7 @@ function queryObject<T>(object: T, query: string): any {
 }
 
 export default function GenericTable<T>({ caption, columns, onError, onDelete, onRetrieve, tools }: Properties<T>) {
+    const [open, setOpen] = React.useState(false);
     const locale = React.useContext(LocaleContext);
     const [{ pagination, page, selection }, dispatch] = React.useReducer(GenericTableReducer<T>, {
         pagination: { page: 0, size: 5 },
@@ -56,20 +57,50 @@ export default function GenericTable<T>({ caption, columns, onError, onDelete, o
                         </Typography>
                         {onDelete !== undefined && <Tooltip title={locale.actions.delete}>
                             <IconButton onClick={event => {
-                                // TODO: show confirm dialog
-                                onDelete(selection)
-                                    .then(async response => {
-                                        const body = await response.json();
-                                        if (!response.ok) {
-                                            throw body as Error;
-                                        }
-                                        dispatch({ type: "selection.delete" });
-                                    })
-                                    .catch(onError);
+                                setOpen(true);
                             }}>
                                 <DeleteIcon />
                             </IconButton>
                         </Tooltip>}
+                        <Dialog
+                            open={open}
+                            onClose={() => setOpen(false)}
+                            aria-labelledby="alert-dialog-title"
+                            aria-describedby="alert-dialog-description"
+                        >
+                            <DialogTitle id="alert-dialog-title">
+                                {"Eliminar Proyecto"}
+                            </DialogTitle>
+                            <DialogContent>
+                                <DialogContentText id="alert-dialog-description">
+                                    {
+                                        (selection.size > 1)
+                                    ?
+                                    <Typography variant="subtitle1">{"¿Seguro de eliminar todos los seleccionados?"}</Typography>
+                                    :
+                                    <Typography variant="subtitle1">{"¿Eliminar este proyecto?"}</Typography>
+                                    }
+                                </DialogContentText>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={() => setOpen(false)}>{locale.actions.cancel}</Button>
+                                <Button onClick={() => {
+                                    if (onDelete !== undefined) {
+                                        onDelete(selection)
+                                            .then(async response => {
+                                                const body = await response.json();
+                                                if (!response.ok) {
+                                                    throw body as Error;
+                                                }
+                                                dispatch({ type: "selection.delete" });
+                                            })
+                                            .catch(onError);
+                                    }
+                                }} autoFocus>
+                                    {locale.actions.delete}
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
                     </>
                     : <>
                         <Typography flex="1 1 100%" variant="h6">{caption}</Typography>
