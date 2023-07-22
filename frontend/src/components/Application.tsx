@@ -1,25 +1,25 @@
 import * as React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Alert, CssBaseline, Snackbar, ThemeProvider, createTheme } from "@mui/material";
-import { amber, blue, cyan, yellow } from "@mui/material/colors";
+import { blue, cyan } from "@mui/material/colors";
 
-import SignIn from "./SignIn";
+import ProjectBoard from "./ProjectBoard";
+import DialogForm from "./DialogForm";
 import Main from "./Main";
+import ProjectTable from "./ProjectTable";
+import SignIn from "./SignIn";
+import SignUp from "./SignUp";
+import ServiceContext from "../contexts/ServiceContext";
 import ErrorContext from "../contexts/ErrorContext";
 import UserContext from "../contexts/UserContext";
-import User from "../schemas/User";
-import DialogForm from "./DialogForm";
-import SignUp from "./SignUp";
-import ProjectTable from "./ProjectTable";
-import ServiceContext from "../contexts/ServiceContext";
 import Authorization from "../payloads/Authorization";
+import User from "../schemas/User";
 
-import Board from "./Board";
 
 export default function Application() {
-    const { userService } = React.useContext(ServiceContext);
     const [error, setError] = React.useState<Error | null>(null);
     const [user, setUser] = React.useState<User | null>(null);
+    const { userService } = React.useContext(ServiceContext);
     function test() {
         setInterval(() => {
             userService.authorize()
@@ -48,16 +48,19 @@ export default function Application() {
                     <CssBaseline />
                     <BrowserRouter>
                         <Routes>
-                            <Route path="/" element={user === null
+                            <Route index element={user === null
                                 ? <SignIn onError={setError} onSuccess={test} to="/" />
                                 : <Main><ProjectTable /></Main>
                             } />
                             <Route path="/sign-up" element={<SignUp onError={setError} onSuccess={test} to="/" />} />
                             <Route path="/sign-in" element={<SignIn onError={setError} onSuccess={test} to="/" />} />
-                            <Route path="/project" element={<Main><ProjectTable /></Main>} />
-                            <Route path="/project/:id" element={<Main ><Board></Board></Main>} />
-                            <Route path="/project/:id/board" element={<Main ><Board></Board></Main>} />
-                            <Route path="/project-form" element={<DialogForm open={true} />} />
+                            <Route path="/project">
+                                <Route index element={<Main><ProjectTable /></Main>} />
+                                <Route path=":id">
+                                    <Route index element={<Main><ProjectBoard /></Main>} />
+                                    <Route path="board" element={<Main><ProjectBoard /></Main>} />
+                                </Route>
+                            </Route>
                         </Routes>
                     </BrowserRouter>
                     <Snackbar

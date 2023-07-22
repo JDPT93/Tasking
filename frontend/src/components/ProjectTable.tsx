@@ -7,13 +7,11 @@ import GenericTable from "./GenericTable";
 import LocaleContext from "../contexts/LocaleContext";
 import ServiceContext from "../contexts/ServiceContext";
 import ErrorContext from "../contexts/ErrorContext";
-import ProjectContext from "../contexts/ProjectContext";
 import Project from "../schemas/Project";
 
 export default function ProjectTable() {
     const locale = React.useContext(LocaleContext);
     const { projectService } = React.useContext(ServiceContext);
-    const { setProject } = React.useContext(ProjectContext);
     const { setError } = React.useContext(ErrorContext);
     return (<GenericTable<Project>
         caption={locale.schemas.project.plural}
@@ -21,7 +19,7 @@ export default function ProjectTable() {
             {
                 property: "name",
                 label: locale.schemas.project.properties.name,
-                map: (value, property, object) => <Link component={RouterLink} onClick={() => setProject(object)} to={"project/".concat(object.id!.toString())}>{value}</Link>
+                map: (value, property, object) => <Link component={RouterLink} to={"project/".concat(object.id!.toString())}>{value}</Link>
             },
             { property: "description", label: locale.schemas.project.properties.description, },
             { property: "leader.fullname", label: locale.schemas.project.properties.leader },
@@ -29,6 +27,6 @@ export default function ProjectTable() {
         onError={setError}
         onDelete={selection => projectService.deleteAll(...selection)}
         onRetrieve={pagination => projectService.findAll(pagination)}
-        tools={<Button startIcon={<AddIcon />} variant="contained">{locale.actions.create}</Button>}
+        tools={<Button sx={{ whiteSpace: "nowrap" }} variant="contained">{locale.actions.create} {locale.schemas.project.singular}</Button>}
     />)
 }

@@ -14,6 +14,9 @@
         "name": "Tasking"
     },
     "components": {
+        "projectBoard": {
+            "name": "Tablero"
+        },
         "signIn": {
             "doNotHaveAnAccount": "¿No tiene una cuenta?",
             "canNotSignIn": "¿No puede iniciar sesión?"

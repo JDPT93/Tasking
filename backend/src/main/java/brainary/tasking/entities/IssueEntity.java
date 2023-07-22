@@ -3,7 +3,7 @@ package brainary.tasking.entities;
 import java.io.Serializable;
 import java.time.LocalDate;
 
-import brainary.tasking.enumerations.Priority;
+import brainary.tasking.enumerations.IssuePriority;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
@@ -43,7 +43,7 @@ public class IssueEntity implements Serializable {
 
     @Enumerated
     @Column(nullable = false)
-    private Priority priority;
+    private IssuePriority priority;
 
     @Column(nullable = false)
     private Integer complexity;
