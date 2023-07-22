@@ -5,6 +5,8 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
@@ -38,6 +40,7 @@ public class ProjectSchema implements Serializable {
     @NotBlank(message = "${project.field.description.not-blank}")
     private String description;
 
+    @JsonProperty(access = Access.READ_ONLY)
     private Boolean active;
 
     @Null

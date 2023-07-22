@@ -28,8 +28,7 @@ export default function SignIn({ onError, onSuccess, to }: Properties) {
                     userService.create({
                         fullname: fullnameField.value,
                         email: emailField.value,
-                        password: passwordField.value,
-                        active: true
+                        password: passwordField.value
                     })
                         .then(async response => {
                             const body = await response.json();
@@ -46,7 +45,11 @@ export default function SignIn({ onError, onSuccess, to }: Properties) {
                                 navigate(to);
                             }
                         })
-                        .catch(onError);
+                        .catch(error => {
+                            if (onError !== undefined) {
+                                onError(error);
+                            }
+                        });
                 }}>
                     <Avatar sx={{ backgroundColor: "primary.main" }}>
                         <StickyNoteIcon />

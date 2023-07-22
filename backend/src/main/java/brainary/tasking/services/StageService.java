@@ -1,7 +1,5 @@
 package brainary.tasking.services;
 
-import java.util.Objects;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -32,9 +30,7 @@ public class StageService {
         if (stageRepository.existsById(stageSchema.getId())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, messageSource.getMessage("stage.conflict", null, LocaleContextHolder.getLocale()));
         }
-        if (Objects.isNull(stageSchema.getActive())) {
-            stageSchema.setActive(true);
-        }
+        stageSchema.setActive(true);
         return modelMapper.map(stageRepository.save(modelMapper.map(stageSchema, StageEntity.class)), StageSchema.class);
     }
 

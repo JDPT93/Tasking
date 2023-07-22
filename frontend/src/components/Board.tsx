@@ -9,43 +9,35 @@ interface Properties {
 const dataTask = [
     {
         id: 1,
-        name: 'Iniciando',
-        active: true,
+        name: 'Iniciando'
     },
     {
         id: 2,
-        name: 'En proceso',
-        active: true,
+        name: 'En proceso'
     },
     {
         id: 3,
-        name: 'Pruebas',
-        active: true,
+        name: 'Pruebas'
     },
     {
         id: 4,
-        name: 'Finalizado',
-        active: true,
+        name: 'Finalizado'
     },
     // {
     //     id: 5,
-    //     name: 'Iniciando',
-    //     active: true,
+    //     name: 'Iniciando'
     // },
     // {
     //     id: 6,
-    //     name: 'En proceso',
-    //     active: true,
+    //     name: 'En proceso'
     // },
     // {
     //     id: 7,
-    //     name: 'Pruebas',
-    //     active: true,
+    //     name: 'Pruebas'
     // },
     // {
     //     id: 8,
-    //     name: 'Finalizado',
-    //     active: true,
+    //     name: 'Finalizado'
     // }
 ];
 
@@ -53,50 +45,42 @@ const issues = [
     {
         id: 1,
         name: 'realizar el dashboard',
-        stage: 1,
-        active: true,
+        stage: 1
     },
     {
         id: 2,
         name: 'realizar el login',
-        stage: 2,
-        active: true,
+        stage: 2
     },
     {
         id: 3,
         name: 'realizar el register',
-        stage: 3,
-        active: true,
+        stage: 3
     },
     {
         id: 4,
         name: 'realizar el logout',
-        stage: 4,
-        active: true,
+        stage: 4
     },
     {
         id: 5,
         name: 'realizar el tour',
-        stage: 1,
-        active: true,
+        stage: 1
     },
     {
         id: 6,
         name: 'realizar el navbar',
-        stage: 3,
-        active: true,
+        stage: 3
     },
     {
         id: 7,
         name: 'realizar el aside',
-        stage: 1,
-        active: true,
+        stage: 1
     },
     {
         id: 8,
         name: 'realizar el toolbar',
-        stage: 2,
-        active: true,
+        stage: 2
     },
 ];
 

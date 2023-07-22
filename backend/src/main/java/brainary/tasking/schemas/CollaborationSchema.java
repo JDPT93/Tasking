@@ -3,7 +3,9 @@ package brainary.tasking.schemas;
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
@@ -33,6 +35,7 @@ public class CollaborationSchema implements Serializable {
     @NotNull(message = "${collaboration.field.collaborator.not-null}")
     private UserSchema collaborator;
 
+    @JsonProperty(access = Access.READ_ONLY)
     private Boolean active;
 
 }

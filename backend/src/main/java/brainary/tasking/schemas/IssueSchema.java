@@ -5,6 +5,8 @@ import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import brainary.tasking.enumerations.Priority;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -65,6 +67,7 @@ public class IssueSchema implements Serializable {
     @NotNull(message = "${issue.field.stage.not-null}")
     private StageSchema stage;
 
+    @JsonProperty(access = Access.READ_ONLY)
     private Boolean active;
 
 }

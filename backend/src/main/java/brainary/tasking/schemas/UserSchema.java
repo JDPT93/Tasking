@@ -41,6 +41,7 @@ public class UserSchema implements Serializable {
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[@$!%*?&])[0-9A-Za-z@$!%*?&]{8,16}$", message = "${user.field.password.pattern}")
     private String password;
 
+    @JsonProperty(access = Access.READ_ONLY)
     private Boolean active;
 
 }

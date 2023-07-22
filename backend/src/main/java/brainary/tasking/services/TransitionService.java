@@ -1,7 +1,5 @@
 package brainary.tasking.services;
 
-import java.util.Objects;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -32,9 +30,7 @@ public class TransitionService {
         if (transitionRepository.existsById(transitionSchema.getId())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, messageSource.getMessage("transition.conflict", null, LocaleContextHolder.getLocale()));
         }
-        if (Objects.isNull(transitionSchema.getActive())) {
-            transitionSchema.setActive(true);
-        }
+        transitionSchema.setActive(true);
         return modelMapper.map(transitionRepository.save(modelMapper.map(transitionSchema, TransitionEntity.class)), TransitionSchema.class);
     }
 

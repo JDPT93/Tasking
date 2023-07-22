@@ -44,7 +44,11 @@ export default function SignIn({ onError, onSuccess, to }: Properties) {
                                 navigate(to);
                             }
                         })
-                        .catch(onError);
+                        .catch(error => {
+                            if (onError !== undefined) {
+                                onError(error);
+                            }
+                        });
                 }}>
                     <Avatar sx={{ backgroundColor: "primary.main" }}>
                         <StickyNoteIcon />

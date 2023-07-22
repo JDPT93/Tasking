@@ -1,7 +1,5 @@
 package brainary.tasking.services;
 
-import java.util.Objects;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -32,9 +30,7 @@ public class CollaborationService {
         if (collaborationRepository.existsById(collaborationSchema.getId())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, messageSource.getMessage("collaboration.conflict", null, LocaleContextHolder.getLocale()));
         }
-        if (Objects.isNull(collaborationSchema.getActive())) {
-            collaborationSchema.setActive(true);
-        }
+        collaborationSchema.setActive(true);
         return modelMapper.map(collaborationRepository.save(modelMapper.map(collaborationSchema, CollaborationEntity.class)), CollaborationSchema.class);
     }
 

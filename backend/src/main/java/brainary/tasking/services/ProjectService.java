@@ -33,9 +33,7 @@ public class ProjectService {
         if (!Objects.isNull(projectSchema.getId()) && projectRepository.existsById(projectSchema.getId())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, messageSource.getMessage("project.conflict", null, LocaleContextHolder.getLocale()));
         }
-        if (Objects.isNull(projectSchema.getActive())) {
-            projectSchema.setActive(true);
-        }
+        projectSchema.setActive(true);
         return modelMapper.map(projectRepository.save(modelMapper.map(projectSchema, ProjectEntity.class)), ProjectSchema.class);
     }
 

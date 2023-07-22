@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
@@ -37,6 +39,7 @@ public class TransitionSchema implements Serializable {
     @NotBlank(message = "${transition.field.name.not-blank}")
     private String name;
 
+    @JsonProperty(access = Access.READ_ONLY)
     private Boolean active;
 
 }

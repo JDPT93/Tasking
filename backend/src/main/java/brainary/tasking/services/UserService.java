@@ -62,9 +62,7 @@ public class UserService {
         if (!Objects.isNull(userSchema.getId()) && userRepository.existsById(userSchema.getId()) || userRepository.existsByEmail(userSchema.getEmail())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, messageSource.getMessage("user.conflict", null, LocaleContextHolder.getLocale()));
         }
-        if (Objects.isNull(userSchema.getActive())) {
-            userSchema.setActive(true);
-        }
+        userSchema.setActive(true);
         return authorize(modelMapper.map(userRepository.save(modelMapper.map(userSchema, UserEntity.class)), UserSchema.class));
     }
 

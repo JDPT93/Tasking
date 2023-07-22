@@ -44,7 +44,11 @@ export default function GenericTable<T>({ caption, columns, onError, onDelete, o
                 }
                 dispatch({ type: "page.change", payload: body as Page<T> });
             })
-            .catch(onError);
+            .catch(error => {
+                if (onError !== undefined) {
+                    onError(error);
+                }
+            });
     }, [pagination]);
     return (
         <Box sx={{ p: 2 }}>
@@ -65,7 +69,11 @@ export default function GenericTable<T>({ caption, columns, onError, onDelete, o
                                         }
                                         dispatch({ type: "selection.delete" });
                                     })
-                                    .catch(onError);
+                                    .catch(error => {
+                                        if (onError !== undefined) {
+                                            onError(error);
+                                        }
+                                    });
                             }}>
                                 <DeleteIcon />
                             </IconButton>

@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import brainary.tasking.enumerations.StageType;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -41,6 +43,7 @@ public class StageSchema implements Serializable {
     @NotNull(message = "${stage.field.position.not-null}")
     private Integer position;
 
+    @JsonProperty(access = Access.READ_ONLY)
     private Boolean active;
 
 }
