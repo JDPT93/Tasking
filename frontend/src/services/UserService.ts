@@ -36,7 +36,7 @@ export class UserService extends Service<User> {
             headers.append("Accept-Language", locale);
         }
         const token = this.getToken();
-        if (token?.isExpired()) {
+        if (token?.isNotExpired()) {
             headers.append("Authorization", "Bearer ".concat(token.toString()));
         }
         return fetch(this.endpoint.concat("/authorization"), {
@@ -56,7 +56,7 @@ export class UserService extends Service<User> {
             headers.append("Accept-Language", locale);
         }
         const token = this.getToken();
-        if (token?.isExpired()) {
+        if (token?.isNotExpired()) {
             headers.append("Authorization", "Bearer ".concat(token.toString()));
         }
         return fetch(this.endpoint.concat("/me"), {

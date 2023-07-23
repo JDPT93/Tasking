@@ -108,11 +108,15 @@ public class TaskingApplication implements CommandLineRunner {
                 IssueTypeEntity.builder()
                     .project(projectEntity)
                     .name("Tarea")
+                    .icon("TaskAlt")
+                    .color("#0000FF")
                     .active(true)
                     .build(),
                 IssueTypeEntity.builder()
                     .project(projectEntity)
                     .name("Error")
+                    .icon("ErrorOutline")
+                    .color("#FF0000")
                     .active(true)
                     .build());
             issueTypeRepository.saveAll(issueTypes);

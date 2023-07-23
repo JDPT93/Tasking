@@ -20,28 +20,25 @@ export default function Application() {
     const { userService } = React.useContext(ServiceContext);
     React.useEffect(() => {
         if (userService.getToken()?.isNotExpired()) {
-            // TODO: Load current session
             userService.retrieveMe()
                 .then(async response => {
                     const body = await response.json();
                     if (!response.ok) {
                         throw body as Error;
                     }
-                    const authorization = body as Authorization;
-                    localStorage.setItem("token", authorization.token);
-                    setUser(authorization.user);
+                    setUser(body as User);
                 })
                 .catch(setError);
         }
-    });
+    }, []);
     function test() {
-        setInterval(() => {
-            userService.authorize()
-                .then(async response => {
+        // setInterval(() => {
+        //     userService.authorize()
+        //         .then(async response => {
 
-                })
-                .catch(setError);
-        }, 590000);
+        //         })
+        //         .catch(setError);
+        // }, 590000);
     }
     return (
         <ThemeProvider theme={createTheme({

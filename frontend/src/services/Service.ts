@@ -70,7 +70,7 @@ export class Service<T> {
             headers.append("Accept-Language", locale);
         }
         const token = this.getToken();
-        if (token?.isExpired()) {
+        if (token?.isNotExpired()) {
             headers.append("Authorization", "Bearer ".concat(token.toString()));
         }
         return fetch(this.endpoint, {
@@ -92,7 +92,7 @@ export class Service<T> {
             headers.append("Accept-Language", locale);
         }
         const token = this.getToken();
-        if (token?.isExpired()) {
+        if (token?.isNotExpired()) {
             headers.append("Authorization", "Bearer ".concat(token.toString()));
         }
         return fetch(this.endpoint, {
@@ -112,7 +112,7 @@ export class Service<T> {
             headers.append("Accept-Language", locale);
         }
         const token = this.getToken();
-        if (token?.isExpired()) {
+        if (token?.isNotExpired()) {
             headers.append("Authorization", "Bearer ".concat(token.toString()));
         }
         return fetch(this.endpoint.concat("/", id.toString()), {
@@ -131,7 +131,7 @@ export class Service<T> {
             headers.append("Accept-Language", locale);
         }
         const token = this.getToken();
-        if (token?.isExpired()) {
+        if (token?.isNotExpired()) {
             headers.append("Authorization", "Bearer ".concat(token.toString()));
         }
         const query = new URLSearchParams();
@@ -160,7 +160,7 @@ export class Service<T> {
             headers.append("Accept-Language", locale);
         }
         const token = this.getToken();
-        if (token?.isExpired()) {
+        if (token?.isNotExpired()) {
             headers.append("Authorization", "Bearer ".concat(token.toString()));
         }
         return fetch(this.endpoint.concat("/", id.toString()), {
@@ -181,7 +181,7 @@ export class Service<T> {
             headers.append("Accept-Language", locale);
         }
         const token = this.getToken();
-        if (token?.isExpired()) {
+        if (token?.isNotExpired()) {
             headers.append("Authorization", "Bearer ".concat(token.toString()));
         }
         return fetch(this.endpoint, {
