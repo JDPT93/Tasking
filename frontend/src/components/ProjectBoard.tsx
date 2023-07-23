@@ -63,8 +63,9 @@ function ProjectBoard() {
             {project
                 ? <ImageList gap={12} sx={{
                     gridAutoFlow: "column",
-                    gridTemplateColumns: "repeat(auto-fill, minmax(300px,1fr)) !important",
+                    gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr)) !important",
                     gridAutoColumns: "minmax(300px, 1fr)",
+                    minHeight: "100vh",
                     padding: 2
                 }}>
                     {project!.stages!.sort((left, right) => left.position - right.position).map(stage =>
