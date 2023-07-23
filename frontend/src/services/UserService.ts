@@ -36,7 +36,7 @@ export class UserService extends Service<User> {
             headers.append("Accept-Language", locale);
         }
         const token = this.getToken();
-        if (token?.isNotExpired()) {
+        if (token?.isAlive()) {
             headers.append("Authorization", "Bearer ".concat(token.toString()));
         }
         return fetch(this.endpoint.concat("/authorization"), {
@@ -56,12 +56,12 @@ export class UserService extends Service<User> {
             headers.append("Accept-Language", locale);
         }
         const token = this.getToken();
-        if (token?.isNotExpired()) {
+        if (token?.isAlive()) {
             headers.append("Authorization", "Bearer ".concat(token.toString()));
         }
         return fetch(this.endpoint.concat("/me"), {
             headers,
-            method: "POST",
+            method: "GET",
             mode: "cors",
         });
     }

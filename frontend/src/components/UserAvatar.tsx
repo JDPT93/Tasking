@@ -20,7 +20,7 @@ export function UserAvatar({ user }: Properties) {
             mixBlendMode: "difference"
         }}
     >
-        {StringUtils.initialism(user.name)}
+        {StringUtils.initialism(user.name, 2)}
     </Avatar>
 }
 
