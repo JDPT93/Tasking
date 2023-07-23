@@ -38,7 +38,7 @@ public class JwtFilter extends OncePerRequestFilter {
     public String authorize(String subject) {
         Long currentTime = System.currentTimeMillis();
         return Jwts.builder()
-            .setId(currentTime.toString().concat(":").concat(subject))
+            .setId(subject.concat("@").concat(currentTime.toString()))
             .setSubject(subject)
             .setIssuedAt(new Date(currentTime))
             .setExpiration(new Date(currentTime + expirationTime))

@@ -1,13 +1,13 @@
 import Page from "../payloads/Page";
 import Pagination from "../payloads/Pagination";
 
-export interface State<T> {
+export interface TableState<T> {
     pagination: Pagination<T>;
     page?: Page<T>;
     selection: Set<T>;
 }
 
-export type Action<T>
+export type TableAction<T>
     = { type: "pagination.page.change", payload: number }
     | { type: "pagination.size.change", payload: number }
     | { type: "pagination.sort.toggle.one", payload: string }
@@ -17,7 +17,7 @@ export type Action<T>
     | { type: "selection.toggle.one", payload: T }
     ;
 
-export function GenericTableReducer<T>(state: State<T>, action: Action<T>): State<T> {
+export function TableReducer<T>(state: TableState<T>, action: TableAction<T>): TableState<T> {
     switch (action.type) {
         default:
             throw new TypeError("Unexpected action type");
@@ -93,4 +93,4 @@ export function GenericTableReducer<T>(state: State<T>, action: Action<T>): Stat
     }
 }
 
-export default GenericTableReducer;
+export default TableReducer;

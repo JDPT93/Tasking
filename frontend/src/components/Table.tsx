@@ -1,16 +1,18 @@
 import * as React from "react";
-import { Box, Button, Checkbox, Container, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Toolbar, Tooltip, Typography, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@mui/material";
+import { Box, Button, Checkbox, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Toolbar, Tooltip, Typography, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Skeleton } from "@mui/material";
 import { Delete as DeleteIcon } from "@mui/icons-material";
 
 import LocaleContext from "../contexts/LocaleContext";
 import Page from "../payloads/Page";
-import GenericTableReducer from "../reducers/GenericTableReducer";
+import TableReducer from "../reducers/TableReducer";
 import Pagination from "../payloads/Pagination";
+import ObjectUtils from "../utils/ObjectUtils";
 
 interface Column<T> {
-    property: string;
-    label: string
+    label: string;
     map?: (value: any, property: string, object: T) => any;
+    path: string;
+    width?: number | string;
 }
 
 interface Properties<T> {
@@ -22,17 +24,10 @@ interface Properties<T> {
     tools: React.ReactNode;
 }
 
-function queryObject<T>(object: T, query: string): any {
-    const [key, subquery] = query.split(".", 2);
-    return subquery === undefined
-        ? object[key as keyof T]
-        : queryObject(object[key as keyof T], subquery);
-}
-
 export default function GenericTable<T>({ caption, columns, onError, onDelete, onRetrieve, tools }: Properties<T>) {
     const [open, setOpen] = React.useState(false);
     const locale = React.useContext(LocaleContext);
-    const [{ pagination, page, selection }, dispatch] = React.useReducer(GenericTableReducer<T>, {
+    const [{ pagination, page, selection }, dispatch] = React.useReducer(TableReducer<T>, {
         pagination: { page: 0, size: 5 },
         selection: new Set<T>()
     });
@@ -77,10 +72,10 @@ export default function GenericTable<T>({ caption, columns, onError, onDelete, o
                                 <DialogContentText id="alert-dialog-description">
                                     {
                                         (selection.size > 1)
-                                    ?
-                                    <Typography variant="subtitle1">{"¿Seguro de eliminar todos los seleccionados?"}</Typography>
-                                    :
-                                    <Typography variant="subtitle1">{"¿Eliminar este proyecto?"}</Typography>
+                                            ?
+                                            <Typography variant="subtitle1">{"¿Seguro de eliminar todos los seleccionados?"}</Typography>
+                                            :
+                                            <Typography variant="subtitle1">{"¿Eliminar este proyecto?"}</Typography>
                                     }
                                 </DialogContentText>
                             </DialogContent>
@@ -126,12 +121,12 @@ export default function GenericTable<T>({ caption, columns, onError, onDelete, o
                                 />
                             </TableCell>
                             {columns.map((column, index) =>
-                                <TableCell key={`column-${index}`}>
+                                <TableCell key={`column-${index}`} width={column.width}>
                                     <TableSortLabel
-                                        direction={pagination.sort?.get(column.property) ?? "asc"}
+                                        direction={pagination.sort?.get(column.path) ?? "asc"}
                                         onClick={event => dispatch({
                                             type: "pagination.sort.toggle.one",
-                                            payload: column.property
+                                            payload: column.path
                                         })}
                                     >
                                         {column.label}
@@ -140,42 +135,55 @@ export default function GenericTable<T>({ caption, columns, onError, onDelete, o
                             )}
                         </TableRow>
                     </TableHead>
-                    <TableBody>
-                        {page?.content.map((object, index) =>
-                            <TableRow
-                                hover
-                                key={`row-${index}`}
-                                onClick={event => dispatch({
-                                    type: "selection.toggle.one",
-                                    payload: object
-                                })}
-                                tabIndex={-1}
-                                selected={selection.has(object)}
-                                sx={{ cursor: "pointer" }}
-                            >
-                                <TableCell padding="checkbox">
-                                    <Checkbox checked={selection.has(object)} />
-                                </TableCell>
-                                {columns.map((column, index) =>
-                                    <TableCell key={`cell-${index}`}>
-                                        {column.map === undefined
-                                            ? queryObject(object, column.property)
-                                            : column.map(
-                                                queryObject(object, column.property),
-                                                column.property,
-                                                object
-                                            )}
+                    <TableBody sx={{ "&>tr:last-child>td, &>tr:last-child>th": { border: 0 } }}>
+                        {page == undefined
+                            ? Array.from({ length: pagination?.size ?? 5 }, (_, index) =>
+                                <TableRow key={`row-${index}`}>
+                                    <TableCell padding="checkbox">
+                                        <Skeleton height={20} sx={{ m: "auto" }} variant="rounded" width={20} />
                                     </TableCell>
-                                )}
-                            </TableRow>
-                        )}
+                                    {columns.map((column, index) =>
+                                        <TableCell key={`cell-${index}`}>
+                                            <Skeleton height={20} variant="rounded" />
+                                        </TableCell>
+                                    )}
+                                </TableRow>
+                            )
+                            : page.content.map((object, index) =>
+                                <TableRow
+                                    hover
+                                    key={`row-${index}`}
+                                    onClick={event => dispatch({
+                                        type: "selection.toggle.one",
+                                        payload: object
+                                    })}
+                                    tabIndex={-1}
+                                    selected={selection.has(object)}
+                                    sx={{ cursor: "pointer" }}
+                                >
+                                    <TableCell padding="checkbox">
+                                        <Checkbox checked={selection.has(object)} />
+                                    </TableCell>
+                                    {columns.map((column, index) =>
+                                        <TableCell key={`cell-${index}`}>
+                                            {column.map === undefined
+                                                ? ObjectUtils.query(object, column.path)
+                                                : column.map(
+                                                    ObjectUtils.query(object, column.path),
+                                                    column.path,
+                                                    object
+                                                )}
+                                        </TableCell>
+                                    )}
+                                </TableRow>
+                            )}
                     </TableBody>
                 </Table>
             </TableContainer>
             <TablePagination
                 component="div"
                 count={page?.totalItems ?? 0}
-                labelDisplayedRows={({ from, to, count }) => `${from}-${to} / ${count}`}
+                labelDisplayedRows={({ from, to, count }) => count > 0 ? `${from}-${to} / ${count}` : <Skeleton height={20} variant="rounded" width={60} />}
                 labelRowsPerPage={locale.components.table.rowsPerPage}
                 onPageChange={(event, page) => dispatch({
                     type: "pagination.page.change",
@@ -186,7 +194,7 @@ export default function GenericTable<T>({ caption, columns, onError, onDelete, o
                     payload: +event.target.value
                 })}
                 page={pagination.page ?? 0}
-                rowsPerPage={pagination.size ?? 0}
+                rowsPerPage={pagination.size ?? 5}
                 rowsPerPageOptions={[5, 10, 20]}
             />
         </Box>

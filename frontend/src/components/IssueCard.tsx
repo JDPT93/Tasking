@@ -22,7 +22,7 @@ export function IssueCard({ issue }: Properties) {
                 <UserAvatar user={issue.assignee} />
             </CardContent>
         </Card>
-    </CardActionArea >)
+    </CardActionArea>)
 }
 
 export default IssueCard;

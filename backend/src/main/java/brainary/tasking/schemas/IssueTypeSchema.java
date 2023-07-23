@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,6 +35,13 @@ public class IssueTypeSchema implements Serializable {
 
     @NotBlank(message = "${issue-type.field.name.not-blank}")
     private String name;
+
+    @NotBlank(message = "${issue-type.field.icon.not-blank}")
+    private String icon;
+
+    @NotNull(message = "${issue-type.field.color.not-null}")
+    @Pattern(regexp = "^#[A-Fa-f0-9]{6}$", message = "${issue-type.field.color.pattern}")
+    private String color;
 
     @JsonProperty(access = Access.READ_ONLY)
     private Boolean active;

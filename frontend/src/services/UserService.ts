@@ -35,11 +35,31 @@ export class UserService extends Service<User> {
         if (locale !== null) {
             headers.append("Accept-Language", locale);
         }
-        const token = localStorage.getItem("token");
-        if (token !== null) {
-            headers.append("Authorization", "Bearer ".concat(token));
+        const token = this.getToken();
+        if (token?.isExpired()) {
+            headers.append("Authorization", "Bearer ".concat(token.toString()));
         }
         return fetch(this.endpoint.concat("/authorization"), {
+            headers,
+            method: "POST",
+            mode: "cors",
+        });
+    }
+
+    retrieveMe() {
+        const headers = new Headers({
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+        });
+        const locale = localStorage.getItem("locale");
+        if (locale !== null) {
+            headers.append("Accept-Language", locale);
+        }
+        const token = this.getToken();
+        if (token?.isExpired()) {
+            headers.append("Authorization", "Bearer ".concat(token.toString()));
+        }
+        return fetch(this.endpoint.concat("/me"), {
             headers,
             method: "POST",
             mode: "cors",

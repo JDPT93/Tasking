@@ -14,7 +14,7 @@ function ProjectBoard() {
     const locale = React.useContext(LocaleContext);
     const { projectService } = React.useContext(ServiceContext);
     React.useEffect(() => {
-        projectService.findById(+id!)
+        projectService.retrieveById(+id!)
             .then(async response => {
                 const body = await response.json();
                 if (!response.ok) {

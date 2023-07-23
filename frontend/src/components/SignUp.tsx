@@ -36,7 +36,7 @@ export default function SignIn({ onError, onSuccess, to }: Properties) {
                                 throw body as Error;
                             }
                             const authorization = body as Authorization;
-                            localStorage.setItem("token", authorization.token);
+                            userService.setToken(authorization.token);
                             setUser(authorization.user);
                             if (onSuccess !== undefined) {
                                 onSuccess(authorization);
