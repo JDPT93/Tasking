@@ -1,6 +1,6 @@
 import React from "react";
 import { Link as RouterLink, useParams } from "react-router-dom";
-import { Box, Card, Link, Typography, Divider, Stack, ImageList, ImageListItem, CardActionArea, Breadcrumbs, Paper } from "@mui/material";
+import { Box, Card, Link, Typography, Divider, Stack, ImageList, ImageListItem, CardActionArea, Breadcrumbs, Paper, Avatar } from "@mui/material";
 import { DashboardOutlined as DashboardOutlinedIcon, FolderOutlined as FolderOutlinedIcon, InsertDriveFileOutlined as InsertDriveFileOutlinedIcon } from "@mui/icons-material";
 
 import IssueCard from "./IssueCard";
@@ -65,7 +65,10 @@ function ProjectBoard() {
                     {project!.stages!.sort((left, right) => left.position - right.position).map(stage =>
                         <ImageListItem>
                             <Paper key={stage.id}>
-                                <Typography color="text.secondary" fontWeight="bold" padding={2} textTransform="uppercase">{stage.name}</Typography>
+                                <Stack px={1}  direction="row" alignItems="center">
+                                    <Avatar sx={{ width: 24, height: 24 }} alt={stage?.name} src="#" />
+                                    <Typography color="text.secondary" fontWeight="bold" padding={2} textTransform="uppercase">{stage.name}</Typography>
+                                </Stack>
                                 <Divider />
                                 <Stack minHeight={400} gap={1} spacing={2}>
                                     {stage.issues?.map(issue => <IssueCard issue={issue} />)}
