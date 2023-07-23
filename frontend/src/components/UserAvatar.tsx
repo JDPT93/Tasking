@@ -29,7 +29,7 @@ export function UserAvatar({ user }: Properties) {
         }}
     >
         {user.name.trim().split(/\s+/, 2).map(name => name.charAt(0)).join("")}
-    </Avatar >
+    </Avatar>
 }
 
 export default UserAvatar;
