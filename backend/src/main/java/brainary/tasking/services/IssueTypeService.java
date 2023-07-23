@@ -36,21 +36,21 @@ public class IssueTypeService {
     }
 
     public IssueTypeSchema deleteById(Integer issueTypeId) {
-        IssueTypeSchema issueTypeSchema = findById(issueTypeId);
+        IssueTypeSchema issueTypeSchema = retrieveById(issueTypeId);
         issueTypeRepository.deleteById(issueTypeId);
         return issueTypeSchema;
     }
 
-    public Page<IssueTypeSchema> findAll(Pageable pageable) {
+    public Page<IssueTypeSchema> retrieveAll(Pageable pageable) {
         return issueTypeRepository.findAll(pageable).map(issueTypeEntity -> modelMapper.map(issueTypeEntity, IssueTypeSchema.class));
     }
 
-    public IssueTypeSchema findById(Integer issueTypeId) {
+    public IssueTypeSchema retrieveById(Integer issueTypeId) {
         return modelMapper.map(issueTypeRepository.findById(issueTypeId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, messageSource.getMessage("issue-type.not-found", null, LocaleContextHolder.getLocale()))), IssueTypeSchema.class);
     }
 
     public ChangelogPayload<IssueTypeSchema> update(IssueTypeSchema newIssueTypeSchema) {
-        IssueTypeSchema oldIssueTypeSchema = findById(newIssueTypeSchema.getId());
+        IssueTypeSchema oldIssueTypeSchema = retrieveById(newIssueTypeSchema.getId());
         newIssueTypeSchema.setActive(oldIssueTypeSchema.getActive());
         issueTypeRepository.save(modelMapper.map(newIssueTypeSchema, IssueTypeEntity.class));
         return ChangelogPayload.<IssueTypeSchema>builder()

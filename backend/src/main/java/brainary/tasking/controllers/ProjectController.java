@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +24,7 @@ import brainary.tasking.schemas.ProjectSchema;
 import brainary.tasking.services.ProjectService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -35,7 +37,10 @@ public class ProjectController {
 
     @PostMapping
     @SecurityRequirement(name = "Jwt")
-    public ResponseEntity<ProjectSchema> create(@RequestBody ProjectSchema projectSchema) {
+    public ResponseEntity<ProjectSchema> create(@RequestBody @Valid ProjectSchema projectSchema, UsernamePasswordAuthenticationToken token) {
+        if (!token.getPrincipal().equals(projectSchema.getLeader().getId())) {
+            // TODO: Throw exception: You must be the project leader.
+        }
         return new ResponseEntity<>(projectService.create(projectSchema), HttpStatus.CREATED);
     }
 
@@ -53,14 +58,14 @@ public class ProjectController {
 
     @GetMapping
     @SecurityRequirement(name = "Jwt")
-    public ResponseEntity<Page<ProjectSchema>> findAll(@ParameterObject Pageable Pageable) {
-        return new ResponseEntity<>(projectService.findAll(Pageable), HttpStatus.OK);
+    public ResponseEntity<Page<ProjectSchema>> retrieveAll(@ParameterObject Pageable Pageable) {
+        return new ResponseEntity<>(projectService.retrieveAll(Pageable), HttpStatus.OK);
     }
 
     @GetMapping(path = "{projectId}")
     @SecurityRequirement(name = "Jwt")
-    public ResponseEntity<ProjectSchema> findById(@PathVariable Integer projectId) {
-        return new ResponseEntity<>(projectService.findById(projectId), HttpStatus.OK);
+    public ResponseEntity<ProjectSchema> retrieveById(@PathVariable Integer projectId) {
+        return new ResponseEntity<>(projectService.retrieveById(projectId), HttpStatus.OK);
     }
 
     @PutMapping

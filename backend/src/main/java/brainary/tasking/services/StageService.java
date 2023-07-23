@@ -36,21 +36,21 @@ public class StageService {
     }
 
     public StageSchema deleteById(Integer stageId) {
-        StageSchema stageSchema = findById(stageId);
+        StageSchema stageSchema = retrieveById(stageId);
         stageRepository.deleteById(stageId);
         return stageSchema;
     }
 
-    public Page<StageSchema> findAll(Pageable pageable) {
+    public Page<StageSchema> retrieveAll(Pageable pageable) {
         return stageRepository.findAll(pageable).map(stageEntity -> modelMapper.map(stageEntity, StageSchema.class));
     }
 
-    public StageSchema findById(Integer stageId) {
+    public StageSchema retrieveById(Integer stageId) {
         return modelMapper.map(stageRepository.findById(stageId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, messageSource.getMessage("stage.not-found", null, LocaleContextHolder.getLocale()))), StageSchema.class);
     }
 
     public ChangelogPayload<StageSchema> update(StageSchema newStageSchema) {
-        StageSchema oldStageSchema = findById(newStageSchema.getId());
+        StageSchema oldStageSchema = retrieveById(newStageSchema.getId());
         newStageSchema.setActive(oldStageSchema.getActive());
         stageRepository.save(modelMapper.map(newStageSchema, StageEntity.class));
         return ChangelogPayload.<StageSchema>builder()

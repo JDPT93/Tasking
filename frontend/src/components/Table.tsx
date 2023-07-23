@@ -180,7 +180,7 @@ export default function GenericTable<T>({ caption, columns, onError, onDelete, o
             <TablePagination
                 component="div"
                 count={page?.totalItems ?? 0}
-                labelDisplayedRows={({ from, to, count }) => `[${from}, ${to}] / ${count}`}
+                labelDisplayedRows={({ from, to, count }) => `${from} ${locale.components.table.to} ${to} ${locale.components.table.of} ${count}`}
                 labelRowsPerPage={locale.components.table.rowsPerPage}
                 onPageChange={(event, page) => dispatch({
                     type: "pagination.page.change",

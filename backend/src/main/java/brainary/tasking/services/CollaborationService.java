@@ -36,21 +36,21 @@ public class CollaborationService {
     }
 
     public CollaborationSchema deleteById(Integer collaborationId) {
-        CollaborationSchema collaborationSchema = findById(collaborationId);
+        CollaborationSchema collaborationSchema = retrieveById(collaborationId);
         collaborationRepository.deleteById(collaborationId);
         return collaborationSchema;
     }
 
-    public Page<CollaborationSchema> findAll(Pageable pageable) {
+    public Page<CollaborationSchema> retrieveAll(Pageable pageable) {
         return collaborationRepository.findAll(pageable).map(collaborationEntity -> modelMapper.map(collaborationEntity, CollaborationSchema.class));
     }
 
-    public CollaborationSchema findById(Integer collaborationId) {
+    public CollaborationSchema retrieveById(Integer collaborationId) {
         return modelMapper.map(collaborationRepository.findById(collaborationId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, messageSource.getMessage("collaboration.not-found", null, LocaleContextHolder.getLocale()))), CollaborationSchema.class);
     }
 
     public ChangelogPayload<CollaborationSchema> update(CollaborationSchema newCollaborationSchema) {
-        CollaborationSchema oldCollaborationSchema = findById(newCollaborationSchema.getId());
+        CollaborationSchema oldCollaborationSchema = retrieveById(newCollaborationSchema.getId());
         newCollaborationSchema.setActive(oldCollaborationSchema.getActive());
         collaborationRepository.save(modelMapper.map(newCollaborationSchema, CollaborationEntity.class));
         return ChangelogPayload.<CollaborationSchema>builder()

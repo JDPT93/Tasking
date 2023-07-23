@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import brainary.tasking.enumerations.IssuePriority;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -41,7 +42,7 @@ public class IssueEntity implements Serializable {
     @Column(nullable = false)
     private String description;
 
-    @Enumerated
+    @Enumerated(value = EnumType.ORDINAL)
     @Column(nullable = false)
     private IssuePriority priority;
 

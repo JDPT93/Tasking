@@ -46,16 +46,16 @@ public class UserController {
         return new ResponseEntity<>(userService.create(userSchema), HttpStatus.CREATED);
     }
 
-    @GetMapping(path = "me")
+    @GetMapping(path = "myself")
     @SecurityRequirement(name = "Jwt")
-    public ResponseEntity<UserSchema> findMe(UsernamePasswordAuthenticationToken token) {
-        return new ResponseEntity<>(userService.findById((Integer) token.getPrincipal()), HttpStatus.OK);
+    public ResponseEntity<UserSchema> retrieveMyself(UsernamePasswordAuthenticationToken token) {
+        return new ResponseEntity<>(userService.retrieveById((Integer) token.getPrincipal()), HttpStatus.OK);
     }
 
-    @PutMapping(path = "me")
+    @PutMapping(path = "myself")
     @SecurityRequirement(name = "Jwt")
-    public ResponseEntity<ChangelogPayload<UserSchema>> updateMe(@RequestBody @Valid UserSchema userSchema, UsernamePasswordAuthenticationToken token) {
-        return new ResponseEntity<>(userService.update(userSchema), HttpStatus.OK);
+    public ResponseEntity<ChangelogPayload<UserSchema>> updateMyself(@RequestBody @Valid UserSchema userSchema, UsernamePasswordAuthenticationToken token) {
+        return new ResponseEntity<>(userService.updateMyself((Integer) token.getPrincipal(), userSchema), HttpStatus.OK);
     }
 
 }

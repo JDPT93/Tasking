@@ -1,6 +1,6 @@
 export default class ObjectUtils {
 
-    static query<T>(object: T, path: string): any {
+    public static query<T>(object: T, path: string): any {
         const [key, subpath] = path.split(".", 2);
         return subpath === undefined
             ? object[key as keyof T]
