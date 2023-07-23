@@ -29,8 +29,8 @@ public class UserSchema implements Serializable {
 
     private Integer id;
 
-    @NotBlank(message = "${user.field.fullname.not-blank}")
-    private String fullname;
+    @NotBlank(message = "${user.field.name.not-blank}")
+    private String name;
 
     @NotBlank(message = "${user.field.email.not-blank}")
     @Email(message = "${user.field.email.email}")

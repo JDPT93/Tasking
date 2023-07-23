@@ -4,6 +4,7 @@ import { Mail as MailIcon, Menu as MenuIcon, Notifications as NotificationsIcon 
 
 import LocaleContext from "../contexts/LocaleContext";
 import UserContext from "../contexts/UserContext";
+import UserAvatar from "./UserAvatar";
 
 export default function Main({ children }: React.PropsWithChildren) {
     const locale = React.useContext(LocaleContext);
@@ -29,7 +30,7 @@ export default function Main({ children }: React.PropsWithChildren) {
                             </Badge>
                         </IconButton>
                         <IconButton color="inherit" size="small">
-                            <Avatar alt={user?.fullname} src="#" />
+                            <UserAvatar user={user!} />
                         </IconButton>
                     </Box>
                 </Toolbar>

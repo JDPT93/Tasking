@@ -185,8 +185,8 @@ export default function GenericTable<T>({ caption, columns, onError, onDelete, o
                     type: "pagination.size.change",
                     payload: +event.target.value
                 })}
-                page={pagination.page!}
-                rowsPerPage={pagination.size!}
+                page={pagination.page ?? 0}
+                rowsPerPage={pagination.size ?? 0}
                 rowsPerPageOptions={[5, 10, 20]}
             />
         </Box>

@@ -61,13 +61,18 @@ function ProjectBoard() {
                 </Typography>
             </Breadcrumbs>
             {project
-                ? <ImageList gap={12} sx={{ gridAutoFlow: "column", gridTemplateColumns: "repeat(auto-fill,minmax(300px,1fr)) !important", gridAutoColumns: "minmax(300px, 1fr)" }}>
+                ? <ImageList gap={12} sx={{
+                    gridAutoFlow: "column",
+                    gridTemplateColumns: "repeat(auto-fill, minmax(300px,1fr)) !important",
+                    gridAutoColumns: "minmax(300px, 1fr)",
+                    padding: 2
+                }}>
                     {project!.stages!.sort((left, right) => left.position - right.position).map(stage =>
                         <ImageListItem>
-                            <Paper key={stage.id}>
-                                <Typography color="text.secondary" fontWeight="bold" padding={2} textTransform="uppercase">{stage.name}</Typography>
+                            <Paper key={stage.id} sx={{ height: "100%" }}>
+                                <Typography fontWeight={500} padding={2} textTransform="uppercase" variant="body2">{stage.name}</Typography>
                                 <Divider />
-                                <Stack minHeight={400} gap={1} spacing={2}>
+                                <Stack gap={1} padding={2}>
                                     {stage.issues?.map(issue => <IssueCard issue={issue} />)}
                                 </Stack>
                             </Paper>

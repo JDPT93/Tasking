@@ -22,7 +22,7 @@ export default function ProjectTable() {
                 map: (value, property, object) => <Link component={RouterLink} to={"project/".concat(object.id!.toString())}>{value}</Link>
             },
             { property: "description", label: locale.schemas.project.properties.description, },
-            { property: "leader.fullname", label: locale.schemas.project.properties.leader },
+            { property: "leader.name", label: locale.schemas.project.properties.leader },
         ]}
         onError={setError}
         onDelete={selection => projectService.deleteAll(...selection)}
