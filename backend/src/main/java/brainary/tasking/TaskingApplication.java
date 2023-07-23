@@ -55,13 +55,13 @@ public class TaskingApplication implements CommandLineRunner {
 
         List<UserEntity> users = List.of(
             UserEntity.builder()
-                .fullname("José Daniel Pérez Torres")
+                .name("José Daniel Pérez Torres")
                 .email("josedanielpereztorres@gmail.com")
                 .password(passwordEncoder.encode("Az1234567890*"))
                 .active(true)
                 .build(),
             UserEntity.builder()
-                .fullname("Ermes David Galvis Rodríguez")
+                .name("Ermes David Galvis Rodríguez")
                 .email("galvushow@gmail.com")
                 .password(passwordEncoder.encode("Az1234567890*"))
                 .active(true)
@@ -108,11 +108,15 @@ public class TaskingApplication implements CommandLineRunner {
                 IssueTypeEntity.builder()
                     .project(projectEntity)
                     .name("Tarea")
+                    .icon("TaskAlt")
+                    .color("#0000FF")
                     .active(true)
                     .build(),
                 IssueTypeEntity.builder()
                     .project(projectEntity)
                     .name("Error")
+                    .icon("ErrorOutline")
+                    .color("#FF0000")
                     .active(true)
                     .build());
             issueTypeRepository.saveAll(issueTypes);

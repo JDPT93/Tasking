@@ -1,6 +1,6 @@
-export class Pagination<T> {
-    page?: number;
-    size?: number;
+export interface Pagination<T> {
+    page: number;
+    size: number;
     sort?: Map<string, "asc" | "desc">;
 }
 

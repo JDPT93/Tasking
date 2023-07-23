@@ -24,9 +24,9 @@ export default function SignIn({ onError, onSuccess, to }: Properties) {
             <Paper component="main" elevation={2} square>
                 <Stack alignItems="center" component="form" gap={2} padding={4} width={400} onSubmit={event => {
                     event.preventDefault();
-                    const { fullnameField, emailField, passwordField } = event.target as HTMLFormElement;
+                    const { nameField, emailField, passwordField } = event.target as HTMLFormElement;
                     userService.create({
-                        fullname: fullnameField.value,
+                        name: nameField.value,
                         email: emailField.value,
                         password: passwordField.value
                     })
@@ -36,7 +36,7 @@ export default function SignIn({ onError, onSuccess, to }: Properties) {
                                 throw body as Error;
                             }
                             const authorization = body as Authorization;
-                            localStorage.setItem("token", authorization.token);
+                            userService.setToken(authorization.token);
                             setUser(authorization.user);
                             if (onSuccess !== undefined) {
                                 onSuccess(authorization);
@@ -55,7 +55,7 @@ export default function SignIn({ onError, onSuccess, to }: Properties) {
                         <StickyNoteIcon />
                     </Avatar>
                     <Typography component="h1" variant="h5">{locale.application.name}</Typography>
-                    <TextField fullWidth label={locale.schemas.user.properties.name} name="fullnameField" required type="text" variant="outlined" />
+                    <TextField fullWidth label={locale.schemas.user.properties.name} name="nameField" required type="text" variant="outlined" />
                     <TextField fullWidth label={locale.schemas.user.properties.email} name="emailField" required type="email" variant="outlined" />
                     <TextField autoComplete="current-password" fullWidth label={locale.schemas.user.properties.password} name="passwordField" required type="password" variant="outlined" />
                     <Button fullWidth type="submit" variant="contained">{locale.actions.signUp}</Button>

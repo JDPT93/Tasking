@@ -1,21 +1,65 @@
 import Pagination from "../payloads/Pagination";
 
+class Token {
+
+    public readonly value: string;
+    public readonly id: string;
+    public readonly subject: number;
+    public readonly issuedAt: number;
+    public readonly expirationTime: number;
+
+    public constructor(value: string) {
+        const claims = JSON.parse(atob(value.split(".")[1]));
+        this.value = value;
+        this.id = claims.jti;
+        this.subject = +claims.sub;
+        this.issuedAt = claims.exp * 1000;
+        this.expirationTime = claims.exp * 1000;
+    }
+
+    public isExpired() {
+        return this.expirationTime < Date.now();
+    }
+
+    public isNotExpired() {
+        return !this.isExpired();
+    }
+
+    public toString() {
+        return this.value;
+    }
+
+}
+
 export class Service<T> {
 
-    secure: boolean = false;
-    host: string = "localhost";
-    port: number = 8080;
-    path: string;
+    public readonly secure: boolean = false;
+    public readonly host: string = "localhost";
+    public readonly port: number = 8080;
+    public readonly path: string;
 
-    get endpoint() {
+    public get endpoint() {
         return `${this.secure ? "https" : "http"}://${this.host}:${this.port}/${this.path}`;
     }
 
-    constructor(path: string) {
+    public constructor(path: string) {
         this.path = path;
     }
 
-    create(object: T) {
+    public getToken(): Token | null {
+        const token = localStorage.getItem("token");
+        return token === null ? null : new Token(token);
+    }
+
+    public setToken(value: string | null) {
+        if (value === null) {
+            localStorage.removeItem("token");
+        } else {
+            localStorage.setItem("token", value);
+        }
+    }
+
+    public create(object: T) {
         const body = JSON.stringify(object);
         const headers = new Headers({
             "Accept": "application/json",
@@ -25,9 +69,9 @@ export class Service<T> {
         if (locale !== null) {
             headers.append("Accept-Language", locale);
         }
-        const token = localStorage.getItem("token");
-        if (token !== null) {
-            headers.append("Authorization", "Bearer ".concat(token));
+        const token = this.getToken();
+        if (token?.isNotExpired()) {
+            headers.append("Authorization", "Bearer ".concat(token.toString()));
         }
         return fetch(this.endpoint, {
             body,
@@ -37,7 +81,7 @@ export class Service<T> {
         });
     }
 
-    deleteAll(...list: T[]) {
+    public deleteAll(...list: T[]) {
         const body = JSON.stringify(list);
         const headers = new Headers({
             "Accept": "application/json",
@@ -47,9 +91,9 @@ export class Service<T> {
         if (locale !== null) {
             headers.append("Accept-Language", locale);
         }
-        const token = localStorage.getItem("token");
-        if (token !== null) {
-            headers.append("Authorization", "Bearer ".concat(token));
+        const token = this.getToken();
+        if (token?.isNotExpired()) {
+            headers.append("Authorization", "Bearer ".concat(token.toString()));
         }
         return fetch(this.endpoint, {
             body,
@@ -59,7 +103,7 @@ export class Service<T> {
         });
     }
 
-    deleteById(id: number) {
+    public deleteById(id: number) {
         const headers = new Headers({
             "Accept": "application/json"
         });
@@ -67,9 +111,9 @@ export class Service<T> {
         if (locale !== null) {
             headers.append("Accept-Language", locale);
         }
-        const token = localStorage.getItem("token");
-        if (token !== null) {
-            headers.append("Authorization", "Bearer ".concat(token));
+        const token = this.getToken();
+        if (token?.isNotExpired()) {
+            headers.append("Authorization", "Bearer ".concat(token.toString()));
         }
         return fetch(this.endpoint.concat("/", id.toString()), {
             headers,
@@ -78,7 +122,7 @@ export class Service<T> {
         });
     }
 
-    findAll(pagination?: Pagination<T>) {
+    public retrieveAll(pagination?: Pagination<T>) {
         const headers = new Headers({
             "Accept": "application/json"
         });
@@ -86,9 +130,9 @@ export class Service<T> {
         if (locale !== null) {
             headers.append("Accept-Language", locale);
         }
-        const token = localStorage.getItem("token");
-        if (token !== null) {
-            headers.append("Authorization", "Bearer ".concat(token));
+        const token = this.getToken();
+        if (token?.isNotExpired()) {
+            headers.append("Authorization", "Bearer ".concat(token.toString()));
         }
         const query = new URLSearchParams();
         if (pagination?.page !== undefined) {
@@ -107,7 +151,7 @@ export class Service<T> {
         });
     }
 
-    findById(id: number) {
+    public retrieveById(id: number) {
         const headers = new Headers({
             "Accept": "application/json"
         });
@@ -115,9 +159,9 @@ export class Service<T> {
         if (locale !== null) {
             headers.append("Accept-Language", locale);
         }
-        const token = localStorage.getItem("token");
-        if (token !== null) {
-            headers.append("Authorization", "Bearer ".concat(token));
+        const token = this.getToken();
+        if (token?.isNotExpired()) {
+            headers.append("Authorization", "Bearer ".concat(token.toString()));
         }
         return fetch(this.endpoint.concat("/", id.toString()), {
             headers,
@@ -126,7 +170,7 @@ export class Service<T> {
         });
     }
 
-    update(object: T) {
+    public update(object: T) {
         const body = JSON.stringify(object);
         const headers = new Headers({
             "Accept": "application/json",
@@ -136,9 +180,9 @@ export class Service<T> {
         if (locale !== null) {
             headers.append("Accept-Language", locale);
         }
-        const token = localStorage.getItem("token");
-        if (token !== null) {
-            headers.append("Authorization", "Bearer ".concat(token));
+        const token = this.getToken();
+        if (token?.isNotExpired()) {
+            headers.append("Authorization", "Bearer ".concat(token.toString()));
         }
         return fetch(this.endpoint, {
             body,

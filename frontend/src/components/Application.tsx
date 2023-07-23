@@ -14,25 +14,31 @@ import UserContext from "../contexts/UserContext";
 import Authorization from "../payloads/Authorization";
 import User from "../schemas/User";
 
-
 export default function Application() {
     const [error, setError] = React.useState<Error | null>(null);
     const [user, setUser] = React.useState<User | null>(null);
     const { userService } = React.useContext(ServiceContext);
-    function test() {
-        setInterval(() => {
-            userService.authorize()
+    React.useEffect(() => {
+        if (userService.getToken()?.isNotExpired()) {
+            userService.retrieveMe()
                 .then(async response => {
                     const body = await response.json();
                     if (!response.ok) {
                         throw body as Error;
                     }
-                    const authorization = body as Authorization;
-                    localStorage.setItem("token", authorization.token);
-                    setUser(authorization.user);
+                    setUser(body as User);
                 })
                 .catch(setError);
-        }, 590000);
+        }
+    }, []);
+    function test() {
+        // setInterval(() => {
+        //     userService.authorize()
+        //         .then(async response => {
+
+        //         })
+        //         .catch(setError);
+        // }, 590000);
     }
     return (
         <ThemeProvider theme={createTheme({

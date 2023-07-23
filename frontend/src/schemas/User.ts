@@ -1,6 +1,6 @@
 export interface User {
     id?: number;
-    fullname: string;
+    name: string;
     email: string;
     password: string;
     avtive?: boolean;

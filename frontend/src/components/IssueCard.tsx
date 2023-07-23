@@ -1,8 +1,10 @@
 import React from "react";
 import { Link as RouterLink } from "react-router-dom";
-import { CardActionArea, Card, Link, Avatar, Stack } from "@mui/material";
+import { CardActionArea, Card, Link, CardContent, Typography, Avatar, Tooltip } from "@mui/material";
 
 import Issue from "../schemas/Issue";
+import UserAvatar from "./UserAvatar";
+import LocaleContext from "../contexts/LocaleContext";
 
 interface Properties {
     issue: Issue;
@@ -31,21 +33,16 @@ const stringAvatar = (name: string) => {
 }
 
 export function IssueCard({ issue }: Properties) {
-    console.log(issue);
-
+    const locale = React.useContext(LocaleContext);
     return (<CardActionArea onAuxClick={event => {
         event.preventDefault()
     }}>
         <Card>
-            <Link component={RouterLink} underline="none" variant="body2" to="#">{ issue.name }</Link>
-            <Stack px={1}  direction="row" alignItems="center" justifyContent="space-between">
-                <Stack>
-
-                </Stack>
-                <Stack>
-                    <Avatar {...stringAvatar(issue.assignee.fullname)} src="#" />
-                </Stack>
-            </Stack>
+            <CardContent>
+                <Typography fontWeight={500} variant="body1">{issue.name}</Typography>
+                <Typography color="text.secondary" variant="body2">{issue.description}</Typography>
+                <UserAvatar user={issue.assignee} />
+            </CardContent>
         </Card>
     </CardActionArea>)
 }

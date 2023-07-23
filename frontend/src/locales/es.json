@@ -28,6 +28,15 @@
         }
     },
     "schemas": {
+        "issue": {
+            "singular": "Incidencia",
+            "plural": "Incidencias",
+            "properties": {
+                "name": "Nombre",
+                "description": "Descripción",
+                "assignee": "Responsable"
+            }
+        },
         "project": {
             "singular": "Proyecto",
             "plural": "Proyectos",

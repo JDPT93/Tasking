@@ -14,7 +14,7 @@ function ProjectBoard() {
     const locale = React.useContext(LocaleContext);
     const { projectService } = React.useContext(ServiceContext);
     React.useEffect(() => {
-        projectService.findById(+id!)
+        projectService.retrieveById(+id!)
             .then(async response => {
                 const body = await response.json();
                 if (!response.ok) {
@@ -61,16 +61,19 @@ function ProjectBoard() {
                 </Typography>
             </Breadcrumbs>
             {project
-                ? <ImageList gap={12} sx={{ gridAutoFlow: "column", gridTemplateColumns: "repeat(auto-fill,minmax(300px,1fr)) !important", gridAutoColumns: "minmax(300px, 1fr)" }}>
+                ? <ImageList gap={12} sx={{
+                    gridAutoFlow: "column",
+                    gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr)) !important",
+                    gridAutoColumns: "minmax(300px, 1fr)",
+                    minHeight: "100vh",
+                    padding: 2
+                }}>
                     {project!.stages!.sort((left, right) => left.position - right.position).map(stage =>
                         <ImageListItem>
-                            <Paper key={stage.id}>
-                                <Stack px={1}  direction="row" alignItems="center">
-                                    <Avatar sx={{ width: 24, height: 24 }} alt={stage?.name} src="#" />
-                                    <Typography color="text.secondary" fontWeight="bold" padding={2} textTransform="uppercase">{stage.name}</Typography>
-                                </Stack>
+                            <Paper key={stage.id} sx={{ height: "100%" }}>
+                                <Typography fontWeight={500} padding={2} textTransform="uppercase" variant="body2">{stage.name}</Typography>
                                 <Divider />
-                                <Stack minHeight={400} gap={1} spacing={2}>
+                                <Stack gap={1} padding={2}>
                                     {stage.issues?.map(issue => <IssueCard issue={issue} />)}
                                 </Stack>
                             </Paper>

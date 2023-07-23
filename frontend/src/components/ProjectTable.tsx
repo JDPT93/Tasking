@@ -3,7 +3,7 @@ import { Link as RouterLink } from "react-router-dom";
 import { Button, Link } from "@mui/material";
 import { Add as AddIcon } from "@mui/icons-material"
 
-import GenericTable from "./GenericTable";
+import GenericTable from "./Table";
 import LocaleContext from "../contexts/LocaleContext";
 import ServiceContext from "../contexts/ServiceContext";
 import ErrorContext from "../contexts/ErrorContext";
@@ -17,16 +17,17 @@ export default function ProjectTable() {
         caption={locale.schemas.project.plural}
         columns={[
             {
-                property: "name",
                 label: locale.schemas.project.properties.name,
-                map: (value, property, object) => <Link component={RouterLink} to={"project/".concat(object.id!.toString())}>{value}</Link>
+                map: (value, property, object) => <Link component={RouterLink} to={"project/".concat(object.id!.toString())}>{value}</Link>,
+                path: "name",
+                width: "30%"
             },
-            { property: "description", label: locale.schemas.project.properties.description, },
-            { property: "leader.fullname", label: locale.schemas.project.properties.leader },
+            { label: locale.schemas.project.properties.description, path: "description", width: "40%" },
+            { label: locale.schemas.project.properties.leader, path: "leader.name", width: "30%" },
         ]}
         onError={setError}
         onDelete={selection => projectService.deleteAll(...selection)}
-        onRetrieve={pagination => projectService.findAll(pagination)}
+        onRetrieve={pagination => projectService.retrieveAll(pagination)}
         tools={<Button sx={{ whiteSpace: "nowrap" }} variant="contained">{locale.actions.create} {locale.schemas.project.singular}</Button>}
     />)
 }
