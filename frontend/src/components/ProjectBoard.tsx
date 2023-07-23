@@ -1,6 +1,6 @@
 import React from "react";
 import { Link as RouterLink, useParams } from "react-router-dom";
-import { Box, Card, Link, Typography, Divider, Stack, ImageList, ImageListItem, CardActionArea, Breadcrumbs, Paper } from "@mui/material";
+import { Box, Card, Link, Typography, Divider, Stack, ImageList, ImageListItem, CardActionArea, Breadcrumbs, Paper, Avatar } from "@mui/material";
 import { DashboardOutlined as DashboardOutlinedIcon, FolderOutlined as FolderOutlinedIcon, InsertDriveFileOutlined as InsertDriveFileOutlinedIcon } from "@mui/icons-material";
 
 import IssueCard from "./IssueCard";
