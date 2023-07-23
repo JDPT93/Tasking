@@ -17,12 +17,16 @@ class Token {
         this.expirationTime = claims.exp * 1000;
     }
 
+    public isAlive() {
+        return this.expirationTime >= Date.now();
+    }
+
     public isExpired() {
         return this.expirationTime < Date.now();
     }
 
-    public isNotExpired() {
-        return !this.isExpired();
+    public timeLeft() {
+        return this.expirationTime - Date.now();
     }
 
     public toString() {
@@ -51,12 +55,12 @@ export class Service<T> {
         return token === null ? null : new Token(token);
     }
 
-    public setToken(value: string | null) {
-        if (value === null) {
-            localStorage.removeItem("token");
-        } else {
-            localStorage.setItem("token", value);
-        }
+    public setToken(value: string) {
+        localStorage.setItem("token", value);
+    }
+
+    public removeToken() {
+        localStorage.removeItem("token");
     }
 
     public create(object: T) {
@@ -70,7 +74,7 @@ export class Service<T> {
             headers.append("Accept-Language", locale);
         }
         const token = this.getToken();
-        if (token?.isNotExpired()) {
+        if (token?.isAlive()) {
             headers.append("Authorization", "Bearer ".concat(token.toString()));
         }
         return fetch(this.endpoint, {
@@ -92,7 +96,7 @@ export class Service<T> {
             headers.append("Accept-Language", locale);
         }
         const token = this.getToken();
-        if (token?.isNotExpired()) {
+        if (token?.isAlive()) {
             headers.append("Authorization", "Bearer ".concat(token.toString()));
         }
         return fetch(this.endpoint, {
@@ -112,7 +116,7 @@ export class Service<T> {
             headers.append("Accept-Language", locale);
         }
         const token = this.getToken();
-        if (token?.isNotExpired()) {
+        if (token?.isAlive()) {
             headers.append("Authorization", "Bearer ".concat(token.toString()));
         }
         return fetch(this.endpoint.concat("/", id.toString()), {
@@ -131,7 +135,7 @@ export class Service<T> {
             headers.append("Accept-Language", locale);
         }
         const token = this.getToken();
-        if (token?.isNotExpired()) {
+        if (token?.isAlive()) {
             headers.append("Authorization", "Bearer ".concat(token.toString()));
         }
         const query = new URLSearchParams();
@@ -160,7 +164,7 @@ export class Service<T> {
             headers.append("Accept-Language", locale);
         }
         const token = this.getToken();
-        if (token?.isNotExpired()) {
+        if (token?.isAlive()) {
             headers.append("Authorization", "Bearer ".concat(token.toString()));
         }
         return fetch(this.endpoint.concat("/", id.toString()), {
@@ -181,7 +185,7 @@ export class Service<T> {
             headers.append("Accept-Language", locale);
         }
         const token = this.getToken();
-        if (token?.isNotExpired()) {
+        if (token?.isAlive()) {
             headers.append("Authorization", "Bearer ".concat(token.toString()));
         }
         return fetch(this.endpoint, {
