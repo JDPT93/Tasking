@@ -29,16 +29,16 @@ public class UserSchema implements Serializable {
 
     private Integer id;
 
-    @NotBlank(message = "${user.field.name.not-blank}")
+    @NotBlank(message = "{user.field.name.not-blank}")
     private String name;
 
-    @NotBlank(message = "${user.field.email.not-blank}")
-    @Email(message = "${user.field.email.email}")
+    @NotBlank(message = "{user.field.email.not-blank}")
+    @Email(message = "{user.field.email.pattern}")
     private String email;
 
     @JsonProperty(access = Access.WRITE_ONLY)
-    @NotNull(message = "${user.field.password.not-null}")
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[@$!%*?&])[0-9A-Za-z@$!%*?&]{8,16}$", message = "${user.field.password.pattern}")
+    @NotNull(message = "{user.field.password.not-null}")
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[@$!%*?&])[0-9A-Za-z@$!%*?&]{8,16}$", message = "{user.field.password.pattern}")
     private String password;
 
     @JsonProperty(access = Access.READ_ONLY)

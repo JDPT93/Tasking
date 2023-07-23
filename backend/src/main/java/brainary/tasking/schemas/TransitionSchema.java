@@ -29,14 +29,14 @@ public class TransitionSchema implements Serializable {
     private Integer id;
 
     @Valid
-    @NotNull(message = "${transition.field.source.not-null}")
+    @NotNull(message = "{transition.field.source.not-null}")
     private StageSchema source;
 
     @Valid
-    @NotNull(message = "${transition.field.target.not-null}")
+    @NotNull(message = "{transition.field.target.not-null}")
     private StageSchema target;
 
-    @NotBlank(message = "${transition.field.name.not-blank}")
+    @NotBlank(message = "{transition.field.name.not-blank}")
     private String name;
 
     @JsonProperty(access = Access.READ_ONLY)

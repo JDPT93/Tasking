@@ -32,18 +32,18 @@ public class StageSchema implements Serializable {
     private Integer id;
 
     @Valid
-    @NotNull(message = "${stage.field.project.not-null}")
+    @NotNull(message = "{stage.field.project.not-null}")
     @JsonIgnoreProperties(value = { "stages" })
     private ProjectSchema project;
 
     @Valid
-    @NotNull(message = "${stage.field.type.not-null}")
+    @NotNull(message = "{stage.field.type.not-null}")
     private StageType type;
 
-    @NotBlank(message = "${stage.field.name.not-blank}")
+    @NotBlank(message = "{stage.field.name.not-blank}")
     private String name;
 
-    @NotNull(message = "${stage.field.position.not-null}")
+    @NotNull(message = "{stage.field.position.not-null}")
     private Integer position;
 
     @JsonProperty(access = Access.READ_ONLY)

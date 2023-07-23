@@ -30,17 +30,17 @@ public class IssueTypeSchema implements Serializable {
     private Integer id;
 
     @Valid
-    @NotNull(message = "${issue-type.field.project.not-null}")
+    @NotNull(message = "{issue-type.field.project.not-null}")
     private ProjectSchema project;
 
-    @NotBlank(message = "${issue-type.field.name.not-blank}")
+    @NotBlank(message = "{issue-type.field.name.not-blank}")
     private String name;
 
-    @NotBlank(message = "${issue-type.field.icon.not-blank}")
+    @NotBlank(message = "{issue-type.field.icon.not-blank}")
     private String icon;
 
-    @NotNull(message = "${issue-type.field.color.not-null}")
-    @Pattern(regexp = "^#[A-Fa-f0-9]{6}$", message = "${issue-type.field.color.pattern}")
+    @NotNull(message = "{issue-type.field.color.not-null}")
+    @Pattern(regexp = "^#[A-Fa-f0-9]{6}$", message = "{issue-type.field.color.pattern}")
     private String color;
 
     @JsonProperty(access = Access.READ_ONLY)

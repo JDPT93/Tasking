@@ -12,6 +12,7 @@ interface Column<T> {
     label: string;
     map?: (value: any, property: string, object: T) => any;
     path: string;
+    skeleton: React.ReactNode;
     width?: number | string;
 }
 
@@ -140,13 +141,9 @@ export default function GenericTable<T>({ caption, columns, onError, onDelete, o
                             ? Array.from({ length: pagination?.size ?? 5 }, (_, index) =>
                                 <TableRow key={`row-${index}`}>
                                     <TableCell padding="checkbox">
-                                        <Skeleton height={20} sx={{ m: "auto" }} variant="rounded" width={20} />
+                                        <Skeleton height={20} sx={{ margin: "auto" }} variant="rounded" width={20} />
                                     </TableCell>
-                                    {columns.map((column, index) =>
-                                        <TableCell key={`cell-${index}`}>
-                                            <Skeleton height={20} variant="rounded" />
-                                        </TableCell>
-                                    )}
+                                    {columns.map((column, index) => <TableCell key={`cell-${index}`}>{column.skeleton}</TableCell>)}
                                 </TableRow>
                             )
                             : page.content.map((object, index) =>
@@ -183,7 +180,7 @@ export default function GenericTable<T>({ caption, columns, onError, onDelete, o
             <TablePagination
                 component="div"
                 count={page?.totalItems ?? 0}
-                labelDisplayedRows={({ from, to, count }) => count > 0 ? `${from}-${to} / ${count}` : <Skeleton height={20} variant="rounded" width={60} />}
+                labelDisplayedRows={({ from, to, count }) => `[${from}, ${to}] / ${count}`}
                 labelRowsPerPage={locale.components.table.rowsPerPage}
                 onPageChange={(event, page) => dispatch({
                     type: "pagination.page.change",
