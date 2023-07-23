@@ -34,40 +34,40 @@ public class IssueSchema implements Serializable {
     private Integer id;
 
     @Valid
-    @NotNull(message = "${issue.field.type.not-null}")
+    @NotNull(message = "{issue.field.type.not-null}")
     @JsonIgnoreProperties(value = { "project" })
     private IssueTypeSchema type;
 
-    @NotBlank(message = "${issue.field.name.not-blank}")
+    @NotBlank(message = "{issue.field.name.not-blank}")
     private String name;
 
-    @NotBlank(message = "${issue.field.description.not-blank}")
+    @NotBlank(message = "{issue.field.description.not-blank}")
     private String description;
 
-    @NotNull(message = "${issue.field.priority.not-null}")
+    @NotNull(message = "{issue.field.priority.not-null}")
     private IssuePriority priority;
 
-    @NotNull(message = "${issue.field.complexity.not-null}")
+    @NotNull(message = "{issue.field.complexity.not-null}")
     private Integer complexity;
 
-    @NotNull(message = "${issue.field.start.not-null}")
-    @FutureOrPresent(message = "${issue.field.end.future-or-present}")
+    @NotNull(message = "{issue.field.start.not-null}")
+    @FutureOrPresent(message = "{issue.field.end.future-or-present}")
     private LocalDate start;
 
-    @NotNull(message = "${issue.field.end.not-null}")
-    @Future(message = "${issue.field.end.future}")
+    @NotNull(message = "{issue.field.end.not-null}")
+    @Future(message = "{issue.field.end.future}")
     private LocalDate end;
 
     @Valid
-    @NotNull(message = "${issue.field.reporter.not-null}")
+    @NotNull(message = "{issue.field.reporter.not-null}")
     private UserSchema reporter;
 
     @Valid
-    @NotNull(message = "${issue.field.assignee.not-null}")
+    @NotNull(message = "{issue.field.assignee.not-null}")
     private UserSchema assignee;
 
     @Valid
-    @NotNull(message = "${issue.field.stage.not-null}")
+    @NotNull(message = "{issue.field.stage.not-null}")
     @JsonIgnoreProperties(value = { "issues" })
     private StageSchema stage;
 

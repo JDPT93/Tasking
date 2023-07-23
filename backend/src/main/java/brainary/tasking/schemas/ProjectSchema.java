@@ -31,13 +31,13 @@ public class ProjectSchema implements Serializable {
     private Integer id;
 
     @Valid
-    @NotNull(message = "${project.field.leader.not-null}")
+    @NotNull(message = "{project.field.leader.not-null}")
     private UserSchema leader;
 
-    @NotBlank(message = "${project.field.name.not-blank}")
+    @NotBlank(message = "{project.field.name.not-blank}")
     private String name;
 
-    @NotBlank(message = "${project.field.description.not-blank}")
+    @NotBlank(message = "{project.field.description.not-blank}")
     private String description;
 
     @JsonProperty(access = Access.READ_ONLY)

@@ -1,27 +1,29 @@
 import React from "react";
-import { Avatar } from "@mui/material";
+import { Avatar, AvatarProps } from "@mui/material";
 
 import User from "../schemas/User";
 import ColorUtils from "../utils/ColorUtils";
 import StringUtils from "../utils/StringUtils";
 
-interface Properties {
+interface Properties extends AvatarProps {
     user: User;
 }
 
-export function UserAvatar({ user }: Properties) {
+export function UserAvatar({ user, ...inherit }: Properties) {
     return <Avatar
         alt={user.name}
         src={`/profiles/${user.id}.jpg`}
+        {...inherit}
         sx={{
             color: "white",
             backgroundColor: ColorUtils.fromString(user.name),
             fontWeight: 500,
-            mixBlendMode: "difference"
+            mixBlendMode: "difference",
+            ...inherit.sx
         }}
     >
         {StringUtils.initialism(user.name, 2)}
-    </Avatar>
+    </Avatar >
 }
 
 export default UserAvatar;

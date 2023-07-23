@@ -25,12 +25,12 @@ import lombok.experimental.SuperBuilder;
 @Schema(name = "Authentication")
 public class AuthenticationPayload implements Serializable {
 
-    @NotBlank(message = "${user.field.email.not-blank}")
-    @Email(message = "${user.field.email.email}")
+    @NotBlank(message = "{user.field.email.not-blank}")
+    @Email(message = "{user.field.email.email}")
     private String email;
 
-    @NotNull(message = "${user.field.password.not-null}")
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[@$!%*?&])[0-9A-Za-z@$!%*?&]{8,16}$", message = "${user.field.password.pattern}")
+    @NotNull(message = "{user.field.password.not-null}")
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[@$!%*?&])[0-9A-Za-z@$!%*?&]{8,16}$", message = "{user.field.password.pattern}")
     private String password;
 
 }

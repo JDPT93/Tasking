@@ -28,11 +28,11 @@ public class CollaborationSchema implements Serializable {
     private Integer id;
 
     @Valid
-    @NotNull(message = "${collaboration.field.project.not-null}")
+    @NotNull(message = "{collaboration.field.project.not-null}")
     private ProjectSchema project;
 
     @Valid
-    @NotNull(message = "${collaboration.field.collaborator.not-null}")
+    @NotNull(message = "{collaboration.field.collaborator.not-null}")
     private UserSchema collaborator;
 
     @JsonProperty(access = Access.READ_ONLY)
