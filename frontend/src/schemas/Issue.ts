@@ -3,7 +3,7 @@ import Stage from "./Stage";
 import User from "./User";
 
 export enum IssuePriority {
-    HIGHER, HIGH, MEDIUM, LOW, LOWER
+    HIGHER = "HIGHER", HIGH = "HIGH", MEDIUM = "MEDIUM", LOW = "LOW", LOWER = "LOWER"
 }
 
 export interface Issue {

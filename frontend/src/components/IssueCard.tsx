@@ -3,6 +3,7 @@ import { Link as RouterLink } from "react-router-dom";
 import { CardActionArea, Card, CardContent, Typography, Box, Stack, Chip, Icon } from "@mui/material";
 
 import Issue from "../schemas/Issue";
+import IssuePriorityIcon from "./IssuePriorityIcon"
 import UserAvatar from "./UserAvatar";
 import LocaleContext from "../contexts/LocaleContext";
 
@@ -12,7 +13,6 @@ interface Properties {
 
 export function IssueCard({ issue }: Properties) {
     const locale = React.useContext(LocaleContext);
-    console.log(issue);
 
     return (<CardActionArea onAuxClick={event => {
         event.preventDefault()
@@ -23,7 +23,8 @@ export function IssueCard({ issue }: Properties) {
                 <Typography color="text.secondary" variant="body2">{issue.description}</Typography>
                 <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mt: 1 }}>
                     <Icon children="task" color="primary" />
-                    {issue.complexity > 0 && <Chip label={issue.complexity} />}
+                    <IssuePriorityIcon priority={issue.priority} />
+                    {issue.complexity > 0 && <Chip sx={{ width: 24, height: 24 }} label={issue.complexity} />}
                     <Box flexGrow={1} />
                     <UserAvatar sx={{ width: 24, height: 24, fontSize: 12 }} user={issue.assignee} />
                 </ Stack>
