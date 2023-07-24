@@ -48,7 +48,7 @@ public class ProjectService {
         return projectSchema;
     }
 
-    public Page<ProjectSchema> retrieveAll(Pageable pageable) {
+    public Page<ProjectSchema> retrieveRelatedTo(Integer userId, Pageable pageable) {
         return projectRepository.findAll(pageable).map(projectEntity -> modelMapper.map(projectEntity, ProjectSchema.class));
     }
 

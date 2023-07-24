@@ -46,16 +46,19 @@ public class UserController {
         return new ResponseEntity<>(userService.create(userSchema), HttpStatus.CREATED);
     }
 
-    @GetMapping(path = "myself")
+    @GetMapping
     @SecurityRequirement(name = "Jwt")
-    public ResponseEntity<UserSchema> retrieveMyself(UsernamePasswordAuthenticationToken token) {
+    public ResponseEntity<UserSchema> retrieveCurrent(UsernamePasswordAuthenticationToken token) {
         return new ResponseEntity<>(userService.retrieveById((Integer) token.getPrincipal()), HttpStatus.OK);
     }
 
-    @PutMapping(path = "myself")
+    @PutMapping
     @SecurityRequirement(name = "Jwt")
-    public ResponseEntity<ChangelogPayload<UserSchema>> updateMyself(@RequestBody @Valid UserSchema userSchema, UsernamePasswordAuthenticationToken token) {
-        return new ResponseEntity<>(userService.updateMyself((Integer) token.getPrincipal(), userSchema), HttpStatus.OK);
+    public ResponseEntity<ChangelogPayload<UserSchema>> updateCurrent(UsernamePasswordAuthenticationToken token, @RequestBody @Valid UserSchema userSchema) {
+        if (!token.getPrincipal().equals(userSchema.getId())) {
+            // TODO: Throw exception: You are not this user.
+        }
+        return new ResponseEntity<>(userService.update(userSchema), HttpStatus.OK);
     }
 
 }

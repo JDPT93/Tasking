@@ -46,7 +46,7 @@ export class UserService extends Service<User> {
         });
     }
 
-    retrieveMyself() {
+    retrieveMe() {
         const headers = new Headers({
             "Accept": "application/json",
             "Content-Type": "application/json"
@@ -59,7 +59,7 @@ export class UserService extends Service<User> {
         if (token?.isAlive()) {
             headers.append("Authorization", "Bearer ".concat(token.toString()));
         }
-        return fetch(this.endpoint.concat("/myself"), {
+        return fetch(this.endpoint.concat("/me"), {
             headers,
             method: "GET",
             mode: "cors",

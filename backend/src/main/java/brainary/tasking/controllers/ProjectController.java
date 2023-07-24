@@ -58,19 +58,20 @@ public class ProjectController {
 
     @GetMapping
     @SecurityRequirement(name = "Jwt")
-    public ResponseEntity<Page<ProjectSchema>> retrieveAll(@ParameterObject Pageable Pageable) {
-        return new ResponseEntity<>(projectService.retrieveAll(Pageable), HttpStatus.OK);
+    public ResponseEntity<Page<ProjectSchema>> retrieveRelatedToMe(@ParameterObject Pageable pageable, UsernamePasswordAuthenticationToken token) {
+        return new ResponseEntity<>(projectService.retrieveRelatedTo((Integer) token.getPrincipal(), pageable), HttpStatus.OK);
     }
 
     @GetMapping(path = "{projectId}")
     @SecurityRequirement(name = "Jwt")
     public ResponseEntity<ProjectSchema> retrieveById(@PathVariable Integer projectId) {
-        return new ResponseEntity<>(projectService.retrieveById(projectId), HttpStatus.OK);
+        ProjectSchema projectSchema = projectService.retrieveById(projectId);
+        return new ResponseEntity<>(projectSchema, HttpStatus.OK);
     }
 
     @PutMapping
     @SecurityRequirement(name = "Jwt")
-    public ResponseEntity<ChangelogPayload<ProjectSchema>> update(@RequestBody ProjectSchema projectSchema) {
+    public ResponseEntity<ChangelogPayload<ProjectSchema>> update(@RequestBody @Valid ProjectSchema projectSchema) {
         return new ResponseEntity<>(projectService.update(projectSchema), HttpStatus.OK);
     }
 

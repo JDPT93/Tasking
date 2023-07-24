@@ -40,7 +40,7 @@ export default function Application() {
         const token = userService.getToken();
         if (token?.isAlive()) {
             startTokenRenewer();
-            userService.retrieveMyself()
+            userService.retrieveMe()
                 .then(async response => {
                     const body = await response.json();
                     if (!response.ok) {

@@ -6,8 +6,6 @@ import java.util.Set;
 import brainary.tasking.enumerations.StageType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -37,7 +35,6 @@ public class StageEntity implements Serializable {
     @JoinColumn(nullable = false)
     private ProjectEntity project;
 
-    @Enumerated(value = EnumType.ORDINAL)
     @Column(nullable = false)
     private StageType type;
 

@@ -74,7 +74,7 @@ public class UserService {
         return modelMapper.map(userRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, messageSource.getMessage("user.not-found", null, LocaleContextHolder.getLocale()))), UserSchema.class);
     }
 
-    public ChangelogPayload<UserSchema> updateMyself(Integer myselfId, UserSchema newUserSchema) {
+    public ChangelogPayload<UserSchema> update(UserSchema newUserSchema) {
         UserSchema oldUserSchema = retrieveById(newUserSchema.getId());
         newUserSchema.setActive(oldUserSchema.getActive());
         userRepository.save(modelMapper.map(newUserSchema, UserEntity.class));
