@@ -1,14 +1,14 @@
 export default class StringUtils {
 
     public static hashCode(input: string): number {
-        let hash = 0;
+        let accumulator = 0;
         for (let index = 0; index < input.length; index++) {
-            hash = ((hash << 5) - hash) ^ input.charCodeAt(index);
+            accumulator = ((accumulator << 5) - accumulator) ^ input.charCodeAt(index);
         }
-        return hash;
+        return accumulator;
     }
 
-    public static initialism(input: string, maxlength?: number) {
+    public static initialism(input: string, maxlength?: number): string {
         return input.trim().split(/\s+/, maxlength).map(word => word.charAt(0)).join("");
     }
 

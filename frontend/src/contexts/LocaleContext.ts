@@ -12,6 +12,15 @@ export interface LocaleContext {
             [label: string]: string
         }
     },
+    enumerations: {
+        [enumeration: string]: {
+            singular: string,
+            plural: string,
+            constants: {
+                [property: string]: string
+            }
+        }
+    },
     schemas: {
         [schema: string]: {
             singular: string,

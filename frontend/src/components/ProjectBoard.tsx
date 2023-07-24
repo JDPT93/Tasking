@@ -70,7 +70,7 @@ function ProjectBoard() {
                 }}>
                     {project!.stages!.sort((left, right) => left.position - right.position).map(stage =>
                         <ImageListItem>
-                            <Paper key={stage.id} sx={{ height: "100%" }}>
+                            <Paper elevation={2} key={stage.id} sx={{ height: "100%" }}>
                                 <Typography fontWeight={500} padding={2} textTransform="uppercase" variant="body2">{stage.name}</Typography>
                                 <Divider />
                                 <Stack gap={1} padding={2}>
@@ -80,8 +80,9 @@ function ProjectBoard() {
                         </ImageListItem>
                     )}
                 </ImageList>
-                : null}
-        </Box>
+                : null
+            }
+        </Box >
     )
 }
 

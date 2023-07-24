@@ -10,15 +10,16 @@ interface Properties extends AvatarProps {
 }
 
 export function UserAvatar({ user, ...inherit }: Properties) {
+    const backgroundColor = ColorUtils.fromString(user.name);
+    const color = ColorUtils.getForeground(backgroundColor);
     return <Avatar
         alt={user.name}
         src={`/profiles/${user.id}.jpg`}
         {...inherit}
         sx={{
-            color: "white",
-            backgroundColor: ColorUtils.fromString(user.name),
+            color,
+            backgroundColor,
             fontWeight: 500,
-            mixBlendMode: "difference",
             ...inherit.sx
         }}
     >

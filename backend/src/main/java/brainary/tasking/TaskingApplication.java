@@ -108,26 +108,26 @@ public class TaskingApplication implements CommandLineRunner {
                 IssueTypeEntity.builder()
                     .project(projectEntity)
                     .name("Tarea")
-                    .icon("TaskAlt")
-                    .color("#0000FF")
+                    .icon("assignment_turned_in")
+                    .color("#2196f3")
                     .active(true)
                     .build(),
                 IssueTypeEntity.builder()
                     .project(projectEntity)
                     .name("Error")
-                    .icon("ErrorOutline")
-                    .color("#FF0000")
+                    .icon("report")
+                    .color("#f44336")
                     .active(true)
                     .build());
             issueTypeRepository.saveAll(issueTypes);
 
-            for (Integer issue = 1; issue < 5; issue++) {
+            for (Integer issue = 0; issue < 5; issue++) {
                 issueRepository.save(IssueEntity.builder()
                     .type(issueTypes.get((int) Math.floor(Math.random() * issueTypes.size())))
                     .name("Tarea " + issue)
                     .description("Descripción " + issue)
-                    .priority(IssuePriority.MEDIUM)
-                    .complexity((int) Math.floor(Math.random() * 5 + 1))
+                    .priority(IssuePriority.values()[issue])
+                    .complexity((int) Math.floor(Math.random() * 6))
                     .start(LocalDate.now())
                     .end(LocalDate.now())
                     .reporter(leader)

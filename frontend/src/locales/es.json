@@ -29,13 +29,29 @@
             "selectedRows": "Filas seleccionadas"
         }
     },
+    "enumerations": {
+        "issuePriority": {
+            "singular": "Prioridad",
+            "plural": "Prioridades",
+            "constants": {
+                "higher": "Máxima",
+                "high": "Alta",
+                "medium": "Media",
+                "low": "Baja",
+                "lower": "Mínima"
+            }
+        }
+    },
     "schemas": {
         "issue": {
             "singular": "Incidencia",
             "plural": "Incidencias",
             "properties": {
+                "type": "Tipo",
                 "name": "Nombre",
                 "description": "Descripción",
+                "priority": "Prioridad",
+                "complexity": "Complejidad",
                 "assignee": "Responsable"
             }
         },
