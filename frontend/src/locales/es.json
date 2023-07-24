@@ -23,6 +23,8 @@
             "canNotSignIn": "¿No puede iniciar sesión?"
         },
         "table": {
+            "to": "a",
+            "of": "de",
             "rowsPerPage": "Filas por página",
             "selectedRows": "Filas seleccionadas"
         }

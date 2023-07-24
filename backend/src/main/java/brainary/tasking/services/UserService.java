@@ -38,7 +38,7 @@ public class UserService {
     private UserRepository userRepository;
 
     public AuthorizationPayload authenticate(AuthenticationPayload authenticationSchema) {
-        UserSchema userSchema = findByEmail(authenticationSchema.getEmail());
+        UserSchema userSchema = retrieveByEmail(authenticationSchema.getEmail());
         if (!(userSchema.getActive() && passwordEncoder.matches(authenticationSchema.getPassword(), userSchema.getPassword()))) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, messageSource.getMessage("user.unauthorized", null, LocaleContextHolder.getLocale()));
         }
@@ -66,16 +66,16 @@ public class UserService {
         return authorize(modelMapper.map(userRepository.save(modelMapper.map(userSchema, UserEntity.class)), UserSchema.class));
     }
 
-    public UserSchema findByEmail(String userEmail) {
+    public UserSchema retrieveByEmail(String userEmail) {
         return modelMapper.map(userRepository.findByEmail(userEmail).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, messageSource.getMessage("user.not-found", null, LocaleContextHolder.getLocale()))), UserSchema.class);
     }
 
-    public UserSchema findById(Integer userId) {
+    public UserSchema retrieveById(Integer userId) {
         return modelMapper.map(userRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, messageSource.getMessage("user.not-found", null, LocaleContextHolder.getLocale()))), UserSchema.class);
     }
 
-    public ChangelogPayload<UserSchema> update(UserSchema newUserSchema) {
-        UserSchema oldUserSchema = findById(newUserSchema.getId());
+    public ChangelogPayload<UserSchema> updateMyself(Integer myselfId, UserSchema newUserSchema) {
+        UserSchema oldUserSchema = retrieveById(newUserSchema.getId());
         newUserSchema.setActive(oldUserSchema.getActive());
         userRepository.save(modelMapper.map(newUserSchema, UserEntity.class));
         return ChangelogPayload.<UserSchema>builder()

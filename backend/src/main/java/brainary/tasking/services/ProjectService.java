@@ -43,21 +43,21 @@ public class ProjectService {
     }
 
     public ProjectSchema deleteById(Integer projectId) {
-        ProjectSchema projectSchema = findById(projectId);
+        ProjectSchema projectSchema = retrieveById(projectId);
         projectRepository.deleteById(projectId);
         return projectSchema;
     }
 
-    public Page<ProjectSchema> findAll(Pageable pageable) {
+    public Page<ProjectSchema> retrieveAll(Pageable pageable) {
         return projectRepository.findAll(pageable).map(projectEntity -> modelMapper.map(projectEntity, ProjectSchema.class));
     }
 
-    public ProjectSchema findById(Integer projectId) {
+    public ProjectSchema retrieveById(Integer projectId) {
         return modelMapper.map(projectRepository.findById(projectId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, messageSource.getMessage("project.not-found", null, LocaleContextHolder.getLocale()))), ProjectSchema.class);
     }
 
     public ChangelogPayload<ProjectSchema> update(ProjectSchema newProjectSchema) {
-        ProjectSchema oldProjectSchema = findById(newProjectSchema.getId());
+        ProjectSchema oldProjectSchema = retrieveById(newProjectSchema.getId());
         newProjectSchema.setActive(oldProjectSchema.getActive());
         projectRepository.save(modelMapper.map(newProjectSchema, ProjectEntity.class));
         return ChangelogPayload.<ProjectSchema>builder()

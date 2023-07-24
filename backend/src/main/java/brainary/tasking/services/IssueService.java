@@ -36,21 +36,21 @@ public class IssueService {
     }
 
     public IssueSchema deleteById(Integer issueId) {
-        IssueSchema issueSchema = findById(issueId);
+        IssueSchema issueSchema = retrieveById(issueId);
         issueRepository.deleteById(issueId);
         return issueSchema;
     }
 
-    public Page<IssueSchema> findAll(Pageable pageable) {
+    public Page<IssueSchema> retrieveAll(Pageable pageable) {
         return issueRepository.findAll(pageable).map(issueEntity -> modelMapper.map(issueEntity, IssueSchema.class));
     }
 
-    public IssueSchema findById(Integer issueId) {
+    public IssueSchema retrieveById(Integer issueId) {
         return modelMapper.map(issueRepository.findById(issueId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, messageSource.getMessage("issue.not-found", null, LocaleContextHolder.getLocale()))), IssueSchema.class);
     }
 
     public ChangelogPayload<IssueSchema> update(IssueSchema newIssueSchema) {
-        IssueSchema oldIssueSchema = findById(newIssueSchema.getId());
+        IssueSchema oldIssueSchema = retrieveById(newIssueSchema.getId());
         newIssueSchema.setActive(oldIssueSchema.getActive());
         issueRepository.save(modelMapper.map(newIssueSchema, IssueEntity.class));
         return ChangelogPayload.<IssueSchema>builder()
