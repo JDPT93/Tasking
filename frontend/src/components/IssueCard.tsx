@@ -1,6 +1,6 @@
 import React from "react";
 import { Link as RouterLink } from "react-router-dom";
-import { CardActionArea, Card, Link, CardContent, Typography, Avatar, Tooltip } from "@mui/material";
+import { CardActionArea, Card, CardContent, Typography, Box, Stack, Chip, Icon } from "@mui/material";
 
 import Issue from "../schemas/Issue";
 import UserAvatar from "./UserAvatar";
@@ -12,6 +12,8 @@ interface Properties {
 
 export function IssueCard({ issue }: Properties) {
     const locale = React.useContext(LocaleContext);
+    console.log(issue);
+
     return (<CardActionArea onAuxClick={event => {
         event.preventDefault()
     }}>
@@ -19,7 +21,12 @@ export function IssueCard({ issue }: Properties) {
             <CardContent>
                 <Typography fontWeight={500} variant="body1">{issue.name}</Typography>
                 <Typography color="text.secondary" variant="body2">{issue.description}</Typography>
-                <UserAvatar user={issue.assignee} />
+                <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mt: 1 }}>
+                    <Icon children="task" color="primary" />
+                    {issue.complexity > 0 && <Chip label={issue.complexity} />}
+                    <Box flexGrow={1} />
+                    <UserAvatar sx={{ width: 24, height: 24, fontSize: 12 }} user={issue.assignee} />
+                </ Stack>
             </CardContent>
         </Card>
     </CardActionArea>)
