@@ -1,6 +1,6 @@
-import { TableAction, TableState } from "../reducers/TableReducer";
+import { DataGridAction, DataGridState } from "../reducers/DataGridReducer";
 
 export interface TableContext<T> {
-    state: TableState<T>;
-    dispatch: (action: TableAction<T>) => void;
+  state: DataGridState<T>;
+  dispatch: (action: DataGridAction<T>) => void;
 }

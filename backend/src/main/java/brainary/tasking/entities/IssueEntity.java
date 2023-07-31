@@ -31,8 +31,18 @@ public class IssueEntity implements Serializable {
     private Integer id;
 
     @ManyToOne
+    @JoinColumn(nullable = true)
+    private IssueEntity parent;
+
+    @Column(nullable = false)
+    private Integer depth;
+
+    @ManyToOne
     @JoinColumn(nullable = false)
     private IssueTypeEntity type;
+
+    @Column(nullable = false)
+    private Integer index;
 
     @Column(nullable = false)
     private String name;

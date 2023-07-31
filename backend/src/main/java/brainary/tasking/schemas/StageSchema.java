@@ -1,7 +1,7 @@
 package brainary.tasking.schemas;
 
 import java.io.Serializable;
-import java.util.Set;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -43,14 +43,14 @@ public class StageSchema implements Serializable {
     @NotBlank(message = "{stage.field.name.not-blank}")
     private String name;
 
-    @NotNull(message = "{stage.field.position.not-null}")
-    private Integer position;
+    @NotNull(message = "{stage.field.index.not-null}")
+    private Integer index;
 
     @JsonProperty(access = Access.READ_ONLY)
     private Boolean active;
 
     @JsonIgnoreProperties(value = { "stage" })
     @JsonProperty(access = Access.READ_ONLY)
-    private Set<IssueSchema> issues;
+    private List<IssueSchema> issues;
 
 }

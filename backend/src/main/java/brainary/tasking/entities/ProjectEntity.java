@@ -1,8 +1,9 @@
 package brainary.tasking.entities;
 
 import java.io.Serializable;
-import java.util.Set;
+import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -43,7 +44,10 @@ public class ProjectEntity implements Serializable {
     @Column(nullable = false)
     private Boolean active;
 
-    @OneToMany(mappedBy = "project")
-    private Set<StageEntity> stages;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")
+    private List<StageEntity> stages;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")
+    private List<CollaborationEntity> collaborations;
 
 }

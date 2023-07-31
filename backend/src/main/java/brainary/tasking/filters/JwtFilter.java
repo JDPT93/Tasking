@@ -2,18 +2,15 @@ package brainary.tasking.filters;
 
 import java.io.IOException;
 import java.sql.Date;
-import java.util.List;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import io.jsonwebtoken.Claims;
+import brainary.tasking.tokens.JwtToken;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -46,19 +43,12 @@ public class JwtFilter extends OncePerRequestFilter {
             .compact();
     }
 
-    public UsernamePasswordAuthenticationToken parseToken(String token) {
-        Claims claims = Jwts.parser().setSigningKey(signingKey.getBytes()).parseClaimsJws(token).getBody();
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(Integer.parseInt(claims.getSubject()), token, List.of(new SimpleGrantedAuthority("ROLE_USER")));
-        authentication.setDetails(claims);
-        return authentication;
-    }
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
         try {
             String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
             if (!Objects.isNull(authorization) && authorization.startsWith(PREFIX)) {
-                SecurityContextHolder.getContext().setAuthentication(parseToken(authorization.substring(PREFIX.length())));
+                SecurityContextHolder.getContext().setAuthentication(new JwtToken(Jwts.parser().setSigningKey(signingKey.getBytes()).parseClaimsJws(authorization.substring(PREFIX.length())).getBody()));
             } else {
                 SecurityContextHolder.clearContext();
             }

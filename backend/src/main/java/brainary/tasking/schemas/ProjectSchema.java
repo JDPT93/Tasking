@@ -1,7 +1,7 @@
 package brainary.tasking.schemas;
 
 import java.io.Serializable;
-import java.util.Set;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -45,6 +45,10 @@ public class ProjectSchema implements Serializable {
 
     @JsonIgnoreProperties(value = { "project" })
     @JsonProperty(access = Access.READ_ONLY)
-    private Set<StageSchema> stages;
+    private List<StageSchema> stages;
+
+    @JsonIgnoreProperties(value = { "project" })
+    @JsonProperty(access = Access.READ_ONLY)
+    private List<CollaborationSchema> collaborations;
 
 }

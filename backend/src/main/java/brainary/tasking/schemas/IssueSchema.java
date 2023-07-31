@@ -34,9 +34,18 @@ public class IssueSchema implements Serializable {
     private Integer id;
 
     @Valid
+    private IssueSchema parent;
+
+    @NotNull(message = "{issue.field.depth.not-null}")
+    private Integer depth;
+
+    @Valid
     @NotNull(message = "{issue.field.type.not-null}")
     @JsonIgnoreProperties(value = { "project" })
     private IssueTypeSchema type;
+
+    @NotNull(message = "{issue.field.index.not-null}")
+    private Integer index;
 
     @NotBlank(message = "{issue.field.name.not-blank}")
     private String name;

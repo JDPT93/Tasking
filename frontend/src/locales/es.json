@@ -1,78 +1,87 @@
 {
-    "actions": {
-        "add": "Agregar",
-        "cancel": "Cancelar",
-        "create": "Crear",
-        "update": "Actualizar",
-        "delete": "Eliminar",
-        "filter": "Filtrar",
-        "signUp": "Registrarse",
-        "signIn": "Iniciar sesión",
-        "signOut": "Cerrar sesión",
-        "save": "Guardar"
+  "actions": {
+    "add": "Agregar",
+    "back": "Regresar",
+    "cancel": "Cancelar",
+    "create": "Crear",
+    "update": "Actualizar",
+    "delete": "Eliminar",
+    "filter": "Filtrar",
+    "signUp": "Registrarse",
+    "signIn": "Iniciar sesión",
+    "signOut": "Cerrar sesión",
+    "save": "Guardar"
+  },
+  "application": {
+    "name": "Tasking"
+  },
+  "components": {
+    "projectBoard": {
+      "name": "Tablero"
     },
-    "application": {
-        "name": "Tasking"
-    },
-    "components": {
-        "projectBoard": {
-            "name": "Tablero"
-        },
-        "signIn": {
-            "doNotHaveAnAccount": "¿No tiene una cuenta?",
-            "canNotSignIn": "¿No puede iniciar sesión?"
-        },
-        "table": {
-            "to": "a",
-            "of": "de",
-            "rowsPerPage": "Filas por página",
-            "selectedRows": "Filas seleccionadas"
-        }
-    },
-    "enumerations": {
-        "issuePriority": {
-            "singular": "Prioridad",
-            "plural": "Prioridades",
-            "constants": {
-                "higher": "Máxima",
-                "high": "Alta",
-                "medium": "Media",
-                "low": "Baja",
-                "lower": "Mínima"
-            }
-        }
-    },
-    "schemas": {
-        "issue": {
-            "singular": "Incidencia",
-            "plural": "Incidencias",
-            "properties": {
-                "type": "Tipo",
-                "name": "Nombre",
-                "description": "Descripción",
-                "priority": "Prioridad",
-                "complexity": "Complejidad",
-                "assignee": "Responsable"
-            }
-        },
-        "project": {
-            "singular": "Proyecto",
-            "plural": "Proyectos",
-            "properties": {
-                "leader": "Líder",
-                "name": "Nombre",
-                "description": "Descripción"
-            }
-        },
-        "user": {
-            "singular": "Usuario",
-            "plural": "Usarios",
-            "properties": {
-                "name": "Nombre",
-                "surname": "Apellido",
-                "email": "Correo electrónico",
-                "password": "Contraseña"
-            }
-        }
+    "table": {
+      "to": "a",
+      "of": "de",
+      "rowsPerPage": "Filas por página",
+      "selectedRows": "Filas seleccionadas"
     }
+  },
+  "enumerations": {
+    "issuePriority": {
+      "singular": "Prioridad",
+      "plural": "Prioridades",
+      "constants": {
+        "higher": "Máxima",
+        "high": "Alta",
+        "medium": "Media",
+        "low": "Baja",
+        "lower": "Mínima"
+      }
+    }
+  },
+  "pages": {
+    "error": {
+      "title": "Error",
+      "401": "La página solicitada requiere autenticación",
+      "403": "Acceso denegado a la pagina solicitada",
+      "404": "La página solicitada no fue encontrada"
+    },
+    "signIn": {
+      "doNotHaveAnAccount": "¿No tiene una cuenta?",
+      "canNotSignIn": "¿No puede iniciar sesión?"
+    }
+  },
+  "schemas": {
+    "issue": {
+      "singular": "Incidencia",
+      "plural": "Incidencias",
+      "properties": {
+        "type": "Tipo",
+        "name": "Nombre",
+        "description": "Descripción",
+        "priority": "Prioridad",
+        "complexity": "Complejidad",
+        "assignee": "Responsable"
+      }
+    },
+    "project": {
+      "singular": "Proyecto",
+      "plural": "Proyectos",
+      "properties": {
+        "leader": "Líder",
+        "name": "Nombre",
+        "description": "Descripción"
+      }
+    },
+    "user": {
+      "singular": "Usuario",
+      "plural": "Usarios",
+      "properties": {
+        "name": "Nombre",
+        "surname": "Apellido",
+        "email": "Correo electrónico",
+        "password": "Contraseña"
+      }
+    }
+  }
 }
