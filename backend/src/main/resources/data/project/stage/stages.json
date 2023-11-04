@@ -1,0 +1,146 @@
+[
+    {
+        "id": 1,
+        "project": {
+            "id": 1
+        },
+        "type": {
+            "id": 1
+        },
+        "name": "Por hacer",
+        "index": 0,
+        "active": true
+    },
+    {
+        "id": 2,
+        "project": {
+            "id": 1
+        },
+        "type": {
+            "id": 2
+        },
+        "name": "En Progreso",
+        "index": 1,
+        "active": true
+    },
+    {
+        "id": 3,
+        "project": {
+            "id": 1
+        },
+        "type": {
+            "id": 3
+        },
+        "name": "Hecho",
+        "index": 2,
+        "active": true
+    },
+    {
+        "id": 4,
+        "project": {
+            "id": 2
+        },
+        "type": {
+            "id": 1
+        },
+        "name": "Por hacer",
+        "index": 0,
+        "active": true
+    },
+    {
+        "id": 5,
+        "project": {
+            "id": 2
+        },
+        "type": {
+            "id": 2
+        },
+        "name": "En Progreso",
+        "index": 1,
+        "active": true
+    },
+    {
+        "id": 6,
+        "project": {
+            "id": 2
+        },
+        "type": {
+            "id": 3
+        },
+        "name": "Hecho",
+        "index": 2,
+        "active": true
+    },
+    {
+        "id": 7,
+        "project": {
+            "id": 3
+        },
+        "type": {
+            "id": 1
+        },
+        "name": "Por hacer",
+        "index": 0,
+        "active": true
+    },
+    {
+        "id": 8,
+        "project": {
+            "id": 3
+        },
+        "type": {
+            "id": 2
+        },
+        "name": "En Progreso",
+        "index": 1,
+        "active": true
+    },
+    {
+        "id": 9,
+        "project": {
+            "id": 3
+        },
+        "type": {
+            "id": 3
+        },
+        "name": "Hecho",
+        "index": 2,
+        "active": true
+    },
+    {
+        "id": 10,
+        "project": {
+            "id": 4
+        },
+        "type": {
+            "id": 1
+        },
+        "name": "Por hacer",
+        "index": 0,
+        "active": true
+    },
+    {
+        "id": 11,
+        "project": {
+            "id": 4
+        },
+        "type": {
+            "id": 2
+        },
+        "name": "En Progreso",
+        "index": 1,
+        "active": true
+    },
+    {
+        "id": 12,
+        "project": {
+            "id": 4
+        },
+        "type": {
+            "id": 3
+        },
+        "name": "Hecho",
+        "index": 2,
+        "active": true
+    }
+]

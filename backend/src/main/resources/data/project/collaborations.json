@@ -1,0 +1,22 @@
+[
+    {
+        "id": 1,
+        "project": {
+            "id": 1
+        },
+        "collaborator": {
+            "id": 2
+        },
+        "active": true
+    },
+    {
+        "id": 2,
+        "project": {
+            "id": 3
+        },
+        "collaborator": {
+            "id": 1
+        },
+        "active": true
+    }
+]

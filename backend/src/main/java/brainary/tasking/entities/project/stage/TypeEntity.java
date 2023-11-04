@@ -1,4 +1,4 @@
-package brainary.tasking.entities;
+package brainary.tasking.entities.project.stage;
 
 import java.io.Serializable;
 
@@ -12,12 +12,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity(name = "user")
+@Entity(name = "project:stage:type")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserEntity implements Serializable {
+public class TypeEntity implements Serializable {
 
     @Id
     @Column(nullable = false)
@@ -26,12 +26,6 @@ public class UserEntity implements Serializable {
 
     @Column(nullable = false)
     private String name;
-
-    @Column(nullable = false, unique = true)
-    private String email;
-
-    @Column(nullable = false)
-    private String password;
 
     @Column(nullable = false)
     private Boolean active;

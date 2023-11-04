@@ -1,0 +1,38 @@
+[
+    {
+        "id": 1,
+        "leader": {
+            "id": 1
+        },
+        "name": "Proyecto 1",
+        "description": "...",
+        "active": true
+    },
+    {
+        "id": 2,
+        "leader": {
+            "id": 1
+        },
+        "name": "Proyecto 2",
+        "description": "...",
+        "active": true
+    },
+    {
+        "id": 3,
+        "leader": {
+            "id": 2
+        },
+        "name": "Proyecto 3",
+        "description": "...",
+        "active": true
+    },
+    {
+        "id": 4,
+        "leader": {
+            "id": 2
+        },
+        "name": "Proyecto 4",
+        "description": "...",
+        "active": true
+    }
+]
