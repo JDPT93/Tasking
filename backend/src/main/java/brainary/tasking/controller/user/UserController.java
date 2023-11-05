@@ -26,26 +26,26 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping(path = "api/user/sign-in")
-    public ResponseEntity<AuthorizationPayload> authenticate(@RequestBody @Valid AuthenticationPayload authenticationPayload) {
-        return new ResponseEntity<>(userService.authorize(userService.authenticate(authenticationPayload)), HttpStatus.OK);
-    }
-
-    @PostMapping(path = "api/user/token")
-    @SecurityRequirement(name = "Jwt")
-    public ResponseEntity<AuthorizationPayload> authorize(JwtToken jwtToken) {
-        return new ResponseEntity<>(userService.reauthorize(jwtToken), HttpStatus.OK);
-    }
-
-    @PostMapping(path = "api/user")
-    public ResponseEntity<AuthorizationPayload> create(@RequestBody @Valid UserPayload userPayload) {
+    @PostMapping(path = "api/user/sign-up")
+    public ResponseEntity<AuthorizationPayload> signUp(@RequestBody @Valid UserPayload userPayload) {
         return new ResponseEntity<>(userService.create(userPayload), HttpStatus.CREATED);
     }
 
-    @GetMapping(path = "api/user/self")
+    @PostMapping(path = "api/user/sign-in")
+    public ResponseEntity<AuthorizationPayload> signIn(@RequestBody @Valid AuthenticationPayload authenticationPayload) {
+        return new ResponseEntity<>(userService.authorize(userService.authenticate(authenticationPayload)), HttpStatus.OK);
+    }
+
     @SecurityRequirement(name = "Jwt")
-    public ResponseEntity<UserPayload> retrieveSelf(JwtToken jwtToken) {
+    @GetMapping(path = "api/user/who-am-i")
+    public ResponseEntity<UserPayload> whoAmI(JwtToken jwtToken) {
         return new ResponseEntity<>(userService.retrieveById(Integer.parseInt(jwtToken.getSubject())), HttpStatus.OK);
+    }
+
+    @SecurityRequirement(name = "Jwt")
+    @PostMapping(path = "api/user/token")
+    public ResponseEntity<AuthorizationPayload> renewToken(JwtToken jwtToken) {
+        return new ResponseEntity<>(userService.reauthorize(jwtToken), HttpStatus.OK);
     }
 
 }

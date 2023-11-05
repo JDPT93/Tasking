@@ -5,8 +5,8 @@ import { Box, Button, Checkbox, IconButton, Paper, Table, TableBody, TableCell, 
 
 import LocaleContext from "../contexts/LocaleContext";
 
-import Page from "../../model/page";
-import Pagination from "../../model/pagination";
+import Page from "../../model/common/page";
+import Pagination from "../../model/common/pagination";
 
 import DataGridReducer, { DataGridState } from "../reducers/DataGridReducer";
 

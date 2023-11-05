@@ -1,4 +1,4 @@
-import Pagination from "../../model/pagination";
+import Pagination from "../../model/common/pagination";
 
 import Project from "../schemas/Project";
 
@@ -20,7 +20,7 @@ export class ProjectService extends Service<Project> {
     }
     const token = this.getToken();
     if (token?.isAlive()) {
-      headers.append("Authorization", "Bearer ".concat(token.toString()));
+      headers.append("Authorization", `Bearer ${token.toString()}`);
     }
     const query = new URLSearchParams();
     if (pagination?.page !== undefined) {

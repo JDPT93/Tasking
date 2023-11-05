@@ -1,21 +1,20 @@
-import Token from "@src/service/token";
+import Token from "./Token";
 
-import Pagination from "@src/model/pagination";
+import Pagination from "../../model/common/pagination";
 
 export class Service<T> {
 
-  public readonly scheme: "http" | "https";
-  public readonly host: string;
-  public readonly port: number;
+  public readonly secure: boolean = false;
+  public readonly host: string = "localhost";
+  public readonly port: number = 8080;
+  public readonly path: string;
 
   public get endpoint() {
-    return `${this.scheme}://${this.host}:${this.port}`;
+    return `${this.secure ? "https" : "http"}://${this.host}:${this.port}/${this.path}`;
   }
 
-  public constructor(settings: { scheme?: "http" | "https", host?: string, port?: number }) {
-    this.scheme = settings.scheme ?? "http";
-    this.host = settings.host ?? "localhost";
-    this.port = settings.port ?? 80;
+  public constructor(path: string) {
+    this.path = path;
   }
 
   public getToken(): Token | null {
@@ -43,7 +42,7 @@ export class Service<T> {
     }
     const token = this.getToken();
     if (token?.isAlive()) {
-      headers.append("Authorization", "Bearer ".concat(token.toString()));
+      headers.append("Authorization", `Bearer ${token.toString()}`);
     }
     return fetch(this.endpoint, {
       body,
@@ -65,7 +64,7 @@ export class Service<T> {
     }
     const token = this.getToken();
     if (token?.isAlive()) {
-      headers.append("Authorization", "Bearer ".concat(token.toString()));
+      headers.append("Authorization", `Bearer ${token.toString()}`);
     }
     return fetch(this.endpoint, {
       body,
@@ -85,7 +84,7 @@ export class Service<T> {
     }
     const token = this.getToken();
     if (token?.isAlive()) {
-      headers.append("Authorization", "Bearer ".concat(token.toString()));
+      headers.append("Authorization", `Bearer ${token.toString()}`);
     }
     return fetch(this.endpoint.concat("/", id.toString()), {
       headers,
@@ -104,7 +103,7 @@ export class Service<T> {
     }
     const token = this.getToken();
     if (token?.isAlive()) {
-      headers.append("Authorization", "Bearer ".concat(token.toString()));
+      headers.append("Authorization", `Bearer ${token.toString()}`);
     }
     const query = new URLSearchParams();
     if (pagination?.page !== undefined) {
@@ -133,7 +132,7 @@ export class Service<T> {
     }
     const token = this.getToken();
     if (token?.isAlive()) {
-      headers.append("Authorization", "Bearer ".concat(token.toString()));
+      headers.append("Authorization", `Bearer ${token.toString()}`);
     }
     return fetch(this.endpoint.concat("/", id.toString()), {
       headers,
@@ -154,7 +153,7 @@ export class Service<T> {
     }
     const token = this.getToken();
     if (token?.isAlive()) {
-      headers.append("Authorization", "Bearer ".concat(token.toString()));
+      headers.append("Authorization", `Bearer ${token.toString()}`);
     }
     return fetch(this.endpoint, {
       body,

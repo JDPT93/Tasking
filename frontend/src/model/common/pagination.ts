@@ -1,4 +1,4 @@
-import Sort from "@src/model/sort";
+import Sort from "model/common/sort";
 
 export interface Pagination {
   page?: number;

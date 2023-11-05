@@ -1,6 +1,6 @@
-import Page from "../../model/page";
+import Page from "../../model/common/page";
 
-import Pagination from "../../model/pagination";
+import Pagination from "../../model/common/pagination";
 
 export interface DataGridState<T> {
   pagination: Pagination;
