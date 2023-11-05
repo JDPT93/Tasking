@@ -14,15 +14,15 @@ public class JwtToken extends UsernamePasswordAuthenticationToken {
     }
 
     public String getId() {
-        return ((Claims) this.getPrincipal()).getId();
+        return ((Claims) getPrincipal()).getId();
     }
 
     public String getSubject() {
-        return ((Claims) this.getPrincipal()).getSubject();
+        return ((Claims) getPrincipal()).getSubject();
     }
 
     public Claims getClaims() {
-        return (Claims) this.getPrincipal();
+        return (Claims) getPrincipal();
     }
 
 }

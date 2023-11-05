@@ -59,7 +59,7 @@ public class UserService {
     }
 
     public AuthorizationPayload reauthorize(JwtToken jwtToken) {
-        return this.authorize(userRepository.findOne((root, query, builder) -> {
+        return authorize(userRepository.findOne((root, query, builder) -> {
             Predicate equalId = builder.equal(root.get("id"), jwtToken.getSubject());
             Predicate isActive = builder.isTrue(root.get("active"));
             return builder.and(equalId, isActive);
@@ -74,7 +74,7 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "user.conflict");
         }
         userPayload.setPassword(passwordEncoder.encode(userPayload.getPassword()));
-        return this.authorize(modelMapper.map(userRepository.save(modelMapper.map(userPayload, UserEntity.class)), UserPayload.class));
+        return authorize(modelMapper.map(userRepository.save(modelMapper.map(userPayload, UserEntity.class)), UserPayload.class));
     }
 
     public UserPayload retrieveByEmail(String userEmail) {

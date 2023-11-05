@@ -3,8 +3,8 @@ package brainary.tasking;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -51,7 +51,7 @@ public class TaskingApplication implements CommandLineRunner {
     @Bean
     public ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        modelMapper.getConfiguration().setPreferNestedProperties(false);
         return modelMapper;
     }
 
@@ -65,23 +65,24 @@ public class TaskingApplication implements CommandLineRunner {
         return mappingIterator.readAll();
     }
 
+    @Value(value = "${tasking.data.initialize}")
+    private Boolean initialize;
+
     @Override
     public void run(String... args) throws Exception {
-        PasswordEncoder passwordEncoder = passwordEncoder();
-
-        userRepository.saveAll(loadJson(brainary.tasking.entity.user.UserEntity.class, "data/user/users.json").stream().map(userEntity -> {
-            userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
-            return userEntity;
-        }).toList());
-
-        projectRepository.saveAll(loadJson(brainary.tasking.entity.project.ProjectEntity.class, "data/project/projects.json"));
-        collaborationRepository.saveAll(loadJson(brainary.tasking.entity.project.CollaborationEntity.class, "data/project/collaborations.json"));
-
-        stageTypeRepository.saveAll(loadJson(brainary.tasking.entity.project.stage.TypeEntity.class, "data/project/stage/types.json"));
-        stageRepository.saveAll(loadJson(brainary.tasking.entity.project.stage.StageEntity.class, "data/project/stage/stages.json"));
-
-        goalTypeRepository.saveAll(loadJson(brainary.tasking.entity.project.goal.TypeEntity.class, "data/project/goal/types.json"));
-        priorityRepository.saveAll(loadJson(brainary.tasking.entity.project.goal.PriorityEntity.class, "data/project/goal/priorities.json"));
+        if (initialize) {
+            PasswordEncoder passwordEncoder = passwordEncoder();
+            userRepository.saveAll(loadJson(brainary.tasking.entity.user.UserEntity.class, "data/user/users.json").stream().map(userEntity -> {
+                userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
+                return userEntity;
+            }).toList());
+            projectRepository.saveAll(loadJson(brainary.tasking.entity.project.ProjectEntity.class, "data/project/projects.json"));
+            collaborationRepository.saveAll(loadJson(brainary.tasking.entity.project.CollaborationEntity.class, "data/project/collaborations.json"));
+            stageTypeRepository.saveAll(loadJson(brainary.tasking.entity.project.stage.TypeEntity.class, "data/project/stage/types.json"));
+            stageRepository.saveAll(loadJson(brainary.tasking.entity.project.stage.StageEntity.class, "data/project/stage/stages.json"));
+            goalTypeRepository.saveAll(loadJson(brainary.tasking.entity.project.goal.TypeEntity.class, "data/project/goal/types.json"));
+            priorityRepository.saveAll(loadJson(brainary.tasking.entity.project.goal.PriorityEntity.class, "data/project/goal/priorities.json"));
+        }
     }
 
 }

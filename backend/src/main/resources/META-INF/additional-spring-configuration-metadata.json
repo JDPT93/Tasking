@@ -7,6 +7,10 @@
     {
       "name": "tasking.jwt.signing-key",
       "type": "java.lang.String"
+    },
+    {
+      "name": "tasking.data.initialize",
+      "type": "java.lang.Boolean"
     }
   ]
 }
