@@ -5,7 +5,6 @@ import java.io.Serializable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,12 +14,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(name = "Priority")
+@Schema(name = "project:goal:priority")
 public class PriorityPayload implements Serializable {
 
     private Integer id;
 
-    @NotBlank(message = "{priority.field.name.not-blank}")
     private String name;
 
     @JsonIgnore

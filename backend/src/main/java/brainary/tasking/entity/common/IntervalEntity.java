@@ -20,6 +20,6 @@ public class IntervalEntity<T> implements Serializable {
     private T from;
 
     @Column(nullable = false)
-    private T active;
+    private T to;
 
 }

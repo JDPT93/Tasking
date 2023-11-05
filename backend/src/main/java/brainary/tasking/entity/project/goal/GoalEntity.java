@@ -33,6 +33,10 @@ public class GoalEntity implements Serializable {
     @JoinColumn(nullable = false)
     private TypeEntity type;
 
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private PriorityEntity priority;
+
     @Column(nullable = false)
     private Integer index;
 

@@ -3,7 +3,13 @@ export interface User {
   name: string;
   email: string;
   password: string;
-  active: boolean;
 }
+
+export const defaultUser: User = {
+  id: NaN,
+  name: "",
+  email: "",
+  password: ""
+};
 
 export default User;

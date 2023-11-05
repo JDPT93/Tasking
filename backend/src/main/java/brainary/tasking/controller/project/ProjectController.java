@@ -31,7 +31,7 @@ public class ProjectController {
 
     // @PostMapping
     // @SecurityRequirement(name = "Jwt")
-    // public ResponseEntity<ProjectPayload> create(JwtToken jwtToken, @RequestBody @Valid ProjectPayload projectPayload) {
+    // public ResponseEntity<ProjectPayload> create(JwtToken jwtToken, @RequestBody ProjectPayload projectPayload) {
     // if (Integer.parseInt(jwtToken.getSubject()) != projectPayload.getLeader().getId()) {
     // // TODO: Throw exception: You must be the project leader.
     // }
@@ -65,7 +65,7 @@ public class ProjectController {
 
     // @PutMapping
     // @SecurityRequirement(name = "Jwt")
-    // public ResponseEntity<ChangelogPayload<ProjectPayload>> update(@RequestBody @Valid ProjectPayload projectPayload) {
+    // public ResponseEntity<ChangelogPayload<ProjectPayload>> update(@RequestBody ProjectPayload projectPayload) {
     // return new ResponseEntity<>(projectService.update(projectPayload), HttpStatus.OK);
     // }
 
