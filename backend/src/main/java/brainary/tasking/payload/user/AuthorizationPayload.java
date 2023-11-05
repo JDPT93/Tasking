@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(name = "Authorization")
+@Schema(name = "user:authorization")
 public class AuthorizationPayload implements Serializable {
 
     private UserPayload user;

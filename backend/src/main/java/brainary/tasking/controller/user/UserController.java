@@ -16,7 +16,6 @@ import brainary.tasking.security.JwtToken;
 import brainary.tasking.service.user.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 
 @Tag(name = "User")
 @RestController
@@ -27,7 +26,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping(path = "api/user/sign-in")
-    public ResponseEntity<AuthorizationPayload> authenticate(@RequestBody @Valid AuthenticationPayload authenticationPayload) {
+    public ResponseEntity<AuthorizationPayload> authenticate(@RequestBody AuthenticationPayload authenticationPayload) {
         return new ResponseEntity<>(userService.authorize(userService.authenticate(authenticationPayload)), HttpStatus.OK);
     }
 
@@ -38,7 +37,7 @@ public class UserController {
     }
 
     @PostMapping(path = "api/user")
-    public ResponseEntity<AuthorizationPayload> create(@RequestBody @Valid UserPayload userPayload) {
+    public ResponseEntity<AuthorizationPayload> create(@RequestBody UserPayload userPayload) {
         return new ResponseEntity<>(userService.create(userPayload), HttpStatus.CREATED);
     }
 
