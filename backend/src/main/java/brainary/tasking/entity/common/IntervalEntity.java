@@ -1,4 +1,4 @@
-package brainary.tasking.entity;
+package brainary.tasking.entity.common;
 
 import java.io.Serializable;
 

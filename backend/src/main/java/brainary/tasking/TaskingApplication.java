@@ -2,11 +2,15 @@ package brainary.tasking;
 
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.fasterxml.jackson.databind.MappingIterator;
@@ -22,9 +26,6 @@ public class TaskingApplication implements CommandLineRunner {
     public static void main(String[] args) {
         SpringApplication.run(TaskingApplication.class, args);
     }
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private brainary.tasking.repository.user.UserRepository userRepository;
@@ -47,6 +48,18 @@ public class TaskingApplication implements CommandLineRunner {
     @Autowired
     private brainary.tasking.repository.project.goal.PriorityRepository priorityRepository;
 
+    @Bean
+    public ModelMapper modelMapper() {
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        return modelMapper;
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
     private <T> List<T> loadJson(Class<T> type, String path) throws Exception {
         MappingIterator<T> mappingIterator = new ObjectMapper().readerFor(type).readValues(new ClassPathResource(path).getFile());
         return mappingIterator.readAll();
@@ -54,7 +67,9 @@ public class TaskingApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        userRepository.saveAll(loadJson(brainary.tasking.entity.user.UserEntity.class, "data/users.json").stream().map(userEntity -> {
+        PasswordEncoder passwordEncoder = passwordEncoder();
+
+        userRepository.saveAll(loadJson(brainary.tasking.entity.user.UserEntity.class, "data/user/users.json").stream().map(userEntity -> {
             userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
             return userEntity;
         }).toList());

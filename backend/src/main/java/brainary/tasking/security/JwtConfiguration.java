@@ -1,30 +1,22 @@
-package brainary.tasking.configuration;
+package brainary.tasking.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import brainary.tasking.security.JwtFilter;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 
 @Configuration
 @SecurityScheme(type = SecuritySchemeType.HTTP, name = "Jwt", scheme = "Bearer")
-public class SecurityConfiguration {
+public class JwtConfiguration {
 
     @Autowired
-    public JwtFilter jwtFilter;
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+    private JwtFilter jwtFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -32,7 +24,7 @@ public class SecurityConfiguration {
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(customizer -> customizer
                 .requestMatchers(HttpMethod.OPTIONS).permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/user", "/api/user/authentication").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/user", "/api/user/sign-in").permitAll()
                 .requestMatchers("/api/**").authenticated()
                 .anyRequest().permitAll())
             .build();
