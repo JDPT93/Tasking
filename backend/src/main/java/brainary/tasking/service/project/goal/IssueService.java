@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import brainary.tasking.entities.project.goal.IssueEntity;
+import brainary.tasking.entity.project.goal.IssueEntity;
 import brainary.tasking.payload.ChangelogPayload;
 import brainary.tasking.payload.project.goal.IssuePayload;
 import brainary.tasking.repository.project.goal.IssueRepository;

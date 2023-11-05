@@ -8,13 +8,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import brainary.tasking.entities.project.CollaborationEntity;
+import brainary.tasking.entity.project.CollaborationEntity;
 import brainary.tasking.payload.ChangelogPayload;
 import brainary.tasking.payload.project.CollaborationPayload;
 import brainary.tasking.payload.project.goal.IssuePayload;
-import brainary.tasking.repository.UserRepository;
 import brainary.tasking.repository.project.CollaborationRepository;
 import brainary.tasking.repository.project.ProjectRepository;
+import brainary.tasking.repository.user.UserRepository;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 

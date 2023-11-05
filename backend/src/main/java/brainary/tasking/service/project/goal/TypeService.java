@@ -10,7 +10,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import brainary.tasking.repository.project.ProjectRepository;
 import brainary.tasking.repository.project.goal.TypeRepository;
-import brainary.tasking.entities.project.goal.TypeEntity;
+import brainary.tasking.entity.project.goal.TypeEntity;
 import brainary.tasking.payload.ChangelogPayload;
 import brainary.tasking.payload.project.goal.IssuePayload;
 import brainary.tasking.payload.project.goal.TypePayload;

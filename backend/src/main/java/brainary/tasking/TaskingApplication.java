@@ -27,7 +27,7 @@ public class TaskingApplication implements CommandLineRunner {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private brainary.tasking.repository.UserRepository userRepository;
+    private brainary.tasking.repository.user.UserRepository userRepository;
 
     @Autowired
     private brainary.tasking.repository.project.ProjectRepository projectRepository;
@@ -54,19 +54,19 @@ public class TaskingApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        userRepository.saveAll(loadJson(brainary.tasking.entities.UserEntity.class, "data/users.json").stream().map(userEntity -> {
+        userRepository.saveAll(loadJson(brainary.tasking.entity.user.UserEntity.class, "data/users.json").stream().map(userEntity -> {
             userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
             return userEntity;
         }).toList());
 
-        projectRepository.saveAll(loadJson(brainary.tasking.entities.project.ProjectEntity.class, "data/project/projects.json"));
-        collaborationRepository.saveAll(loadJson(brainary.tasking.entities.project.CollaborationEntity.class, "data/project/collaborations.json"));
+        projectRepository.saveAll(loadJson(brainary.tasking.entity.project.ProjectEntity.class, "data/project/projects.json"));
+        collaborationRepository.saveAll(loadJson(brainary.tasking.entity.project.CollaborationEntity.class, "data/project/collaborations.json"));
 
-        stageTypeRepository.saveAll(loadJson(brainary.tasking.entities.project.stage.TypeEntity.class, "data/project/stage/types.json"));
-        stageRepository.saveAll(loadJson(brainary.tasking.entities.project.stage.StageEntity.class, "data/project/stage/stages.json"));
+        stageTypeRepository.saveAll(loadJson(brainary.tasking.entity.project.stage.TypeEntity.class, "data/project/stage/types.json"));
+        stageRepository.saveAll(loadJson(brainary.tasking.entity.project.stage.StageEntity.class, "data/project/stage/stages.json"));
 
-        goalTypeRepository.saveAll(loadJson(brainary.tasking.entities.project.goal.TypeEntity.class, "data/project/goal/types.json"));
-        priorityRepository.saveAll(loadJson(brainary.tasking.entities.project.goal.PriorityEntity.class, "data/project/goal/priorities.json"));
+        goalTypeRepository.saveAll(loadJson(brainary.tasking.entity.project.goal.TypeEntity.class, "data/project/goal/types.json"));
+        priorityRepository.saveAll(loadJson(brainary.tasking.entity.project.goal.PriorityEntity.class, "data/project/goal/priorities.json"));
     }
 
 }

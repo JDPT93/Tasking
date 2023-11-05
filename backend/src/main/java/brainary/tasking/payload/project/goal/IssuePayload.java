@@ -2,8 +2,8 @@ package brainary.tasking.payload.project.goal;
 
 import java.time.LocalDate;
 
-import brainary.tasking.payload.UserPayload;
 import brainary.tasking.payload.project.stage.StagePayload;
+import brainary.tasking.payload.user.UserPayload;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
