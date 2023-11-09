@@ -17,11 +17,11 @@ import lombok.Setter;
 @Schema(name = "project:goal:priority")
 public class PriorityPayload implements Serializable {
 
-    private Integer id;
+	private Integer id;
 
-    private String name;
+	private String name;
 
-    @JsonIgnore
-    private Boolean active;
+	@JsonIgnore
+	private Boolean active;
 
 }

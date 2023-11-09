@@ -1,5 +1,5 @@
 export interface Sort {
-    [property: string]: "asc" | "desc"
+	[property: string]: "asc" | "desc"
 }
 
 export default Sort;

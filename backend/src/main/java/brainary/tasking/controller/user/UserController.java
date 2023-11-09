@@ -22,29 +22,29 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @CrossOrigin(origins = "*")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+	@Autowired
+	private UserService userService;
 
-    @PostMapping(path = "api/user/sign-up")
-    public ResponseEntity<AuthorizationPayload> signUp(@RequestBody UserPayload userPayload) {
-        return new ResponseEntity<>(userService.create(userPayload), HttpStatus.CREATED);
-    }
+	@PostMapping(path = "api/user/sign-up")
+	public ResponseEntity<AuthorizationPayload> signUp(@RequestBody UserPayload userPayload) {
+		return new ResponseEntity<>(userService.create(userPayload), HttpStatus.CREATED);
+	}
 
-    @PostMapping(path = "api/user/sign-in")
-    public ResponseEntity<AuthorizationPayload> signIn(@RequestBody AuthenticationPayload authenticationPayload) {
-        return new ResponseEntity<>(userService.authorize(userService.authenticate(authenticationPayload)), HttpStatus.OK);
-    }
+	@PostMapping(path = "api/user/sign-in")
+	public ResponseEntity<AuthorizationPayload> signIn(@RequestBody AuthenticationPayload authenticationPayload) {
+		return new ResponseEntity<>(userService.authorize(userService.authenticate(authenticationPayload)), HttpStatus.OK);
+	}
 
-    @SecurityRequirement(name = "Jwt")
-    @GetMapping(path = "api/user/who-am-i")
-    public ResponseEntity<UserPayload> whoAmI(JwtToken jwtToken) {
-        return new ResponseEntity<>(userService.retrieveById(Integer.parseInt(jwtToken.getSubject())), HttpStatus.OK);
-    }
+	@SecurityRequirement(name = "Jwt")
+	@GetMapping(path = "api/user/who-am-i")
+	public ResponseEntity<UserPayload> whoAmI(JwtToken jwtToken) {
+		return new ResponseEntity<>(userService.retrieveById(Integer.parseInt(jwtToken.getSubject())), HttpStatus.OK);
+	}
 
-    @SecurityRequirement(name = "Jwt")
-    @PostMapping(path = "api/user/token")
-    public ResponseEntity<AuthorizationPayload> renewToken(JwtToken jwtToken) {
-        return new ResponseEntity<>(userService.reauthorize(jwtToken), HttpStatus.OK);
-    }
+	@SecurityRequirement(name = "Jwt")
+	@PostMapping(path = "api/user/token")
+	public ResponseEntity<AuthorizationPayload> renewToken(JwtToken jwtToken) {
+		return new ResponseEntity<>(userService.reauthorize(jwtToken), HttpStatus.OK);
+	}
 
 }

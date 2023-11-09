@@ -17,15 +17,15 @@ import lombok.Setter;
 @Schema(name = "project:stage:transition")
 public class TransitionPayload implements Serializable {
 
-    private Integer id;
+	private Integer id;
 
-    private StagePayload source;
+	private StagePayload source;
 
-    private StagePayload target;
+	private StagePayload target;
 
-    private String name;
+	private String name;
 
-    @JsonIgnore
-    private Boolean active;
+	@JsonIgnore
+	private Boolean active;
 
 }

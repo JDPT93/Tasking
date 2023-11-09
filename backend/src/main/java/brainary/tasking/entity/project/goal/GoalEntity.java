@@ -24,29 +24,29 @@ import lombok.Setter;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class GoalEntity implements Serializable {
 
-    @Id
-    @Column(nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+	@Id
+	@Column(nullable = false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private TypeEntity type;
+	@ManyToOne
+	@JoinColumn(nullable = false)
+	private TypeEntity type;
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private PriorityEntity priority;
+	@ManyToOne
+	@JoinColumn(nullable = false)
+	private PriorityEntity priority;
 
-    @Column(nullable = false)
-    private Integer index;
+	@Column(nullable = false)
+	private Integer index;
 
-    @Column(nullable = false)
-    private String name;
+	@Column(nullable = false)
+	private String name;
 
-    @Column(nullable = false)
-    private String description;
+	@Column(nullable = false)
+	private String description;
 
-    @Column(nullable = false)
-    private Boolean active;
+	@Column(nullable = false)
+	private Boolean active;
 
 }

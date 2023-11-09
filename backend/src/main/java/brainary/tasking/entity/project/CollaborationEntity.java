@@ -22,20 +22,20 @@ import lombok.Setter;
 @AllArgsConstructor
 public class CollaborationEntity implements Serializable {
 
-    @Id
-    @Column(nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+	@Id
+	@Column(nullable = false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private ProjectEntity project;
+	@ManyToOne
+	@JoinColumn(nullable = false)
+	private ProjectEntity project;
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private UserEntity collaborator;
+	@ManyToOne
+	@JoinColumn(nullable = false)
+	private UserEntity collaborator;
 
-    @Column(nullable = false)
-    private Boolean active;
+	@Column(nullable = false)
+	private Boolean active;
 
 }

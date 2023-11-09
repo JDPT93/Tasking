@@ -19,16 +19,16 @@ import lombok.Setter;
 @Schema(name = "user")
 public class UserPayload implements Serializable {
 
-    private Integer id;
+	private Integer id;
 
-    private String name;
+	private String name;
 
-    private String email;
+	private String email;
 
-    @JsonProperty(access = Access.WRITE_ONLY)
-    private String password;
+	@JsonProperty(access = Access.WRITE_ONLY)
+	private String password;
 
-    @JsonIgnore
-    private Boolean active;
+	@JsonIgnore
+	private Boolean active;
 
 }

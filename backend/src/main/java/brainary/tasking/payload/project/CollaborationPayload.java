@@ -18,13 +18,13 @@ import lombok.Setter;
 @Schema(name = "project:collaboration")
 public class CollaborationPayload implements Serializable {
 
-    private Integer id;
+	private Integer id;
 
-    private ProjectPayload project;
+	private ProjectPayload project;
 
-    private UserPayload collaborator;
+	private UserPayload collaborator;
 
-    @JsonIgnore
-    private Boolean active;
+	@JsonIgnore
+	private Boolean active;
 
 }

@@ -1,16 +1,16 @@
 [
-    {
-        "id": 1,
-        "name": "José Daniel Pérez Torres",
-        "email": "josedanielpereztorres@gmail.com",
-        "password": "1234567890",
-        "active": true
-    },
-    {
-        "id": 2,
-        "name": "Jeferson Steven Burgos Ramos",
-        "email": "jefersonburgos98@gmail.com",
-        "password": "1234567890",
-        "active": true
-    }
+	{
+		"id": 1,
+		"name": "José Daniel Pérez Torres",
+		"email": "josedanielpereztorres@gmail.com",
+		"password": "1234567890",
+		"active": true
+	},
+	{
+		"id": 2,
+		"name": "Jeferson Steven Burgos Ramos",
+		"email": "jefersonburgos98@gmail.com",
+		"password": "1234567890",
+		"active": true
+	}
 ]

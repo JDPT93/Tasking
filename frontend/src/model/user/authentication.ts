@@ -1,11 +1,11 @@
 export interface Authentication {
-  email: string;
-  password: string;
+	email: string;
+	password: string;
 }
 
-export const defaultValue: Authentication = {
-  email: "",
-  password: ""
+export const defaultAuthentication: Authentication = {
+	email: "",
+	password: ""
 };
 
 export default Authentication;

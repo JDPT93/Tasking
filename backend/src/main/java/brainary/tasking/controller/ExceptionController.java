@@ -14,19 +14,19 @@ import org.springframework.web.server.ResponseStatusException;
 @RestControllerAdvice
 public class ExceptionController {
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, String>> exception(Exception exception) {
-        return new ResponseEntity<>(Map.of("message", exception.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<Map<String, String>> exception(Exception exception) {
+		return new ResponseEntity<>(Map.of("message", exception.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+	}
 
-    @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity<Map<String, String>> responseStatusException(ResponseStatusException exception) {
-        return new ResponseEntity<>(Map.of("message", exception.getReason()), exception.getStatusCode());
-    }
+	@ExceptionHandler(ResponseStatusException.class)
+	public ResponseEntity<Map<String, String>> responseStatusException(ResponseStatusException exception) {
+		return new ResponseEntity<>(Map.of("message", exception.getReason()), exception.getStatusCode());
+	}
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> methodArgumentNotValidException(MethodArgumentNotValidException exception) {
-        return new ResponseEntity<>(Map.of("message", exception.getAllErrors().stream().map(ObjectError::getDefaultMessage).collect(Collectors.joining("\n\n"))), exception.getStatusCode());
-    }
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<Map<String, String>> methodArgumentNotValidException(MethodArgumentNotValidException exception) {
+		return new ResponseEntity<>(Map.of("message", exception.getAllErrors().stream().map(ObjectError::getDefaultMessage).collect(Collectors.joining("\n\n"))), exception.getStatusCode());
+	}
 
 }

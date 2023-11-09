@@ -15,8 +15,8 @@ import lombok.Setter;
 @Schema(name = "user:authentication")
 public class AuthenticationPayload implements Serializable {
 
-    private String email;
+	private String email;
 
-    private String password;
+	private String password;
 
 }

@@ -22,26 +22,26 @@ import lombok.Setter;
 @AllArgsConstructor
 public class IssueEntity extends GoalEntity {
 
-    @ManyToOne
-    @JoinColumn(nullable = true)
-    private GoalEntity parent;
+	@ManyToOne
+	@JoinColumn(nullable = true)
+	private GoalEntity parent;
 
-    @Column(nullable = false)
-    private Integer complexity;
+	@Column(nullable = false)
+	private Integer complexity;
 
-    @Embedded
-    private IntervalEntity<LocalDate> period;
+	@Embedded
+	private IntervalEntity<LocalDate> period;
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private UserEntity reporter;
+	@ManyToOne
+	@JoinColumn(nullable = false)
+	private UserEntity reporter;
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private UserEntity assignee;
+	@ManyToOne
+	@JoinColumn(nullable = false)
+	private UserEntity assignee;
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private StageEntity stage;
+	@ManyToOne
+	@JoinColumn(nullable = false)
+	private StageEntity stage;
 
 }

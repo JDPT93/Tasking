@@ -21,23 +21,23 @@ import lombok.Setter;
 @AllArgsConstructor
 public class TransitionEntity implements Serializable {
 
-    @Id
-    @Column(nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+	@Id
+	@Column(nullable = false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private StageEntity source;
+	@ManyToOne
+	@JoinColumn(nullable = false)
+	private StageEntity source;
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private StageEntity target;
+	@ManyToOne
+	@JoinColumn(nullable = false)
+	private StageEntity target;
 
-    @Column(nullable = false)
-    private String description;
+	@Column(nullable = false)
+	private String description;
 
-    @Column(nullable = false)
-    private Boolean active;
+	@Column(nullable = false)
+	private Boolean active;
 
 }

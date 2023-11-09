@@ -18,15 +18,15 @@ import lombok.Setter;
 @Schema(name = "project")
 public class ProjectPayload implements Serializable {
 
-    private Integer id;
+	private Integer id;
 
-    private UserPayload leader;
+	private UserPayload leader;
 
-    private String name;
+	private String name;
 
-    private String description;
+	private String description;
 
-    @JsonIgnore
-    private Boolean active;
+	@JsonIgnore
+	private Boolean active;
 
 }

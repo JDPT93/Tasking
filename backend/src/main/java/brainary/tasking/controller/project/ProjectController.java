@@ -26,47 +26,47 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Project")
 public class ProjectController {
 
-    // @Autowired
-    // private ProjectService projectService;
+	// @Autowired
+	// private ProjectService projectService;
 
-    // @PostMapping
-    // @SecurityRequirement(name = "Jwt")
-    // public ResponseEntity<ProjectPayload> create(JwtToken jwtToken, @RequestBody ProjectPayload projectPayload) {
-    // if (Integer.parseInt(jwtToken.getSubject()) != projectPayload.getLeader().getId()) {
-    // // TODO: Throw exception: You must be the project leader.
-    // }
-    // return new ResponseEntity<>(projectService.create(projectPayload), HttpStatus.CREATED);
-    // }
+	// @PostMapping
+	// @SecurityRequirement(name = "Jwt")
+	// public ResponseEntity<ProjectPayload> create(JwtToken jwtToken, @RequestBody ProjectPayload projectPayload) {
+	// if (Integer.parseInt(jwtToken.getSubject()) != projectPayload.getLeader().getId()) {
+	// // TODO: Throw exception: You must be the project leader.
+	// }
+	// return new ResponseEntity<>(projectService.create(projectPayload), HttpStatus.CREATED);
+	// }
 
-    // @DeleteMapping
-    // @SecurityRequirement(name = "Jwt")
-    // public ResponseEntity<List<ProjectPayload>> deleteAll(@RequestBody List<Integer> projectPayloads) {
-    // return new ResponseEntity<>(projectService.deleteAll(projectPayloads), HttpStatus.OK);
-    // }
+	// @DeleteMapping
+	// @SecurityRequirement(name = "Jwt")
+	// public ResponseEntity<List<ProjectPayload>> deleteAll(@RequestBody List<Integer> projectPayloads) {
+	// return new ResponseEntity<>(projectService.deleteAll(projectPayloads), HttpStatus.OK);
+	// }
 
-    // @DeleteMapping(path = "{projectId}")
-    // @SecurityRequirement(name = "Jwt")
-    // public ResponseEntity<ProjectPayload> deleteById(@PathVariable Integer projectId) {
-    // return new ResponseEntity<>(projectService.deleteById(projectId), HttpStatus.OK);
-    // }
+	// @DeleteMapping(path = "{projectId}")
+	// @SecurityRequirement(name = "Jwt")
+	// public ResponseEntity<ProjectPayload> deleteById(@PathVariable Integer projectId) {
+	// return new ResponseEntity<>(projectService.deleteById(projectId), HttpStatus.OK);
+	// }
 
-    // @GetMapping("me")
-    // @SecurityRequirement(name = "Jwt")
-    // public ResponseEntity<Page<ProjectPayload>> retrieveRelated(JwtToken jwtToken, @ParameterObject Pageable pageable) {
-    // return new ResponseEntity<>(projectService.retrieveByMemberId(Integer.parseInt(jwtToken.getSubject()), pageable), HttpStatus.OK);
-    // }
+	// @GetMapping("me")
+	// @SecurityRequirement(name = "Jwt")
+	// public ResponseEntity<Page<ProjectPayload>> retrieveRelated(JwtToken jwtToken, @ParameterObject Pageable pageable) {
+	// return new ResponseEntity<>(projectService.retrieveByMemberId(Integer.parseInt(jwtToken.getSubject()), pageable), HttpStatus.OK);
+	// }
 
-    // @GetMapping(path = "{projectId}")
-    // @SecurityRequirement(name = "Jwt")
-    // public ResponseEntity<ProjectPayload> retrieveRelatedById(@PathVariable Integer projectId, JwtToken jwtToken) {
-    // ProjectPayload projectPayload = projectService.retrieveByIdAndMemberId(projectId, Integer.parseInt(jwtToken.getSubject()));
-    // return new ResponseEntity<>(projectPayload, HttpStatus.OK);
-    // }
+	// @GetMapping(path = "{projectId}")
+	// @SecurityRequirement(name = "Jwt")
+	// public ResponseEntity<ProjectPayload> retrieveRelatedById(@PathVariable Integer projectId, JwtToken jwtToken) {
+	// ProjectPayload projectPayload = projectService.retrieveByIdAndMemberId(projectId, Integer.parseInt(jwtToken.getSubject()));
+	// return new ResponseEntity<>(projectPayload, HttpStatus.OK);
+	// }
 
-    // @PutMapping
-    // @SecurityRequirement(name = "Jwt")
-    // public ResponseEntity<ChangelogPayload<ProjectPayload>> update(@RequestBody ProjectPayload projectPayload) {
-    // return new ResponseEntity<>(projectService.update(projectPayload), HttpStatus.OK);
-    // }
+	// @PutMapping
+	// @SecurityRequirement(name = "Jwt")
+	// public ResponseEntity<ChangelogPayload<ProjectPayload>> update(@RequestBody ProjectPayload projectPayload) {
+	// return new ResponseEntity<>(projectService.update(projectPayload), HttpStatus.OK);
+	// }
 
 }

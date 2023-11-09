@@ -18,16 +18,16 @@ import lombok.Setter;
 @Schema(name = "project:goal:issue")
 public class IssuePayload extends GoalPayload {
 
-    private GoalPayload parent;
+	private GoalPayload parent;
 
-    private Integer complexity;
+	private Integer complexity;
 
-    private IntervalPayload<LocalDate> period;
+	private IntervalPayload<LocalDate> period;
 
-    private UserPayload reporter;
+	private UserPayload reporter;
 
-    private UserPayload assignee;
+	private UserPayload assignee;
 
-    private StagePayload stage;
+	private StagePayload stage;
 
 }

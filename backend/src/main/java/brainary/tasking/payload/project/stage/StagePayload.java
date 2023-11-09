@@ -18,17 +18,17 @@ import lombok.Setter;
 @Schema(name = "project:stage")
 public class StagePayload implements Serializable {
 
-    private Integer id;
+	private Integer id;
 
-    private ProjectPayload project;
+	private ProjectPayload project;
 
-    private TypePayload type;
+	private TypePayload type;
 
-    private String name;
+	private String name;
 
-    private Integer index;
+	private Integer index;
 
-    @JsonIgnore
-    private Boolean active;
+	@JsonIgnore
+	private Boolean active;
 
 }

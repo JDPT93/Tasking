@@ -15,19 +15,19 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 @SecurityScheme(type = SecuritySchemeType.HTTP, name = "Jwt", scheme = "Bearer")
 public class JwtConfiguration {
 
-    @Autowired
-    private JwtFilter jwtFilter;
+	@Autowired
+	private JwtFilter jwtFilter;
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        return httpSecurity.csrf(customizer -> customizer.disable())
-            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-            .authorizeHttpRequests(customizer -> customizer
-                .requestMatchers(HttpMethod.OPTIONS).permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/user", "/api/user/sign-in").permitAll()
-                .requestMatchers("/api/**").authenticated()
-                .anyRequest().permitAll())
-            .build();
-    }
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+		return httpSecurity.csrf(customizer -> customizer.disable())
+			.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+			.authorizeHttpRequests(customizer -> customizer
+				.requestMatchers(HttpMethod.OPTIONS).permitAll()
+				.requestMatchers(HttpMethod.POST, "/api/user", "/api/user/sign-in").permitAll()
+				.requestMatchers("/api/**").authenticated()
+				.anyRequest().permitAll())
+			.build();
+	}
 
 }

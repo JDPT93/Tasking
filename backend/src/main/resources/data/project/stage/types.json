@@ -1,17 +1,17 @@
 [
-    {
-        "id": 1,
-        "name": "Inicial",
-        "active": true
-    },
-    {
-        "id": 2,
-        "name": "Intermedia",
-        "active": true
-    },
-    {
-        "id": 3,
-        "name": "Final",
-        "active": true
-    }
+	{
+		"id": 1,
+		"name": "Inicial",
+		"active": true
+	},
+	{
+		"id": 2,
+		"name": "Intermedia",
+		"active": true
+	},
+	{
+		"id": 3,
+		"name": "Final",
+		"active": true
+	}
 ]

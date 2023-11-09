@@ -18,17 +18,17 @@ import lombok.Setter;
 @Schema(name = "project:goal:type")
 public class TypePayload implements Serializable {
 
-    private Integer id;
+	private Integer id;
 
-    private ProjectPayload project;
+	private ProjectPayload project;
 
-    private String name;
+	private String name;
 
-    private String icon;
+	private String icon;
 
-    private Integer color;
+	private Integer color;
 
-    @JsonIgnore
-    private Boolean active;
+	@JsonIgnore
+	private Boolean active;
 
 }

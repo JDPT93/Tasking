@@ -50,12 +50,12 @@ export function BoardReducer(state: BoardState, action: BoardAction): BoardState
       const minimum = Math.min(sourceStageIndex, destinationStageIndex);
       const direction = Math.sign(destinationStageIndex - sourceStageIndex);
       // console.log(action.payload, state.project.stages, state.project.stages.map(stage => ({
-      //   ...stage,
-      //   index: stage.id === stageId
-      //     ? destinationStageIndex
-      //     : stage.index >= minimum && stage.index <= maximum
-      //       ? stage.index - direction
-      //       : stage.index
+      //	 ...stage,
+      //	 index: stage.id === stageId
+      //		 ? destinationStageIndex
+      //		 : stage.index >= minimum && stage.index <= maximum
+      //			 ? stage.index - direction
+      //			 : stage.index
       // })));
       return {
         ...state,
@@ -127,7 +127,7 @@ export function BoardReducer(state: BoardState, action: BoardAction): BoardState
 
 export default BoardReducer;
 
- // const stages = [...project.stages];
+// const stages = [...project.stages];
 
 // const sourceStageId = +event.source.droppableId;
 // const sourceStageIndex = stages.findIndex(stage => stage.id === sourceStageId);
@@ -148,7 +148,7 @@ export default BoardReducer;
 // }
 // console.log(project.stages)
 // setProject({
-//   ...project,
-//   stages
+//	 ...project,
+//	 stages
 // });
 // console.log(stages)

@@ -15,8 +15,8 @@ import lombok.Setter;
 @Schema(name = "common:interval")
 public class IntervalPayload<T> implements Serializable {
 
-    private T from;
+	private T from;
 
-    private T to;
+	private T to;
 
 }

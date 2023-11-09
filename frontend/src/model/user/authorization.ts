@@ -1,8 +1,8 @@
-import User from "./user";
+import User from "model/user/user";
 
-export interface Authentication {
-  user: User;
-  token: string;
+export interface Authorization {
+	user: User;
+	token: string;
 }
 
-export default Authentication;
+export default Authorization;

@@ -15,8 +15,8 @@ import lombok.Setter;
 @Schema(name = "Changelog")
 public class ChangelogPayload<T> implements Serializable {
 
-    private T before;
+	private T before;
 
-    private T after;
+	private T after;
 
 }

@@ -22,25 +22,25 @@ import lombok.Setter;
 @AllArgsConstructor
 public class TypeEntity implements Serializable {
 
-    @Id
-    @Column(nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+	@Id
+	@Column(nullable = false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private ProjectEntity project;
+	@ManyToOne
+	@JoinColumn(nullable = false)
+	private ProjectEntity project;
 
-    @Column(nullable = false)
-    private String name;
+	@Column(nullable = false)
+	private String name;
 
-    @Column(nullable = false)
-    private String icon;
+	@Column(nullable = false)
+	private String icon;
 
-    @Column(nullable = false)
-    private Integer color;
+	@Column(nullable = false)
+	private Integer color;
 
-    @Column(nullable = false)
-    private Boolean active;
+	@Column(nullable = false)
+	private Boolean active;
 
 }

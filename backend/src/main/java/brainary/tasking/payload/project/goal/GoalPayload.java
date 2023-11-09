@@ -17,19 +17,19 @@ import lombok.Setter;
 @Schema(name = "project:goal")
 public class GoalPayload implements Serializable {
 
-    private Integer id;
+	private Integer id;
 
-    private TypePayload type;
+	private TypePayload type;
 
-    private PriorityPayload priority;
+	private PriorityPayload priority;
 
-    private Integer index;
+	private Integer index;
 
-    private String name;
+	private String name;
 
-    private String description;
+	private String description;
 
-    @JsonIgnore
-    private Boolean active;
+	@JsonIgnore
+	private Boolean active;
 
 }

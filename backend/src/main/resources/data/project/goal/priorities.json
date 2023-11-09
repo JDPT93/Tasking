@@ -1,27 +1,27 @@
 [
-    {
-        "id": 1,
-        "name": "Máxima",
-        "active": true
-    },
-    {
-        "id": 2,
-        "name": "Alta",
-        "active": true
-    },
-    {
-        "id": 3,
-        "name": "Media",
-        "active": true
-    },
-    {
-        "id": 4,
-        "name": "Baja",
-        "active": true
-    },
-    {
-        "id": 5,
-        "name": "Mínima",
-        "active": true
-    }
+	{
+		"id": 1,
+		"name": "Máxima",
+		"active": true
+	},
+	{
+		"id": 2,
+		"name": "Alta",
+		"active": true
+	},
+	{
+		"id": 3,
+		"name": "Media",
+		"active": true
+	},
+	{
+		"id": 4,
+		"name": "Baja",
+		"active": true
+	},
+	{
+		"id": 5,
+		"name": "Mínima",
+		"active": true
+	}
 ]

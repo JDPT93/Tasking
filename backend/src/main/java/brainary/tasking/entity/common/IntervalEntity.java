@@ -16,10 +16,10 @@ import lombok.Setter;
 @AllArgsConstructor
 public class IntervalEntity<T> implements Serializable {
 
-    @Column(nullable = false)
-    private T from;
+	@Column(nullable = false)
+	private T from;
 
-    @Column(nullable = false)
-    private T to;
+	@Column(nullable = false)
+	private T to;
 
 }
