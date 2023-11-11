@@ -1,0 +1,12 @@
+{
+  "actions": {
+    "signUp": "Registrarse",
+    "signIn": "Iniciar sesión"
+  },
+  "labels": {
+    "name": "Nombre completo",
+    "email": "Correo electrónico",
+    "password": "Contraseña"
+  },
+  "title": "Registrarse"
+}

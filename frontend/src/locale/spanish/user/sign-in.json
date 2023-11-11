@@ -2,7 +2,11 @@
   "actions": {
     "signIn": "Iniciar sesión"
   },
-  "questions": {
+  "labels": {
+    "email": "Correo electrónico",
+    "password": "Contraseña"
+  },
+  "links": {
     "canNotSignIn": "¿No puede iniciar sesión?",
     "doNotHaveAnAccount": "¿No tiene una cuenta?"
   },

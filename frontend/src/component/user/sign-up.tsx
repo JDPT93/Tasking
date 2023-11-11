@@ -81,7 +81,7 @@ function Component({
 }: Properties) {
   const [state, dispatch] = React.useReducer(reducer, initialState);
   const mainContext = React.useContext(Main.Context);
-  const locale: any = require(`locale/${mainContext.state.locale}/user/sign-in.json`);
+  const locale: any = require(`locale/${mainContext.state.locale}/user/sign-up.json`);
   const user = mainContext.state.user;
   if (user !== null) {
     // return (<ErrorPage value={403} />);
@@ -114,10 +114,10 @@ function Component({
           <MuiAvatar sx={{ backgroundColor: "primary.main" }}>
             <StickyNoteIcon />
           </MuiAvatar>
-          <MuiTypography component="h1" variant="h5">{locale.application.name}</MuiTypography>
-          <MuiTextField fullWidth label={locale.schemas.user.properties.name} name="name" required type="text" variant="outlined" />
-          <MuiTextField fullWidth label={locale.schemas.user.properties.email} name="email" required type="email" variant="outlined" />
-          <MuiTextField autoComplete="current-password" fullWidth label={locale.schemas.user.properties.password} name="password" required type="password" variant="outlined" />
+          <MuiTypography component="h1" variant="h5">{locale.title}</MuiTypography>
+          <MuiTextField fullWidth label={locale.labels.name} name="name" required type="text" variant="outlined" />
+          <MuiTextField fullWidth label={locale.labels.email} name="email" required type="email" variant="outlined" />
+          <MuiTextField autoComplete="current-password" fullWidth label={locale.labels.password} name="password" required type="password" variant="outlined" />
           <MuiButton fullWidth type="submit" variant="contained">{locale.actions.signUp}</MuiButton>
           <MuiLink component={Link} to="/sign-in" variant="body2">{locale.actions.signIn}</MuiLink>
         </MuiStack>

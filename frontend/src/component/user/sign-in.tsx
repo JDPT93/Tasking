@@ -120,7 +120,7 @@ function Component({
           <MuiTextField
             autoComplete="new-password"
             fullWidth
-            label={"Correo"}
+            label={locale.labels.email}
             onChange={(event: any) => {
               const authentication: Authentication = {
                 ...state.value,
@@ -139,7 +139,7 @@ function Component({
           <MuiTextField
             autoComplete="new-password"
             fullWidth
-            label={"contraseña"}
+            label={locale.labels.password}
             onChange={(event: any) => {
               const authentication: Authentication = {
                 ...state.value,
@@ -156,8 +156,8 @@ function Component({
             variant="outlined"
           />
           <MuiButton fullWidth type="submit" variant="contained">{locale.actions.signIn}</MuiButton>
-          <MuiLink component={Link} to="/recovery" variant="body2">{locale.questions.canNotSignIn}</MuiLink>
-          <MuiLink component={Link} to="/sign-up" variant="body2">{locale.questions.doNotHaveAnAccount}</MuiLink>
+          <MuiLink component={Link} to="/recovery" variant="body2">{locale.links.canNotSignIn}</MuiLink>
+          <MuiLink component={Link} to="/sign-up" variant="body2">{locale.links.doNotHaveAnAccount}</MuiLink>
         </MuiStack>
       </MuiPaper>
       <MuiSnackbar
