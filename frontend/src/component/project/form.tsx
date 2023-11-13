@@ -116,10 +116,7 @@ function Component({
 					});
 			}}
 		>
-			<MuiBox alignItems="center" display="flex">
-				<FolderIcon />
-				<MuiTypography marginLeft={1} variant="h6">{locale.titles[variant]}</MuiTypography>
-			</MuiBox>
+			<MuiTypography marginLeft={1} variant="h6">{locale.titles[variant]}</MuiTypography>
 			<MuiTextField
 				autoComplete="new-password"
 				autoFocus

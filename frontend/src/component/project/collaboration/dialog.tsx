@@ -1,10 +1,6 @@
 import React from "react";
 
 import {
-	ExitToApp as ExitToAppIcon
-} from "@mui/icons-material";
-
-import {
 	Button as MuiButton,
 	Dialog as MuiDialog,
 	DialogActions as MuiDialogActions,
@@ -83,7 +79,6 @@ function Component({
 				<Context.Provider value={{ state, dispatch }}>
 					<MuiDialog fullWidth open={open} onClose={onCancel}>
 						<MuiDialogTitle alignItems="center">
-							<ExitToAppIcon />
 							{locale.titles[variant]}
 						</MuiDialogTitle>
 						<MuiDialogContent>

@@ -1,10 +1,6 @@
 import React from "react";
 
 import {
-	Delete as DeleteIcon
-} from "@mui/icons-material";
-
-import {
 	Button as MuiButton,
 	Dialog as MuiDialog,
 	DialogActions as MuiDialogActions,
@@ -128,7 +124,6 @@ function Component({
 				<Context.Provider value={{ state, dispatch }}>
 					<MuiDialog fullWidth open={open} onClose={onCancel}>
 						<MuiDialogTitle alignItems="center">
-							<DeleteIcon />
 							{locale.titles[variant]}
 						</MuiDialogTitle>
 						<MuiDialogContent>

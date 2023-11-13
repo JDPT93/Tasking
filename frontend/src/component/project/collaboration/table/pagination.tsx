@@ -80,8 +80,8 @@ function Component({
 			rowsPerPageOptions={options}
 			labelRowsPerPage={locale.rowsPerPage}
 			labelDisplayedRows={({ from, to, count }) => (
-				<MuiBox component="span" textAlign="right" width={64}>
-					{count !== undefined && `${from} - ${to} / ${count}`}
+				<MuiBox component="span" textAlign="right">
+					{count > 0 && `${from} - ${to} / ${count}`}
 				</MuiBox>
 			)}
 			onPageChange={(event, page) => {

@@ -1,6 +1,7 @@
 import React from "react";
 
 import {
+	Category as CategoryIcon,
 	Folder as FolderIcon
 } from "@mui/icons-material";
 
@@ -9,7 +10,9 @@ import {
 	Paper as MuiPaper,
 	Table as MuiTable,
 	TableBody as MuiTableBody,
+	TableCell as MuiTableCell,
 	TableContainer as MuiTableContainer,
+	TableRow as MuiTableRow,
 	Toolbar as MuiToolbar,
 	Typography as MuiTypography
 } from "@mui/material";
@@ -158,6 +161,14 @@ function Component({
 										}}
 									/>
 								))}
+							{state.ready && state.page.empty && (
+								<MuiTableRow>
+									<MuiTableCell align="center" colSpan={4} height={285}>
+										<CategoryIcon fontSize="large" sx={{ color: "text.secondary" }} />
+										<MuiTypography color="text.secondary">{locale.messages.empty}</MuiTypography>
+									</MuiTableCell>
+								</MuiTableRow>
+							)}
 						</MuiTableBody>
 					</MuiTable>
 					<ProjectTablePagination
