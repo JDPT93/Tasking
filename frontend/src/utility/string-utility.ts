@@ -1,8 +1,8 @@
 export default class StringUtility {
 
 	public static hashCode(input: string): number {
-		let accumulator = 0;
-		for (let index = 0; index < input.length; index++) {
+		let accumulator: number = 0;
+		for (let index: number = 0; index < input.length; index++) {
 			accumulator = ((accumulator << 5) - accumulator) ^ input.charCodeAt(index);
 		}
 		return accumulator;

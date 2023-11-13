@@ -65,7 +65,7 @@ public class TaskingApplication implements CommandLineRunner {
 		return mappingIterator.readAll();
 	}
 
-	@Value(value = "${tasking.data.initialize}")
+	@Value(value = "${tasking.initialize}")
 	private Boolean initialize;
 
 	@Override

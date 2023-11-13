@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(name = "Changelog")
+@Schema(name = "changelog")
 public class ChangelogPayload<T> implements Serializable {
 
 	private T before;

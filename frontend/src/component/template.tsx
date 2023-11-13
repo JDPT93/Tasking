@@ -1,14 +1,18 @@
 import React from "react";
 
-import {
-	Box as MuiBox
-} from "@mui/material";
+interface Setup {
+
+}
+
+const setup: Setup = {
+
+};
 
 interface State {
 
 }
 
-const initialState: State = {
+const defaultState: State = {
 
 };
 
@@ -32,6 +36,8 @@ interface ContextValue {
 	readonly dispatch?: (action: Action) => void;
 }
 
+const Context = React.createContext<ContextValue>({ state: defaultState });
+
 type Properties = {
 
 };
@@ -39,21 +45,24 @@ type Properties = {
 function Component({
 
 }: Properties) {
-	const [state, dispatch] = React.useReducer(reducer, initialState);
+	const [state, dispatch] = React.useReducer(reducer, defaultState);
 	return (
-		<MuiBox>
+		<Context.Provider value={{ state, dispatch }}>
 
-		</MuiBox>
+		</Context.Provider>
 	);
 }
 
+export type TemplateSetup = Setup;
 export type TemplateState = State;
 export type TemplateAction = Action;
 export type TemplateContextValue = ContextValue;
 export type TemplateProperties = Properties;
 export const Template = Object.assign(Component, {
-	initialState,
-	reducer
+	Context,
+	defaultState,
+	reducer,
+	setup
 });
 
 export default Template;

@@ -9,9 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import brainary.tasking.entity.project.CollaborationEntity;
-import brainary.tasking.payload.ChangelogPayload;
 import brainary.tasking.payload.project.CollaborationPayload;
-import brainary.tasking.payload.project.goal.IssuePayload;
 import brainary.tasking.repository.project.CollaborationRepository;
 import brainary.tasking.repository.project.ProjectRepository;
 import brainary.tasking.repository.user.UserRepository;
@@ -33,7 +31,7 @@ public class CollaborationService {
 	@Autowired
 	private UserRepository userRepository;
 
-	private Boolean isActiveProject(Integer projectId) {
+	private Boolean isValidProject(Integer projectId) {
 		return projectRepository.exists((root, query, builder) -> {
 			Predicate equalId = builder.equal(root.get("id"), projectId);
 			Predicate isActive = builder.isTrue(root.get("active"));
@@ -41,7 +39,7 @@ public class CollaborationService {
 		});
 	}
 
-	private Boolean isActiveUser(Integer userId) {
+	private Boolean isValidUser(Integer userId) {
 		return userRepository.exists((root, query, builder) -> {
 			Predicate equalId = builder.equal(root.get("id"), userId);
 			Predicate isActive = builder.isTrue(root.get("active"));
@@ -67,10 +65,10 @@ public class CollaborationService {
 	public CollaborationPayload create(CollaborationPayload collaborationPayload) {
 		collaborationPayload.setId(null);
 		collaborationPayload.setActive(true);
-		if (!isActiveProject(collaborationPayload.getProject().getId())) {
+		if (!isValidProject(collaborationPayload.getProject().getId())) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "project.not-found");
 		}
-		if (!isActiveUser(collaborationPayload.getCollaborator().getId())) {
+		if (!isValidUser(collaborationPayload.getCollaborator().getId())) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "user.not-found");
 		}
 		if (isConflictingCollaboration(collaborationPayload)) {
@@ -79,8 +77,8 @@ public class CollaborationService {
 		return modelMapper.map(collaborationRepository.save(modelMapper.map(collaborationPayload, CollaborationEntity.class)), CollaborationPayload.class);
 	}
 
-	public Page<IssuePayload> retrieveByProjectId(Integer projectId, Pageable pageable) {
-		if (!isActiveProject(projectId)) {
+	public Page<CollaborationPayload> retrieveByProjectId(Integer projectId, Pageable pageable) {
+		if (!isValidProject(projectId)) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "project.not-found");
 		}
 		return collaborationRepository.findAll((root, query, builder) -> {
@@ -89,11 +87,11 @@ public class CollaborationService {
 			Predicate isActive = builder.isTrue(root.get("active"));
 			return builder.and(equalProject, isActive);
 		}, pageable)
-			.map(typeEntity -> modelMapper.map(typeEntity, IssuePayload.class));
+			.map(typeEntity -> modelMapper.map(typeEntity, CollaborationPayload.class));
 	}
 
-	public Page<IssuePayload> retrieveByCollaboratorId(Integer collaboratorId, Pageable pageable) {
-		if (!isActiveUser(collaboratorId)) {
+	public Page<CollaborationPayload> retrieveByCollaboratorId(Integer collaboratorId, Pageable pageable) {
+		if (!isValidUser(collaboratorId)) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "user.not-found");
 		}
 		return collaborationRepository.findAll((root, query, builder) -> {
@@ -102,31 +100,7 @@ public class CollaborationService {
 			Predicate isActive = builder.isTrue(root.get("active"));
 			return builder.and(equalCollaborator, isActive);
 		}, pageable)
-			.map(typeEntity -> modelMapper.map(typeEntity, IssuePayload.class));
-	}
-
-	public ChangelogPayload<CollaborationPayload> update(CollaborationPayload collaborationPayload) {
-		if (!isActiveProject(collaborationPayload.getProject().getId())) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT, "project.not-found");
-		}
-		if (!isActiveUser(collaborationPayload.getCollaborator().getId())) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT, "user.not-found");
-		}
-		if (isConflictingCollaboration(collaborationPayload)) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT, "project.collaboration.conflict");
-		}
-		return new ChangelogPayload<CollaborationPayload>(collaborationRepository.findOne((root, query, builder) -> {
-			Predicate equalId = builder.equal(root.get("id"), collaborationPayload.getId());
-			Predicate isActive = builder.isTrue(root.get("active"));
-			return builder.and(equalId, isActive);
-		})
-			.map(collaborationEntity -> {
-				CollaborationPayload previousCollaborationPayload = modelMapper.map(collaborationEntity, CollaborationPayload.class);
-				collaborationPayload.setActive(true);
-				collaborationRepository.save(modelMapper.map(collaborationPayload, CollaborationEntity.class));
-				return previousCollaborationPayload;
-			}).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "project.collaboration.not-found")),
-			collaborationPayload);
+			.map(typeEntity -> modelMapper.map(typeEntity, CollaborationPayload.class));
 	}
 
 	public CollaborationPayload deleteById(Integer collaborationId) {

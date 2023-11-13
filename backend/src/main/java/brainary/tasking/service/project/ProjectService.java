@@ -28,7 +28,7 @@ public class ProjectService {
 	@Autowired
 	private UserRepository userRepository;
 
-	private Boolean isActiveUser(Integer userId) {
+	private Boolean isValidUser(Integer userId) {
 		return userRepository.exists((root, query, builder) -> {
 			Predicate equalId = builder.equal(root.get("id"), userId);
 			Predicate isActive = builder.isTrue(root.get("active"));
@@ -53,7 +53,7 @@ public class ProjectService {
 	public ProjectPayload create(ProjectPayload projectPayload) {
 		projectPayload.setId(null);
 		projectPayload.setActive(true);
-		if (!isActiveUser(projectPayload.getLeader().getId())) {
+		if (!isValidUser(projectPayload.getLeader().getId())) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "user.not-found");
 		}
 		if (isConflictingProject(projectPayload)) {
@@ -62,8 +62,17 @@ public class ProjectService {
 		return modelMapper.map(projectRepository.save(modelMapper.map(projectPayload, ProjectEntity.class)), ProjectPayload.class);
 	}
 
+	public Page<ProjectPayload> retrieveById(Integer projectId, Pageable pageable) {
+		return projectRepository.findAll((root, query, builder) -> {
+			Predicate equalId = builder.equal(root.get("id"), projectId);
+			Predicate isActive = builder.isTrue(root.get("active"));
+			return builder.and(equalId, isActive);
+		}, pageable)
+			.map(projectEntity -> modelMapper.map(projectEntity, ProjectPayload.class));
+	}
+
 	public Page<ProjectPayload> retrieveByLeaderId(Integer leaderId, Pageable pageable) {
-		if (!isActiveUser(leaderId)) {
+		if (!isValidUser(leaderId)) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "user.not-found");
 		}
 		return projectRepository.findAll((root, query, builder) -> {
@@ -76,7 +85,7 @@ public class ProjectService {
 	}
 
 	public ChangelogPayload<ProjectPayload> update(ProjectPayload projectPayload) {
-		if (!isActiveUser(projectPayload.getLeader().getId())) {
+		if (!isValidUser(projectPayload.getLeader().getId())) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "user.not-found");
 		}
 		if (isConflictingProject(projectPayload)) {

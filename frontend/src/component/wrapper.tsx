@@ -22,14 +22,21 @@ import {
 } from "@mui/material";
 
 import Main, { MainContextValue } from "component/main";
-import Navigation from "component/navigation";
 import UserAvatar from "component/user/avatar";
+
+interface Setup {
+
+}
+
+const setup: Setup = {
+
+};
 
 interface State {
 	readonly drawer: boolean;
 };
 
-const initialState: State = {
+const defaultState: State = {
 	drawer: false
 };
 
@@ -60,6 +67,8 @@ interface ContextValue {
 	readonly dispatch?: (action: Action) => void;
 }
 
+const Context = React.createContext<ContextValue>({ state: defaultState });
+
 type Properties = {
 	children?: any
 };
@@ -67,9 +76,9 @@ type Properties = {
 function Component({
 	children
 }: Properties) {
-	const [state, dispatch] = React.useReducer(reducer, initialState);
-	const theme: MuiTheme = muiUseTheme();
 	const mainContext: MainContextValue = React.useContext(Main.Context);
+	const [state, dispatch] = React.useReducer(reducer, defaultState);
+	const theme: MuiTheme = muiUseTheme();
 	const locale: any = require(`locale/${mainContext.state.locale}/wrapper.json`);
 	const transition = (properties: string | string[], options: MuiSxProps<MuiTheme>): MuiSxProps<MuiTheme> => state.drawer
 		? {
@@ -124,7 +133,6 @@ function Component({
 					</MuiIconButton>
 				</MuiBox>
 				<MuiDivider />
-				<Navigation />
 			</MuiDrawer>
 			<MuiAppBar sx={transition(["margin-left", "width"], {
 				marginLeft: { md: "360px" },
@@ -176,13 +184,16 @@ function Component({
 	);
 }
 
+export type WrapperSetup = Setup;
 export type WrapperState = State;
 export type WrapperAction = Action;
 export type WrapperContextValue = ContextValue;
 export type WrapperProperties = Properties;
 export const Wrapper = Object.assign(Component, {
-	initialState,
-	reducer
+	Context,
+	defaultState,
+	reducer,
+	setup
 });
 
 export default Wrapper;

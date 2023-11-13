@@ -29,7 +29,7 @@ public class TypeService {
 	@Autowired
 	private ProjectRepository projectRepository;
 
-	private Boolean isActiveProject(Integer projectId) {
+	private Boolean isValidProject(Integer projectId) {
 		return projectRepository.exists((root, query, builder) -> {
 			Predicate equalId = builder.equal(root.get("id"), projectId);
 			Predicate isActive = builder.isTrue(root.get("active"));
@@ -56,7 +56,7 @@ public class TypeService {
 	public TypePayload create(TypePayload typePayload) {
 		typePayload.setId(null);
 		typePayload.setActive(true);
-		if (!isActiveProject(typePayload.getProject().getId())) {
+		if (!isValidProject(typePayload.getProject().getId())) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "project.not-found");
 		}
 		if (isConflictingType(typePayload)) {
@@ -66,7 +66,7 @@ public class TypeService {
 	}
 
 	public Page<IssuePayload> retrieveByProjectId(Integer projectId, Pageable pageable) {
-		if (!isActiveProject(projectId)) {
+		if (!isValidProject(projectId)) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "project.not-found");
 		}
 		return typeRepository.findAll((root, query, builder) -> {
@@ -79,7 +79,7 @@ public class TypeService {
 	}
 
 	public ChangelogPayload<TypePayload> update(TypePayload typePayload) {
-		if (!isActiveProject(typePayload.getProject().getId())) {
+		if (!isValidProject(typePayload.getProject().getId())) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "project.not-found");
 		}
 		if (isConflictingType(typePayload)) {

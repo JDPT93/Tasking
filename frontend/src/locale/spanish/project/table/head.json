@@ -1,0 +1,7 @@
+{
+	"columns": {
+		"name": "Nombre",
+		"description": "Descripción",
+		"leader": "Lider"
+	}
+}

@@ -1,0 +1,16 @@
+{
+	"actions": {
+		"cancel": "Cancelar",
+		"delete": "Eliminar"
+	},
+	"labels": {
+		"name": "Nombre",
+		"description": "Descripción"
+	},
+	"titles": {
+		"delete": "Eliminar proyecto"
+	},
+	"messages": {
+		"delete": "¿Esta seguro de eliminar el proyecto?"
+	}
+}

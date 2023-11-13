@@ -28,7 +28,7 @@ public class IssueService {
 	@Autowired
 	private TypeRepository typeRepository;
 
-	private Boolean isActiveType(Integer typeId) {
+	private Boolean isValidType(Integer typeId) {
 		return typeRepository.exists((root, query, builder) -> {
 			Predicate equalId = builder.equal(root.get("id"), typeId);
 			Predicate isActive = builder.isTrue(root.get("active"));
@@ -36,7 +36,7 @@ public class IssueService {
 		});
 	}
 
-	private Boolean isActiveIssue(Integer issueId) {
+	private Boolean isValidIssue(Integer issueId) {
 		return issueRepository.exists((root, query, builder) -> {
 			Predicate equalId = builder.equal(root.get("id"), issueId);
 			Predicate isActive = builder.isTrue(root.get("active"));
@@ -68,10 +68,10 @@ public class IssueService {
 	public IssuePayload create(IssuePayload issuePayload) {
 		issuePayload.setId(null);
 		issuePayload.setActive(true);
-		if (!isActiveType(issuePayload.getType().getId())) {
+		if (!isValidType(issuePayload.getType().getId())) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "project.goal.type.not-found");
 		}
-		if (issuePayload.getParent().getId() != null && !isActiveIssue(issuePayload.getParent().getId())) {
+		if (issuePayload.getParent().getId() != null && !isValidIssue(issuePayload.getParent().getId())) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "project.goal.issue.not-found");
 		}
 		if (isConflictingIssue(issuePayload)) {
@@ -81,7 +81,7 @@ public class IssueService {
 	}
 
 	public Page<IssuePayload> retrieveByParentId(Integer parentId, Pageable pageable) {
-		if (parentId != null && !isActiveIssue(parentId)) {
+		if (parentId != null && !isValidIssue(parentId)) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "project.goal.issue.not-found");
 		}
 		return issueRepository.findAll((root, query, builder) -> {
@@ -99,10 +99,10 @@ public class IssueService {
 	}
 
 	public ChangelogPayload<IssuePayload> update(IssuePayload issuePayload) {
-		if (!isActiveType(issuePayload.getType().getId())) {
+		if (!isValidType(issuePayload.getType().getId())) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "project.goal.type.not-found");
 		}
-		if (issuePayload.getParent().getId() != null && !isActiveIssue(issuePayload.getParent().getId())) {
+		if (issuePayload.getParent().getId() != null && !isValidIssue(issuePayload.getParent().getId())) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "project.goal.issue.not-found");
 		}
 		if (isConflictingIssue(issuePayload)) {

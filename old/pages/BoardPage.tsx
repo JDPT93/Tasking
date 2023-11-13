@@ -66,7 +66,6 @@ function BoardPage({ onError }: Properties) {
 					<Box>
 						<NavigationBar project={project} />
 						<DragDropContext onDragEnd={event => {
-							console.log(event)
 							if (event.destination !== undefined && event.destination !== null) {
 								switch (event.type) {
 									case "stage":

@@ -1,0 +1,16 @@
+{
+	"actions": {
+		"cancel": "Cancelar",
+		"leave": "Abandonar"
+	},
+	"labels": {
+		"name": "Nombre",
+		"description": "Descripción"
+	},
+	"titles": {
+		"leave": "Abandonar proyecto"
+	},
+	"messages": {
+		"leave": "¿Esta seguro de abandonar el proyecto?"
+	}
+}

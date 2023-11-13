@@ -33,7 +33,7 @@ public class StageService {
 	@Autowired
 	private TypeRepository typeRepository;
 
-	private Boolean isActiveProject(Integer projectId) {
+	private Boolean isValidProject(Integer projectId) {
 		return projectRepository.exists((root, query, builder) -> {
 			Predicate equalId = builder.equal(root.get("id"), projectId);
 			Predicate isActive = builder.isTrue(root.get("active"));
@@ -41,7 +41,7 @@ public class StageService {
 		});
 	}
 
-	private Boolean isActiveType(Integer typeId) {
+	private Boolean isValidType(Integer typeId) {
 		return typeRepository.exists((root, query, builder) -> {
 			Predicate equalId = builder.equal(root.get("id"), typeId);
 			Predicate isActive = builder.isTrue(root.get("active"));
@@ -67,10 +67,10 @@ public class StageService {
 	public StagePayload create(StagePayload stagePayload) {
 		stagePayload.setId(null);
 		stagePayload.setActive(true);
-		if (!isActiveProject(stagePayload.getProject().getId())) {
+		if (!isValidProject(stagePayload.getProject().getId())) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "project.not-found");
 		}
-		if (!isActiveType(stagePayload.getType().getId())) {
+		if (!isValidType(stagePayload.getType().getId())) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "project.stage.type.not-found");
 		}
 		if (isConflictingStage(stagePayload)) {
@@ -80,7 +80,7 @@ public class StageService {
 	}
 
 	public Page<IssuePayload> retrieveByProjectId(Integer projectId, Pageable pageable) {
-		if (!isActiveProject(projectId)) {
+		if (!isValidProject(projectId)) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "project.not-found");
 		}
 		return stageRepository.findAll((root, query, builder) -> {
@@ -93,10 +93,10 @@ public class StageService {
 	}
 
 	public ChangelogPayload<StagePayload> update(StagePayload stagePayload) {
-		if (!isActiveProject(stagePayload.getProject().getId())) {
+		if (!isValidProject(stagePayload.getProject().getId())) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "project.not-found");
 		}
-		if (!isActiveType(stagePayload.getType().getId())) {
+		if (!isValidType(stagePayload.getType().getId())) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "project.stage.type.not-found");
 		}
 		if (isConflictingStage(stagePayload)) {

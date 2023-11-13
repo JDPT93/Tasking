@@ -1,0 +1,182 @@
+import React from "react";
+
+import {
+	FolderShared as FolderSharedIcon
+} from "@mui/icons-material";
+
+import {
+	Box as MuiBox,
+	Paper as MuiPaper,
+	Table as MuiTable,
+	TableBody as MuiTableBody,
+	TableContainer as MuiTableContainer,
+	Toolbar as MuiToolbar,
+	Typography as MuiTypography
+} from "@mui/material";
+
+import Main, { MainContextValue } from "component/main";
+import CollaborationTableHead from "component/project/collaboration/table/head";
+import CollaborationTablePagination from "component/project/collaboration/table/pagination";
+import CollaborationTableRow from "component/project/collaboration/table/row";
+
+import Changelog from "model/common/changelog";
+import Page, { defaultPage } from "model/common/page";
+import Pagination from "model/common/pagination";
+import Sort from "model/common/sort";
+import Collaboration from "model/project/collaboration";
+
+import collaborationService from "service/project/collaboration-service";
+
+interface Setup {
+
+}
+
+const setup: Setup = {
+
+};
+
+interface State {
+	readonly page: Page<Collaboration>;
+	readonly pagination: Required<Pagination>;
+	readonly ready: boolean;
+}
+
+const defaultState: State = {
+	page: defaultPage,
+	pagination: CollaborationTablePagination.defaultState.value,
+	ready: false
+};
+
+type Action =
+	{ type: "page.load", payload: Page<Collaboration> } |
+	{ type: "page.reload" } |
+	{ type: "pagination.change", payload: Required<Pagination> }
+	;
+
+function reducer(state: State, action: Action): State {
+	switch (action.type) {
+		case "page.load": {
+			return {
+				...state,
+				page: action.payload,
+				ready: true
+			};
+		}
+		case "page.reload": {
+			return {
+				...state,
+				ready: false
+			};
+		}
+		case "pagination.change": {
+			return {
+				...state,
+				pagination: action.payload,
+				ready: false
+			};
+		}
+	}
+}
+
+interface ContextValue {
+	readonly state: State;
+	readonly dispatch?: (action: Action) => void;
+}
+
+const Context = React.createContext<ContextValue>({ state: defaultState });
+
+type Properties = {
+	secondaryAction?: any,
+	onError?: (error: Error) => void,
+	onDelete?: (value: Collaboration) => void,
+	onRetrieve?: (page: Page<Collaboration>, pagination: Pagination) => void,
+	onUpdate?: (page: Changelog<Collaboration>) => void
+};
+
+function Component({
+	secondaryAction,
+	onError,
+	onDelete,
+	onRetrieve,
+	onUpdate
+}: Properties) {
+	const [state, dispatch] = React.useReducer(reducer, defaultState);
+	const mainContext: MainContextValue = React.useContext(Main.Context);
+	const locale: any = require(`locale/${mainContext.state.locale}/project/collaboration/table/table.json`);
+	React.useEffect(() => {
+		if (!state.ready) {
+			collaborationService.retrieveAll(state.pagination)
+				.then(async (response: Response) => {
+					const body: any = await response.json();
+					if (!response.ok) {
+						const error: { message: string } = body;
+						throw new Error(error.message);
+					}
+					const page: Page<Collaboration> = body;
+					dispatch({ type: "page.load", payload: page });
+					onRetrieve?.(page, state.pagination);
+				})
+				.catch((error: Error) => {
+					onError?.(error);
+				});
+		}
+	}, [state.ready]);
+	return (
+		<Context.Provider value={{ state, dispatch }}>
+			<MuiBox>
+				<MuiToolbar>
+					<FolderSharedIcon />
+					<MuiTypography marginLeft={1} variant="h6">{locale.title}</MuiTypography>
+					<MuiBox flexGrow={1} />
+					{secondaryAction}
+				</MuiToolbar>
+				<MuiTableContainer component={MuiPaper}>
+					<MuiTable sx={{ minWidth: 650 }}>
+						<CollaborationTableHead
+							onSort={(sort: Sort) => {
+								const pagination: Required<Pagination> = {
+									...state.pagination,
+									sort
+								};
+								dispatch({ type: "pagination.change", payload: pagination });
+							}}
+							sort={state.pagination.sort}
+						/>
+						<MuiTableBody>
+							{(state.ready ? state.page.content : Array(state.pagination.size))
+								.map((collaboration: Collaboration | undefined, index: number) => (
+									<CollaborationTableRow
+										key={`collaboration-${index}`}
+										value={collaboration}
+										onDelete={(value: Collaboration) => {
+											dispatch({ type: "page.reload" });
+											onDelete?.(value);
+										}}
+									/>
+								))}
+						</MuiTableBody>
+					</MuiTable>
+					<CollaborationTablePagination
+						count={state.page.totalElements}
+						onChange={(pagination: Required<Pagination>) => dispatch({ type: "pagination.change", payload: pagination })}
+						value={state.pagination}
+					/>
+				</MuiTableContainer>
+			</MuiBox>
+		</Context.Provider>
+	);
+}
+
+export type CollaborationTableSetup = Setup;
+export type CollaborationTableState = State;
+export type CollaborationTableAction = Action;
+export type CollaborationTableContextValue = ContextValue;
+export type CollaborationTableProperties = Properties;
+export const CollaborationTable = Object.assign(Component, {
+	Context,
+	defaultState,
+	reducer,
+	setup
+});
+
+export default CollaborationTable;

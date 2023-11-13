@@ -10,7 +10,7 @@ export interface Page<T> {
 	numberOfElements: number;
 }
 
-const defaultValue: Page<any> = {
+export const defaultPage: Page<any> = {
 	content: [],
 	empty: true,
 	first: true,

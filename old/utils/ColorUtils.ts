@@ -2,10 +2,6 @@ import StringUtils from "./StringUtils";
 
 export default class ColorUtils {
 
-  public static toNumber(input: string) {
-    return parseInt(input.substring(1), 16);
-  }
-
   public static fromNumber(input: number) {
     return "#".concat("00000".concat(input.toString(16)).slice(-6));
   }
@@ -20,6 +16,10 @@ export default class ColorUtils {
 
   public static fromString(input: string): string {
     return ColorUtils.fromHashCode(StringUtils.hashCode(input))
+  }
+
+  public static toNumber(input: string) {
+    return parseInt(input.substring(1), 16);
   }
 
   public static getBrightness(input: string): number {

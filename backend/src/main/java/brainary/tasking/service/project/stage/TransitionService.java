@@ -29,7 +29,7 @@ public class TransitionService {
 	@Autowired
 	private StageRepository stageRepository;
 
-	private Boolean isActiveStage(Integer stageId) {
+	private Boolean isValidStage(Integer stageId) {
 		return stageRepository.exists((root, query, builder) -> {
 			Predicate equalId = builder.equal(root.get("id"), stageId);
 			Predicate isActive = builder.isTrue(root.get("active"));
@@ -55,10 +55,10 @@ public class TransitionService {
 	public TransitionPayload create(TransitionPayload transitionPayload) {
 		transitionPayload.setId(null);
 		transitionPayload.setActive(true);
-		if (!isActiveStage(transitionPayload.getSource().getId())) {
+		if (!isValidStage(transitionPayload.getSource().getId())) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "project.stage.source.not-found");
 		}
-		if (!isActiveStage(transitionPayload.getTarget().getId())) {
+		if (!isValidStage(transitionPayload.getTarget().getId())) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "project.stage.target.not-found");
 		}
 		if (isConflictingTransition(transitionPayload)) {
@@ -68,7 +68,7 @@ public class TransitionService {
 	}
 
 	public Page<IssuePayload> retrieveByProjectId(Integer stageId, Pageable pageable) {
-		if (!isActiveStage(stageId)) {
+		if (!isValidStage(stageId)) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "project.not-found");
 		}
 		return transitionRepository.findAll((root, query, builder) -> {
@@ -81,10 +81,10 @@ public class TransitionService {
 	}
 
 	public ChangelogPayload<TransitionPayload> update(TransitionPayload transitionPayload) {
-		if (!isActiveStage(transitionPayload.getSource().getId())) {
+		if (!isValidStage(transitionPayload.getSource().getId())) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "project.stage.source.not-found");
 		}
-		if (!isActiveStage(transitionPayload.getTarget().getId())) {
+		if (!isValidStage(transitionPayload.getTarget().getId())) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "project.stage.target.not-found");
 		}
 		if (isConflictingTransition(transitionPayload)) {

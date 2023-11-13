@@ -1,5 +1,12 @@
 import React from "react";
 
+import {
+	Stack as MuiStack
+} from "@mui/material";
+
+import CollaborationTable from "component/project/collaboration/table/table";
+import ProjectManager from "component/project/manager";
+
 interface Setup {
 
 }
@@ -48,21 +55,24 @@ function Component({
 	const [state, dispatch] = React.useReducer(reducer, defaultState);
 	return (
 		<Context.Provider value={{ state, dispatch }}>
-
+			<MuiStack padding={2} spacing={2}>
+				<ProjectManager />
+				<CollaborationTable />
+			</MuiStack>
 		</Context.Provider>
 	);
 }
 
-export type ProjectPageSetup = Setup;
-export type ProjectPageState = State;
-export type ProjectPageAction = Action;
-export type ProjectPageContextValue = ContextValue;
-export type ProjectPageProperties = Properties;
-export const ProjectPage = Object.assign(Component, {
+export type HomeSetup = Setup;
+export type HomeState = State;
+export type HomeAction = Action;
+export type HomeContextValue = ContextValue;
+export type HomeProperties = Properties;
+export const Home = Object.assign(Component, {
 	Context,
 	defaultState,
 	reducer,
 	setup
 });
 
-export default ProjectPage;
+export default Home;
