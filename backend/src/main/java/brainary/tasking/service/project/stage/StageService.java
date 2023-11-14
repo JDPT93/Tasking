@@ -10,7 +10,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import brainary.tasking.entity.project.stage.StageEntity;
 import brainary.tasking.payload.ChangelogPayload;
-import brainary.tasking.payload.project.goal.IssuePayload;
 import brainary.tasking.payload.project.stage.StagePayload;
 import brainary.tasking.repository.project.ProjectRepository;
 import brainary.tasking.repository.project.stage.StageRepository;
@@ -79,7 +78,7 @@ public class StageService {
 		return modelMapper.map(stageRepository.save(modelMapper.map(stagePayload, StageEntity.class)), StagePayload.class);
 	}
 
-	public Page<IssuePayload> retrieveByProjectId(Integer projectId, Pageable pageable) {
+	public Page<StagePayload> retrieveByProjectId(Integer projectId, Pageable pageable) {
 		if (!isValidProject(projectId)) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "project.not-found");
 		}
@@ -89,7 +88,7 @@ public class StageService {
 			Predicate isActive = builder.isTrue(root.get("active"));
 			return builder.and(equalProject, isActive);
 		}, pageable)
-			.map(typeEntity -> modelMapper.map(typeEntity, IssuePayload.class));
+			.map(typeEntity -> modelMapper.map(typeEntity, StagePayload.class));
 	}
 
 	public ChangelogPayload<StagePayload> update(StagePayload stagePayload) {

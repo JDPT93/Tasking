@@ -40,9 +40,9 @@ public class ProjectController {
 
 	@SecurityRequirement(name = "Jwt")
 	@GetMapping(path = "api/project/{project-id}")
-	public ResponseEntity<Page<ProjectPayload>> retrieveById(JwtToken jwtToken, @PathVariable(name = "project-id") Integer projectId, @ParameterObject Pageable pageable) {
+	public ResponseEntity<ProjectPayload> retrieveById(JwtToken jwtToken, @PathVariable(name = "project-id") Integer projectId) {
 		// Integer.parseInt(jwtToken.getSubject())
-		return new ResponseEntity<>(projectService.retrieveById(projectId, pageable), HttpStatus.OK);
+		return new ResponseEntity<>(projectService.retrieveById(projectId), HttpStatus.OK);
 	}
 
 	@SecurityRequirement(name = "Jwt")

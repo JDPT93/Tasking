@@ -9,8 +9,8 @@ import {
 } from "@mui/material";
 
 import Main, { MainContextValue } from "component/main";
-import ProjectTable from "component/project/table/table";
 import ProjectDialog from "component/project/dialog";
+import ProjectTable from "component/project/table/table";
 
 import Changelog from "model/common/changelog";
 import Page from "model/common/page";
@@ -25,11 +25,15 @@ const setup: Setup = {
 };
 
 interface State {
-	readonly dialog: boolean;
+	readonly dialog: {
+		readonly open: boolean
+	};
 }
 
 const defaultState: State = {
-	dialog: false
+	dialog: {
+		open: false
+	}
 };
 
 type Action =
@@ -42,13 +46,19 @@ function reducer(state: State, action: Action): State {
 		case "dialog.close": {
 			return {
 				...state,
-				dialog: false
+				dialog: {
+					...state.dialog,
+					open: false
+				}
 			};
 		}
 		case "dialog.open": {
 			return {
 				...state,
-				dialog: true
+				dialog: {
+					...state.dialog,
+					open: true
+				}
 			};
 		}
 	}
@@ -97,7 +107,7 @@ function Component({
 				}
 			/>
 			<ProjectDialog
-				open={state.dialog}
+				open={state.dialog.open}
 				variant="create"
 				onCancel={() => dispatch({ type: "dialog.close" })}
 				onError={onError}

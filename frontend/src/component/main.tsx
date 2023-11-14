@@ -13,7 +13,8 @@ import {
 	Theme as MuiTheme
 } from "@mui/material";
 
-import Home from "component/home";
+import ProjectBoard from "component/project/board";
+import ProjectIndex from "component/project/index";
 import SignUp from "component/user/sign-up";
 import SignIn from "component/user/sign-in";
 import Wrapper from "component/wrapper";
@@ -154,36 +155,49 @@ function Component({
 				<BrowserRouter>
 					<Wrapper>
 						<Routes>
-							<Route
-								index
-								element={
-									state.ready
-										? state.user === null
-											? <SignIn value={{ email: "josedanielpereztorres@gmail.com", password: "1234567890" }} onSuccess={(authorization: Authorization) => dispatch({ type: "user.sign-in", payload: authorization.user })} />
-											: <Home />
-										: null
-								}
-							/>
-							<Route
-								path="sign-in"
-								element={
+							<Route index element={
+								state.ready
+									? state.user === null
+										? <SignIn value={{ email: "josedanielpereztorres@gmail.com", password: "1234567890" }} onSuccess={(authorization: Authorization) => dispatch({ type: "user.sign-in", payload: authorization.user })} />
+										: <ProjectIndex />
+									: null
+							} />
+							<Route path="sign-in">
+								<Route index element={
 									state.ready
 										? state.user === null
 											? <SignIn onSuccess={(authorization: Authorization) => dispatch({ type: "user.sign-in", payload: authorization.user })} />
 											: null
 										: null
-								}
-							/>
-							<Route
-								path="sign-up"
-								element={
+								} />
+							</Route>
+							<Route path="sign-up">
+								<Route index element={
 									state.ready
 										? state.user === null
 											? <SignUp onSuccess={(authorization: Authorization) => dispatch({ type: "user.sign-in", payload: authorization.user })} />
 											: null
 										: null
-								}
-							/>
+								} />
+							</Route>
+							<Route path="project">
+								<Route index element={
+									state.ready
+										? state.user === null
+											? null
+											: <ProjectIndex />
+										: null
+								} />
+								<Route path=":projectId">
+									<Route index element={
+										state.ready
+											? state.user === null
+												? null
+												: <ProjectBoard />
+											: null
+									} />
+								</Route>
+							</Route>
 							{/* <Route path="*" element={<ErrorPage value={404} />} /> */}
 						</Routes>
 					</Wrapper>

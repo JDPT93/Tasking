@@ -103,8 +103,8 @@ function Component({
 	onRetrieve,
 	onUpdate
 }: Properties) {
-	const [state, dispatch] = React.useReducer(reducer, defaultState);
 	const mainContext: MainContextValue = React.useContext(Main.Context);
+	const [state, dispatch] = React.useReducer(reducer, defaultState);
 	const locale: any = require(`locale/${mainContext.state.locale}/project/table/table.json`);
 	React.useEffect(() => {
 		if (!state.ready) {

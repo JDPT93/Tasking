@@ -62,13 +62,14 @@ public class ProjectService {
 		return modelMapper.map(projectRepository.save(modelMapper.map(projectPayload, ProjectEntity.class)), ProjectPayload.class);
 	}
 
-	public Page<ProjectPayload> retrieveById(Integer projectId, Pageable pageable) {
-		return projectRepository.findAll((root, query, builder) -> {
+	public ProjectPayload retrieveById(Integer projectId) {
+		return projectRepository.findOne((root, query, builder) -> {
 			Predicate equalId = builder.equal(root.get("id"), projectId);
 			Predicate isActive = builder.isTrue(root.get("active"));
 			return builder.and(equalId, isActive);
-		}, pageable)
-			.map(projectEntity -> modelMapper.map(projectEntity, ProjectPayload.class));
+		})
+			.map(projectEntity -> modelMapper.map(projectEntity, ProjectPayload.class))
+			.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "project.not-found"));
 	}
 
 	public Page<ProjectPayload> retrieveByLeaderId(Integer leaderId, Pageable pageable) {

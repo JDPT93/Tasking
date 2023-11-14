@@ -25,19 +25,27 @@ import Main, { MainContextValue } from "component/main";
 import UserAvatar from "component/user/avatar";
 
 interface Setup {
-
+	readonly drawer: {
+		readonly width: number
+	}
 }
 
 const setup: Setup = {
-
+	drawer: {
+		width: 360
+	}
 };
 
 interface State {
-	readonly drawer: boolean;
+	readonly drawer: {
+		readonly open: boolean
+	};
 };
 
 const defaultState: State = {
-	drawer: false
+	drawer: {
+		open: false
+	}
 };
 
 type Action =
@@ -50,13 +58,19 @@ function reducer(state: State, action: Action): State {
 		case "drawer.close": {
 			return {
 				...state,
-				drawer: false
+				drawer: {
+					...state.drawer,
+					open: false
+				}
 			};
 		}
 		case "drawer.open": {
 			return {
 				...state,
-				drawer: true
+				drawer: {
+					...state.drawer,
+					open: true
+				}
 			};
 		}
 	}
@@ -80,7 +94,7 @@ function Component({
 	const [state, dispatch] = React.useReducer(reducer, defaultState);
 	const theme: MuiTheme = muiUseTheme();
 	const locale: any = require(`locale/${mainContext.state.locale}/wrapper.json`);
-	const transition = (properties: string | string[], options: MuiSxProps<MuiTheme>): MuiSxProps<MuiTheme> => state.drawer
+	const transition = (properties: string | string[], options: MuiSxProps<MuiTheme>): MuiSxProps<MuiTheme> => state.drawer.open
 		? {
 			...options,
 			transition: theme.transitions.create(properties, {
@@ -104,15 +118,15 @@ function Component({
 		<>
 			<MuiDrawer
 				anchor="left"
-				open={state.drawer}
+				open={state.drawer.open}
 				sx={{
 					flexShrink: 0,
 					"& .MuiDrawer-paper": {
 						boxSizing: "border-box",
-						width: { xs: "100vw", md: "360px" }
+						width: { xs: "100vw", md: `${setup.drawer.width}px` }
 					},
 					position: "fixed",
-					width: { xs: "100vw", md: "360px" },
+					width: { xs: "100vw", md: `${setup.drawer.width}px` },
 					zIndex: 2000
 				}}
 				variant="persistent"
@@ -135,8 +149,8 @@ function Component({
 				<MuiDivider />
 			</MuiDrawer>
 			<MuiAppBar sx={transition(["margin-left", "width"], {
-				marginLeft: { md: "360px" },
-				width: { md: "calc(100% - 360px)" }
+				marginLeft: { md: `${setup.drawer.width}px` },
+				width: { md: `calc(100% - ${setup.drawer.width}px)` }
 			})}>
 				<MuiToolbar>
 					<MuiIconButton
@@ -144,7 +158,7 @@ function Component({
 						edge="start"
 						onClick={() => dispatch({ type: "drawer.open" })}
 						sx={transition("margin-left", {
-							marginLeft: { md: -8 }
+							marginLeft: { md: "-64px" }
 						})}
 					>
 						<MenuIcon />
@@ -165,21 +179,21 @@ function Component({
 							</MuiBadge>
 						</MuiIconButton>
 						<MuiIconButton color="inherit" size="small">
-							<UserAvatar value={mainContext.state.user!} />
+							<UserAvatar value={mainContext.state.user} />
 						</MuiIconButton>
 					</MuiBox>
 				</MuiToolbar>
 			</MuiAppBar>
 			<MuiBox
 				flexGrow={1}
-				marginTop={mainContext.state.ready && mainContext.state.user !== null ? 8 : 0}
+				marginTop={{ xs: "56px", md: "64px" }}
 				sx={transition(["margin-left", "width"], {
-					marginLeft: { md: "360px" },
-					width: { md: "calc(100% - 360px)" }
+					marginLeft: { md: `${setup.drawer.width}px` },
+					width: { md: `calc(100% - ${setup.drawer.width}px)` }
 				})}
 			>
 				{children}
-			</MuiBox>
+			</MuiBox >
 		</>
 	);
 }

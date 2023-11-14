@@ -33,11 +33,15 @@ const setup: Setup = {
 };
 
 interface State {
-	readonly menu: HTMLElement | null;
+	readonly menu: {
+		readonly anchor: HTMLElement | null
+	};
 }
 
 const defaultState: State = {
-	menu: null,
+	menu: {
+		anchor: null
+	},
 };
 
 type Action =
@@ -50,13 +54,19 @@ function reducer(state: State, action: Action): State {
 		case "menu.close": {
 			return {
 				...state,
-				menu: null
+				menu: {
+					...state.menu,
+					anchor: null
+				}
 			};
 		}
 		case "menu.open": {
 			return {
 				...state,
-				menu: action.payload
+				menu: {
+					...state.menu,
+					anchor: action.payload
+				}
 			};
 		}
 	}
@@ -117,7 +127,7 @@ function Component({
 								<MuiMoreVert fontSize="small" />
 							</MuiIconButton>
 							<ProjectMenu
-								anchor={state.menu}
+								anchor={state.menu.anchor}
 								value={value}
 								onClose={() => dispatch({ type: "menu.close" })}
 								onDelete={onDelete}

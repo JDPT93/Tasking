@@ -26,11 +26,15 @@ const setup: Setup = {
 };
 
 interface State {
-	readonly dialog: boolean;
+	readonly dialog: {
+		readonly open: boolean
+	};
 }
 
 const defaultState: State = {
-	dialog: false
+	dialog: {
+		open: false
+	}
 };
 
 type Action =
@@ -43,13 +47,19 @@ function reducer(state: State, action: Action): State {
 		case "dialog.close": {
 			return {
 				...state,
-				dialog: false
+				dialog: {
+					...state.dialog,
+					open: false
+				}
 			};
 		}
 		case "dialog.open": {
 			return {
 				...state,
-				dialog: true
+				dialog: {
+					...state.dialog,
+					open: true
+				}
 			};
 		}
 	}
@@ -97,7 +107,7 @@ function Component({
 				</MuiMenuItem>
 			</MuiMenu>
 			<CollaborationDialog
-				open={state.dialog}
+				open={state.dialog.open}
 				value={value}
 				variant="leave"
 				onCancel={() => dispatch({ type: "dialog.close" })}

@@ -27,11 +27,15 @@ const setup: Setup = {
 };
 
 interface State {
-	readonly dialog: "delete" | "update" | null;
+	readonly dialog: {
+		readonly open: "delete" | "update" | null
+	};
 }
 
 const defaultState: State = {
-	dialog: null
+	dialog: {
+		open: null
+	}
 };
 
 type Action =
@@ -44,13 +48,19 @@ function reducer(state: State, action: Action): State {
 		case "dialog.close": {
 			return {
 				...state,
-				dialog: null
+				dialog: {
+					...state.dialog,
+					open: null
+				}
 			};
 		}
 		case "dialog.open": {
 			return {
 				...state,
-				dialog: action.payload
+				dialog: {
+					...state.dialog,
+					open: action.payload
+				}
 			};
 		}
 	}
@@ -111,7 +121,7 @@ function Component({
 				</MuiMenuItem>
 			</MuiMenu>
 			<ProjectDialog
-				open={state.dialog === "delete"}
+				open={state.dialog.open === "delete"}
 				value={value}
 				variant="delete"
 				onCancel={() => dispatch({ type: "dialog.close" })}
@@ -122,7 +132,7 @@ function Component({
 				}}
 			/>
 			<ProjectDialog
-				open={state.dialog === "update"}
+				open={state.dialog.open === "update"}
 				value={value}
 				variant="update"
 				onCancel={() => dispatch({ type: "dialog.close" })}
