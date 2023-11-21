@@ -88,7 +88,7 @@ public class StageService {
 				StagePayload oldStagePayload = modelMapper.map(stageEntity, StagePayload.class);
 				newStagePayload.setActive(true);
 				stageRepository.save(modelMapper.map(newStagePayload, StageEntity.class));
-				ChangelogPayload<StagePayload> changelogPayload = new ChangelogPayload<StagePayload>(oldStagePayload, newStagePayload);
+				ChangelogPayload<StagePayload> changelogPayload = new ChangelogPayload<>(oldStagePayload, newStagePayload);
 				if (newStagePayload.getIndex() < oldStagePayload.getIndex()) {
 					return Stream.concat(Stream.of(changelogPayload), stageRepository.findAll((stage, query, builder) -> {
 						Join<?, ?> project = stage.join("project");
@@ -112,11 +112,11 @@ public class StageService {
 						Predicate isActive = builder.isTrue(stage.get("active"));
 						Predicate indexBetweenOldIndexAndNewIndex = builder.between(stage.get("index"), oldStagePayload.getIndex(), newStagePayload.getIndex());
 						return builder.and(notEqualId, equalProject, indexBetweenOldIndexAndNewIndex, isActive);
-					}).stream().map(adjacentStageEntity -> {
-						StagePayload oldAdjacentStagePayload = modelMapper.map(adjacentStageEntity, StagePayload.class);
-						adjacentStageEntity.setIndex(adjacentStageEntity.getIndex() - 1);
-						StagePayload newAdjacentStagePayload = modelMapper.map(stageRepository.save(adjacentStageEntity), StagePayload.class);
-						return new ChangelogPayload<StagePayload>(oldAdjacentStagePayload, newAdjacentStagePayload);
+					}).stream().map(affectedStageEntity -> {
+						StagePayload oldAffectedStagePayload = modelMapper.map(affectedStageEntity, StagePayload.class);
+						affectedStageEntity.setIndex(affectedStageEntity.getIndex() - 1);
+						StagePayload newAffectedStagePayload = modelMapper.map(stageRepository.save(affectedStageEntity), StagePayload.class);
+						return new ChangelogPayload<StagePayload>(oldAffectedStagePayload, newAffectedStagePayload);
 					})).toList();
 				}
 				return List.of(changelogPayload);

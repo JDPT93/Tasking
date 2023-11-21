@@ -1,5 +1,7 @@
 package brainary.tasking.controller.project.goal;
 
+import java.util.List;
+
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -63,7 +65,7 @@ public class IssueController {
 
 	@SecurityRequirement(name = "Jwt")
 	@PutMapping(path = "api/project/goal/issue")
-	public ResponseEntity<ChangelogPayload<IssuePayload>> update(JwtToken jwtToken, @RequestBody IssuePayload issuePayload) {
+	public ResponseEntity<List<ChangelogPayload<IssuePayload>>> update(JwtToken jwtToken, @RequestBody IssuePayload issuePayload) {
 		// if (!issueValidator.doesLeaderMatchById(Integer.parseInt(jwtToken.getSubject()), issuePayload.getId())) {
 		// throw new ResponseStatusException(HttpStatus.FORBIDDEN, "project.goal.issue.update.forbidden");
 		// }

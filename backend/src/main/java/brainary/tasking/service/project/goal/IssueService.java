@@ -1,5 +1,8 @@
 package brainary.tasking.service.project.goal;
 
+import java.util.List;
+import java.util.stream.Stream;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -104,7 +107,7 @@ public class IssueService {
 			});
 	}
 
-	public ChangelogPayload<IssuePayload> update(IssuePayload newIssuePayload) {
+	public List<ChangelogPayload<IssuePayload>> update(IssuePayload newIssuePayload) {
 		if (!projectValidator.isActive(newIssuePayload.getProject().getId())) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "project.not-found");
 		}
@@ -132,7 +135,44 @@ public class IssueService {
 				IssuePayload oldIssuePayload = modelMapper.map(issueEntity, IssuePayload.class);
 				newIssuePayload.setActive(true);
 				issueRepository.save(modelMapper.map(newIssuePayload, IssueEntity.class));
-				return new ChangelogPayload<IssuePayload>(oldIssuePayload, newIssuePayload);
+				ChangelogPayload<IssuePayload> changelogPayload = new ChangelogPayload<>(oldIssuePayload, newIssuePayload);
+				if (newIssuePayload.getStage().getId() == oldIssuePayload.getStage().getId()) {
+					if (newIssuePayload.getIndex() < oldIssuePayload.getIndex()) {
+						// increment index of issues greater or equal than new issue index and less than old issue index in the old stage
+					}
+					if (newIssuePayload.getIndex() > oldIssuePayload.getIndex()) {
+						// decrement index of issues greater than old issue index and less or equal than new issue index in the old stage
+					}
+				} else {
+					// decrement index of issues greater than old issue index in the old stage and increment index of issues greater or equal than new issue index in the new stage
+					Stream.concat(
+						issueRepository.findAll((issue, query, builder) -> {
+							Join<?, ?> stage = issue.join("stage");
+							Predicate equalStage = builder.equal(stage.get("id"), oldIssuePayload.getStage().getId());
+							Predicate greaterIndex = builder.greaterThan(issue.get("index"), oldIssuePayload.getIndex());
+							Predicate isActive = builder.isTrue(issue.get("active"));
+							return builder.and(equalStage, greaterIndex, isActive);
+						}).stream().map(affectedIssueEntity -> {
+							IssuePayload oldAffectedIssuePayload = modelMapper.map(affectedIssueEntity, IssuePayload.class);
+							affectedIssueEntity.setIndex(affectedIssueEntity.getIndex() - 1);
+							IssuePayload newAffectedIssuePayload = modelMapper.map(issueRepository.save(affectedIssueEntity), IssuePayload.class);
+							return new ChangelogPayload<>(oldAffectedIssuePayload, newAffectedIssuePayload);
+						}),
+						issueRepository.findAll((issue, query, builder) -> {
+							Join<?, ?> stage = issue.join("stage");
+							Predicate equalStage = builder.equal(stage.get("id"), newIssuePayload.getStage().getId());
+							Predicate greaterOrEqualIndex = builder.greaterThanOrEqualTo(issue.get("index"), newIssuePayload.getIndex());
+							Predicate isActive = builder.isTrue(issue.get("active"));
+							return builder.and(equalStage, greaterOrEqualIndex, isActive);
+						}).stream().map(affectedIssueEntity -> {
+							IssuePayload oldAffectedIssuePayload = modelMapper.map(affectedIssueEntity, IssuePayload.class);
+							affectedIssueEntity.setIndex(affectedIssueEntity.getIndex() + 1);
+							IssuePayload newAffectedIssuePayload = modelMapper.map(issueRepository.save(affectedIssueEntity), IssuePayload.class);
+							return new ChangelogPayload<>(oldAffectedIssuePayload, newAffectedIssuePayload);
+						}));
+				}
+				// return new ChangelogPayload<IssuePayload>(oldIssuePayload, newIssuePayload);
+				return List.of(changelogPayload);
 			})
 			.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "project.goal.issue.not-found"));
 	}

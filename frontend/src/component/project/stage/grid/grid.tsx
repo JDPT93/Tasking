@@ -177,9 +177,10 @@ function Component({
 						}} {...provided.droppableProps}>
 							{state.page.content.map((stage: Stage) => (
 								<RbdDraggable
-									key={`draggable-stage-${stage.id}`}
+									isDragDisabled={1 !== project.leader.id}
 									draggableId={`draggable-stage-${stage.id}`}
 									index={stage.index}
+									key={`draggable-stage-${stage.id}`}
 								>
 									{provided => (
 										<MuiImageListItem
