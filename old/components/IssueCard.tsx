@@ -22,8 +22,8 @@ export function IssueCard({ issue }: Properties) {
 	const { user } = React.useContext(UserContext);
 	return (
 		<Draggable draggableId={issue.id.toString()} isDragDisabled={issue.assignee.id !== user?.id} index={issue.index}>
-			{(provider, snapshot) => (
-				<Card ref={provider.innerRef} sx={{ mb: 2 }} {...provider.draggableProps} {...provider.dragHandleProps}>
+			{(provided, snapshot) => (
+				<Card ref={provided.innerRef} sx={{ mb: 2 }} {...provided.draggableProps} {...provided.dragHandleProps}>
 					<CardContent>
 						<Typography fontWeight={500} variant="body1">{issue.name}</Typography>
 						<Typography color="text.secondary" variant="body2">{issue.description}</Typography>

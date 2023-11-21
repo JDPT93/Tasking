@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(name = "common:interval")
+@Schema(name = "common.interval")
 public class IntervalPayload<T> implements Serializable {
 
 	private T from;

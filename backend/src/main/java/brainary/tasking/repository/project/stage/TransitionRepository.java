@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import brainary.tasking.entity.project.stage.TransitionEntity;
 
-@Repository(value = "repository:project:stage:transition")
+@Repository(value = "repository.project.stage.transition")
 public interface TransitionRepository extends JpaRepository<TransitionEntity, Integer>, JpaSpecificationExecutor<TransitionEntity> {
 
 }

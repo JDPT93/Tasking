@@ -35,7 +35,7 @@ public class TransitionEntity implements Serializable {
 	private StageEntity target;
 
 	@Column(nullable = false)
-	private String description;
+	private String label;
 
 	@Column(nullable = false)
 	private Boolean active;

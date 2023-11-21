@@ -13,14 +13,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import brainary.tasking.payload.project.CollaborationPayload;
 import brainary.tasking.security.JwtToken;
 import brainary.tasking.service.project.CollaborationService;
+import brainary.tasking.validator.project.CollaborationValidator;
+import brainary.tasking.validator.project.ProjectValidator;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-@Tag(name = "Collaboration")
+@Tag(name = "project.collaboration")
 @RestController
 @CrossOrigin(origins = "*")
 public class CollaborationController {
@@ -28,10 +31,18 @@ public class CollaborationController {
 	@Autowired
 	private CollaborationService collaborationService;
 
+	@Autowired
+	private CollaborationValidator collaborationValidator;
+
+	@Autowired
+	private ProjectValidator projectValidator;
+
 	@SecurityRequirement(name = "Jwt")
 	@PostMapping(path = "api/project/collaboration")
 	public ResponseEntity<CollaborationPayload> create(JwtToken jwtToken, @RequestBody CollaborationPayload collaborationPayload) {
-		// Integer.parseInt(jwtToken.getSubject())
+		if (!projectValidator.doesLeaderMatchById(Integer.parseInt(jwtToken.getSubject()), collaborationPayload.getProject().getId())) {
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN, "project.collaboration.create.forbidden");
+		}
 		return new ResponseEntity<>(collaborationService.create(collaborationPayload), HttpStatus.CREATED);
 	}
 
@@ -44,7 +55,9 @@ public class CollaborationController {
 	@SecurityRequirement(name = "Jwt")
 	@DeleteMapping(path = "api/project/collaboration/{collaboration-id}")
 	public ResponseEntity<CollaborationPayload> deleteById(JwtToken jwtToken, @PathVariable(name = "collaboration-id") Integer collaborationId) {
-		// Integer.parseInt(jwtToken.getSubject())
+		if (!collaborationValidator.doesCollaboratorMatchById(collaborationId, Integer.parseInt(jwtToken.getSubject()))) {
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN, "project.collaboration.delete.forbidden");
+		}
 		return new ResponseEntity<>(collaborationService.deleteById(collaborationId), HttpStatus.OK);
 	}
 

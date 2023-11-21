@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import brainary.tasking.entity.project.goal.TypeEntity;
 
-@Repository(value = "repository:project:goal:type")
+@Repository(value = "repository.project.goal.type")
 public interface TypeRepository extends JpaRepository<TypeEntity, Integer>, JpaSpecificationExecutor<TypeEntity> {
 
 }

@@ -8,12 +8,14 @@ import {
 } from "@mui/material";
 
 import Droppable from "component/droppable";
+import IssueCard from "component/project/goal/issue/card";
 
 import Page, { defaultPage } from "model/common/page";
 import Issue from "model/project/goal/issue";
 import Stage from "model/project/stage/stage";
 
 import issueService from "service/project/goal/issue-service";
+import { DroppableProvided } from "react-beautiful-dnd";
 
 interface Setup {
 
@@ -65,12 +67,14 @@ const Context = React.createContext<ContextValue>({ state: defaultState });
 
 type Properties = {
 	value: Stage,
+	provided: DroppableProvided,
 	onError?: (error: Error) => void,
 	onRetrieve?: (page: Page<Issue>) => void
 };
 
 function Component({
 	value,
+	provided,
 	onError,
 	onRetrieve
 }: Properties) {
@@ -95,22 +99,18 @@ function Component({
 	}, [state.ready]);
 	return (
 		<Context.Provider value={{ state, dispatch }}>
-			<Droppable droppableId={value.id.toString()} type="issue">
-				{provider => (
-					<MuiPaper elevation={2} sx={{ height: "100%" }}>
-						<MuiTypography fontWeight={500} padding={2} textTransform="uppercase" variant="body2">
-							{value.name}
-						</MuiTypography>
-						<MuiDivider />
-						<MuiStack padding={2} ref={provider.innerRef} {...provider.droppableProps}>
-							{/* {value.issues.sort((left, right) => left.index - right.index).map(issue => (
-								<IssueCard issue={issue} key={issue.id.toString()} />
-							))} */}
-							{provider.placeholder}
-						</MuiStack>
-					</MuiPaper>
-				)}
-			</Droppable>
+			<MuiPaper elevation={2} sx={{ height: "100%" }}>
+				<MuiTypography fontWeight={500} padding={2} textTransform="uppercase" variant="body2">
+					{value.name}
+				</MuiTypography>
+				<MuiDivider />
+				<MuiStack padding={2} ref={provided.innerRef} {...provided.droppableProps} >
+					{state.page.content.map((issue: Issue) => (
+						<IssueCard value={issue} key={issue.id.toString()} />
+					))}
+					{provided.placeholder}
+				</MuiStack>
+			</MuiPaper>
 		</Context.Provider>
 	);
 }

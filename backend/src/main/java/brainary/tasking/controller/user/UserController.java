@@ -17,7 +17,7 @@ import brainary.tasking.service.user.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-@Tag(name = "User")
+@Tag(name = "user")
 @RestController
 @CrossOrigin(origins = "*")
 public class UserController {

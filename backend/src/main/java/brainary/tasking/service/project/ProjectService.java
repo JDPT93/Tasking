@@ -12,11 +12,12 @@ import brainary.tasking.entity.project.ProjectEntity;
 import brainary.tasking.payload.ChangelogPayload;
 import brainary.tasking.payload.project.ProjectPayload;
 import brainary.tasking.repository.project.ProjectRepository;
-import brainary.tasking.repository.user.UserRepository;
+import brainary.tasking.validator.project.ProjectValidator;
+import brainary.tasking.validator.user.UserValidator;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 
-@Service(value = "service:project")
+@Service(value = "service.project")
 public class ProjectService {
 
 	@Autowired
@@ -26,46 +27,27 @@ public class ProjectService {
 	private ProjectRepository projectRepository;
 
 	@Autowired
-	private UserRepository userRepository;
+	private ProjectValidator projectValidator;
 
-	private Boolean isValidUser(Integer userId) {
-		return userRepository.exists((root, query, builder) -> {
-			Predicate equalId = builder.equal(root.get("id"), userId);
-			Predicate isActive = builder.isTrue(root.get("active"));
-			return builder.and(equalId, isActive);
-		});
-	}
-
-	private Boolean isConflictingProject(ProjectPayload projectPayload) {
-		return projectRepository.exists((root, query, builder) -> {
-			Join<?, ?> leader = root.join("leader");
-			Predicate equalLeader = builder.equal(leader.get("id"), projectPayload.getLeader().getId());
-			Predicate equalName = builder.equal(root.get("name"), projectPayload.getName());
-			Predicate isActive = builder.isTrue(root.get("active"));
-			if (projectPayload.getId() == null) {
-				return builder.and(equalLeader, equalName, isActive);
-			}
-			Predicate notEqualId = builder.notEqual(root.get("id"), projectPayload.getId());
-			return builder.and(notEqualId, equalLeader, equalName, isActive);
-		});
-	}
+	@Autowired
+	private UserValidator userValidator;
 
 	public ProjectPayload create(ProjectPayload projectPayload) {
 		projectPayload.setId(null);
 		projectPayload.setActive(true);
-		if (!isValidUser(projectPayload.getLeader().getId())) {
+		if (!userValidator.isActive(projectPayload.getLeader().getId())) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "user.not-found");
 		}
-		if (isConflictingProject(projectPayload)) {
+		if (projectValidator.isConflicting(projectPayload)) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "project.conflict");
 		}
 		return modelMapper.map(projectRepository.save(modelMapper.map(projectPayload, ProjectEntity.class)), ProjectPayload.class);
 	}
 
 	public ProjectPayload retrieveById(Integer projectId) {
-		return projectRepository.findOne((root, query, builder) -> {
-			Predicate equalId = builder.equal(root.get("id"), projectId);
-			Predicate isActive = builder.isTrue(root.get("active"));
+		return projectRepository.findOne((project, query, builder) -> {
+			Predicate equalId = builder.equal(project.get("id"), projectId);
+			Predicate isActive = builder.isTrue(project.get("active"));
 			return builder.and(equalId, isActive);
 		})
 			.map(projectEntity -> modelMapper.map(projectEntity, ProjectPayload.class))
@@ -73,43 +55,43 @@ public class ProjectService {
 	}
 
 	public Page<ProjectPayload> retrieveByLeaderId(Integer leaderId, Pageable pageable) {
-		if (!isValidUser(leaderId)) {
+		if (!userValidator.isActive(leaderId)) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "user.not-found");
 		}
-		return projectRepository.findAll((root, query, builder) -> {
-			Join<?, ?> leader = root.join("leader");
+		return projectRepository.findAll((project, query, builder) -> {
+			Join<?, ?> leader = project.join("leader");
 			Predicate equalLeader = builder.equal(leader.get("id"), leaderId);
-			Predicate isActive = builder.isTrue(root.get("active"));
+			Predicate isActive = builder.isTrue(project.get("active"));
 			return builder.and(equalLeader, isActive);
 		}, pageable)
 			.map(projectEntity -> modelMapper.map(projectEntity, ProjectPayload.class));
 	}
 
-	public ChangelogPayload<ProjectPayload> update(ProjectPayload projectPayload) {
-		if (!isValidUser(projectPayload.getLeader().getId())) {
+	public ChangelogPayload<ProjectPayload> update(ProjectPayload newProjectPayload) {
+		if (!userValidator.isActive(newProjectPayload.getLeader().getId())) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "user.not-found");
 		}
-		if (isConflictingProject(projectPayload)) {
+		if (projectValidator.isConflicting(newProjectPayload)) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "project.conflict");
 		}
-		return new ChangelogPayload<ProjectPayload>(projectRepository.findOne((root, query, builder) -> {
-			Predicate equalId = builder.equal(root.get("id"), projectPayload.getId());
-			Predicate isActive = builder.isTrue(root.get("active"));
+		return projectRepository.findOne((project, query, builder) -> {
+			Predicate equalId = builder.equal(project.get("id"), newProjectPayload.getId());
+			Predicate isActive = builder.isTrue(project.get("active"));
 			return builder.and(equalId, isActive);
 		})
 			.map(projectEntity -> {
-				ProjectPayload previousProjectPayload = modelMapper.map(projectEntity, ProjectPayload.class);
-				projectPayload.setActive(true);
-				projectRepository.save(modelMapper.map(projectPayload, ProjectEntity.class));
-				return previousProjectPayload;
-			}).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "project.not-found")),
-			projectPayload);
+				ProjectPayload oldProjectPayload = modelMapper.map(projectEntity, ProjectPayload.class);
+				newProjectPayload.setActive(true);
+				projectRepository.save(modelMapper.map(newProjectPayload, ProjectEntity.class));
+				return new ChangelogPayload<ProjectPayload>(oldProjectPayload, newProjectPayload);
+			})
+			.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "project.not-found"));
 	}
 
 	public ProjectPayload deleteById(Integer projectId) {
-		return projectRepository.findOne((root, query, builder) -> {
-			Predicate equalId = builder.equal(root.get("id"), projectId);
-			Predicate isActive = builder.isTrue(root.get("active"));
+		return projectRepository.findOne((project, query, builder) -> {
+			Predicate equalId = builder.equal(project.get("id"), projectId);
+			Predicate isActive = builder.isTrue(project.get("active"));
 			return builder.and(equalId, isActive);
 		})
 			.map(projectEntity -> {

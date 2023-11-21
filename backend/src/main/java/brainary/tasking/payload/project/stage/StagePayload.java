@@ -15,7 +15,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(name = "project:stage")
+@Schema(name = "project.stage")
 public class StagePayload implements Serializable {
 
 	private Integer id;

@@ -15,9 +15,10 @@ import brainary.tasking.payload.user.UserPayload;
 import brainary.tasking.repository.user.UserRepository;
 import brainary.tasking.security.JwtFilter;
 import brainary.tasking.security.JwtToken;
+import brainary.tasking.validator.user.UserValidator;
 import jakarta.persistence.criteria.Predicate;
 
-@Service(value = "service:user")
+@Service(value = "service.user")
 public class UserService {
 
 	@Autowired
@@ -32,22 +33,13 @@ public class UserService {
 	@Autowired
 	private UserRepository userRepository;
 
-	private Boolean isConflictingUser(UserPayload userPayload) {
-		return userRepository.exists((root, query, builder) -> {
-			Predicate equalEmail = builder.equal(root.get("email"), userPayload.getEmail());
-			Predicate isActive = builder.isTrue(root.get("active"));
-			if (userPayload.getId() == null) {
-				return builder.and(equalEmail, isActive);
-			}
-			Predicate notEqualId = builder.notEqual(root.get("id"), userPayload.getId());
-			return builder.and(notEqualId, equalEmail, isActive);
-		});
-	}
+	@Autowired
+	private UserValidator userValidator;
 
 	public UserPayload authenticate(AuthenticationPayload authenticationPayload) {
-		return userRepository.findOne((root, query, builder) -> {
-			Predicate equalEmail = builder.equal(root.get("email"), authenticationPayload.getEmail());
-			Predicate isActive = builder.isTrue(root.get("active"));
+		return userRepository.findOne((user, query, builder) -> {
+			Predicate equalEmail = builder.equal(user.get("email"), authenticationPayload.getEmail());
+			Predicate isActive = builder.isTrue(user.get("active"));
 			return builder.and(equalEmail, isActive);
 		})
 			.map(userEntity -> passwordEncoder.matches(authenticationPayload.getPassword(), userEntity.getPassword()) ? modelMapper.map(userEntity, UserPayload.class) : null)
@@ -59,9 +51,9 @@ public class UserService {
 	}
 
 	public AuthorizationPayload reauthorize(JwtToken jwtToken) {
-		return authorize(userRepository.findOne((root, query, builder) -> {
-			Predicate equalId = builder.equal(root.get("id"), jwtToken.getSubject());
-			Predicate isActive = builder.isTrue(root.get("active"));
+		return authorize(userRepository.findOne((user, query, builder) -> {
+			Predicate equalId = builder.equal(user.get("id"), jwtToken.getSubject());
+			Predicate isActive = builder.isTrue(user.get("active"));
 			return builder.and(equalId, isActive);
 		})
 			.map(userEntity -> modelMapper.map(userEntity, UserPayload.class))
@@ -70,7 +62,7 @@ public class UserService {
 
 	public AuthorizationPayload create(UserPayload userPayload) {
 		userPayload.setActive(true);
-		if (isConflictingUser(userPayload)) {
+		if (userValidator.isConflicting(userPayload)) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "user.conflict");
 		}
 		userPayload.setPassword(passwordEncoder.encode(userPayload.getPassword()));
@@ -78,9 +70,9 @@ public class UserService {
 	}
 
 	public UserPayload retrieveByEmail(String userEmail) {
-		return userRepository.findOne((root, query, builder) -> {
-			Predicate equalEmail = builder.equal(root.get("email"), userEmail);
-			Predicate isActive = builder.isTrue(root.get("active"));
+		return userRepository.findOne((user, query, builder) -> {
+			Predicate equalEmail = builder.equal(user.get("email"), userEmail);
+			Predicate isActive = builder.isTrue(user.get("active"));
 			return builder.and(equalEmail, isActive);
 		})
 			.map(userEntity -> modelMapper.map(userEntity, UserPayload.class))
@@ -88,38 +80,38 @@ public class UserService {
 	}
 
 	public UserPayload retrieveById(Integer userId) {
-		return userRepository.findOne((root, query, builder) -> {
-			Predicate equalId = builder.equal(root.get("id"), userId);
-			Predicate isActive = builder.isTrue(root.get("active"));
+		return userRepository.findOne((user, query, builder) -> {
+			Predicate equalId = builder.equal(user.get("id"), userId);
+			Predicate isActive = builder.isTrue(user.get("active"));
 			return builder.and(equalId, isActive);
 		})
 			.map(userEntity -> modelMapper.map(userEntity, UserPayload.class))
 			.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "user.not-found"));
 	}
 
-	public ChangelogPayload<UserPayload> update(UserPayload userPayload) {
-		if (isConflictingUser(userPayload)) {
+	public ChangelogPayload<UserPayload> update(UserPayload newUserPayload) {
+		if (userValidator.isConflicting(newUserPayload)) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "user.conflict");
 		}
-		return new ChangelogPayload<UserPayload>(userRepository.findOne((root, query, builder) -> {
-			Predicate equalId = builder.equal(root.get("id"), userPayload.getId());
-			Predicate isActive = builder.isTrue(root.get("active"));
+		return userRepository.findOne((user, query, builder) -> {
+			Predicate equalId = builder.equal(user.get("id"), newUserPayload.getId());
+			Predicate isActive = builder.isTrue(user.get("active"));
 			return builder.and(equalId, isActive);
 		})
 			.map(userEntity -> {
-				UserPayload previousUserPayload = modelMapper.map(userEntity, UserPayload.class);
-				userPayload.setPassword(userPayload.getPassword() == null ? userEntity.getPassword() : passwordEncoder.encode(userPayload.getPassword()));
-				userPayload.setActive(true);
-				userRepository.save(modelMapper.map(userPayload, UserEntity.class));
-				return previousUserPayload;
-			}).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "user.not-found")),
-			userPayload);
+				UserPayload oldUserPayload = modelMapper.map(userEntity, UserPayload.class);
+				newUserPayload.setPassword(newUserPayload.getPassword() == null ? userEntity.getPassword() : passwordEncoder.encode(newUserPayload.getPassword()));
+				newUserPayload.setActive(true);
+				userRepository.save(modelMapper.map(newUserPayload, UserEntity.class));
+				return new ChangelogPayload<UserPayload>(oldUserPayload, newUserPayload);
+			})
+			.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "user.not-found"));
 	}
 
 	public UserPayload deleteById(String userId) {
-		return userRepository.findOne((root, query, builder) -> {
-			Predicate equalId = builder.equal(root.get("id"), userId);
-			Predicate isActive = builder.isTrue(root.get("active"));
+		return userRepository.findOne((user, query, builder) -> {
+			Predicate equalId = builder.equal(user.get("id"), userId);
+			Predicate isActive = builder.isTrue(user.get("active"));
 			return builder.and(equalId, isActive);
 		})
 			.map(userEntity -> {

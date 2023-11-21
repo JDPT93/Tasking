@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import brainary.tasking.entity.project.goal.PriorityEntity;
 
-@Repository(value = "repository:project:goal:priority")
+@Repository(value = "repository.project.goal.priority")
 public interface PriorityRepository extends JpaRepository<PriorityEntity, Integer>, JpaSpecificationExecutor<PriorityEntity> {
 
 }

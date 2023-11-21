@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import brainary.tasking.entity.project.CollaborationEntity;
 
-@Repository(value = "repository:project:collaboration")
+@Repository(value = "repository.project.collaboration")
 public interface CollaborationRepository extends JpaRepository<CollaborationEntity, Integer>, JpaSpecificationExecutor<CollaborationEntity> {
 
 }

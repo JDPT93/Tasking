@@ -48,11 +48,12 @@ public class TaskingApplication implements CommandLineRunner {
 	@Autowired
 	private brainary.tasking.repository.project.goal.PriorityRepository priorityRepository;
 
+	@Autowired
+	private brainary.tasking.repository.project.goal.IssueRepository issueRepository;
+
 	@Bean
 	public ModelMapper modelMapper() {
-		ModelMapper modelMapper = new ModelMapper();
-		modelMapper.getConfiguration().setPreferNestedProperties(false);
-		return modelMapper;
+		return new ModelMapper();
 	}
 
 	@Bean
@@ -61,7 +62,7 @@ public class TaskingApplication implements CommandLineRunner {
 	}
 
 	private <T> List<T> loadJson(Class<T> type, String path) throws Exception {
-		MappingIterator<T> mappingIterator = new ObjectMapper().readerFor(type).readValues(new ClassPathResource(path).getFile());
+		MappingIterator<T> mappingIterator = new ObjectMapper().findAndRegisterModules().readerFor(type).readValues(new ClassPathResource(path).getFile());
 		return mappingIterator.readAll();
 	}
 
@@ -82,6 +83,7 @@ public class TaskingApplication implements CommandLineRunner {
 			stageRepository.saveAll(loadJson(brainary.tasking.entity.project.stage.StageEntity.class, "data/project/stage/stages.json"));
 			goalTypeRepository.saveAll(loadJson(brainary.tasking.entity.project.goal.TypeEntity.class, "data/project/goal/types.json"));
 			priorityRepository.saveAll(loadJson(brainary.tasking.entity.project.goal.PriorityEntity.class, "data/project/goal/priorities.json"));
+			issueRepository.saveAll(loadJson(brainary.tasking.entity.project.goal.IssueEntity.class, "data/project/goal/issues.json"));
 		}
 	}
 

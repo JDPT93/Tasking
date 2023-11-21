@@ -15,17 +15,17 @@ interface Properties {
 export function StageColumn({ stage }: Properties) {
 	return (
 		<StrictModeDroppable droppableId={stage.id.toString()} type="issue">
-			{provider => (
+			{provided => (
 				<Paper elevation={2} sx={{ height: "100%" }}>
 					<Typography fontWeight={500} padding={2} textTransform="uppercase" variant="body2">
 						{stage.name}
 					</Typography>
 					<Divider />
-					<Stack padding={2} ref={provider.innerRef} {...provider.droppableProps}>
+					<Stack padding={2} ref={provided.innerRef} {...provided.droppableProps}>
 						{stage.issues.sort((left, right) => left.index - right.index).map(issue => (
 							<IssueCard issue={issue} key={issue.id.toString()} />
 						))}
-						{provider.placeholder}
+						{provided.placeholder}
 					</Stack>
 				</Paper>
 			)}

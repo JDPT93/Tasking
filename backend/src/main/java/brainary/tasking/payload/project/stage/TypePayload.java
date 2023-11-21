@@ -14,7 +14,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(name = "project:stage:type")
+@Schema(name = "project.stage.type")
 public class TypePayload implements Serializable {
 
 	private Integer id;

@@ -14,7 +14,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(name = "project:stage:transition")
+@Schema(name = "project.stage.transition")
 public class TransitionPayload implements Serializable {
 
 	private Integer id;
@@ -23,7 +23,7 @@ public class TransitionPayload implements Serializable {
 
 	private StagePayload target;
 
-	private String name;
+	private String label;
 
 	@JsonIgnore
 	private Boolean active;

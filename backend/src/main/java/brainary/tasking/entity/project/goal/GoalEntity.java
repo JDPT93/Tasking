@@ -2,6 +2,7 @@ package brainary.tasking.entity.project.goal;
 
 import java.io.Serializable;
 
+import brainary.tasking.entity.project.ProjectEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -31,20 +32,13 @@ public class GoalEntity implements Serializable {
 
 	@ManyToOne
 	@JoinColumn(nullable = false)
-	private TypeEntity type;
-
-	@ManyToOne
-	@JoinColumn(nullable = false)
-	private PriorityEntity priority;
+	private ProjectEntity project;
 
 	@Column(nullable = false)
 	private Integer index;
 
 	@Column(nullable = false)
 	private String name;
-
-	@Column(nullable = false)
-	private String description;
 
 	@Column(nullable = false)
 	private Boolean active;

@@ -15,7 +15,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(name = "project:collaboration")
+@Schema(name = "project.collaboration")
 public class CollaborationPayload implements Serializable {
 
 	private Integer id;

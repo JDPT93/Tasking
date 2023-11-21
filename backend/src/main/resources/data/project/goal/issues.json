@@ -1,1 +1,33 @@
-[]
+[
+	{
+		"id": 1,
+		"project": {
+			"id": 1
+		},
+		"index": 0,
+		"parent": null,
+		"type": {
+			"id": 1
+		},
+		"priority": {
+			"id": 1
+		},
+		"name": "Tarea 1",
+		"description": "Descripción de la tarea 1",
+		"complexity": 1,
+		"period": {
+			"from": "2015-01-01T00:00:00",
+			"to": "2015-01-31T00:00:00"
+		},
+		"reporter": {
+			"id": 1
+		},
+		"assignee": {
+			"id": 1
+		},
+		"stage": {
+			"id": 1
+		},
+		"active": true
+	}
+]

@@ -12,7 +12,11 @@ import brainary.tasking.entity.project.goal.IssueEntity;
 import brainary.tasking.payload.ChangelogPayload;
 import brainary.tasking.payload.project.goal.IssuePayload;
 import brainary.tasking.repository.project.goal.IssueRepository;
-import brainary.tasking.repository.project.goal.TypeRepository;
+import brainary.tasking.validator.project.ProjectValidator;
+import brainary.tasking.validator.project.goal.IssueValidator;
+import brainary.tasking.validator.project.goal.PriorityValidator;
+import brainary.tasking.validator.project.goal.TypeValidator;
+import brainary.tasking.validator.project.stage.StageValidator;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 
@@ -26,106 +30,112 @@ public class IssueService {
 	private IssueRepository issueRepository;
 
 	@Autowired
-	private TypeRepository typeRepository;
+	private IssueValidator issueValidator;
 
-	private Boolean isValidType(Integer typeId) {
-		return typeRepository.exists((root, query, builder) -> {
-			Predicate equalId = builder.equal(root.get("id"), typeId);
-			Predicate isActive = builder.isTrue(root.get("active"));
-			return builder.and(equalId, isActive);
-		});
-	}
+	@Autowired
+	private ProjectValidator projectValidator;
 
-	private Boolean isValidIssue(Integer issueId) {
-		return issueRepository.exists((root, query, builder) -> {
-			Predicate equalId = builder.equal(root.get("id"), issueId);
-			Predicate isActive = builder.isTrue(root.get("active"));
-			return builder.and(equalId, isActive);
-		});
-	}
+	@Autowired
+	private TypeValidator typeValidator;
 
-	private Boolean isConflictingIssue(IssuePayload issuePayload) {
-		return issueRepository.exists((root, query, builder) -> {
-			Predicate equalParent;
-			if (issuePayload.getParent() == null) {
-				equalParent = builder.isNull(root.get("parent"));
-			} else {
-				Join<?, ?> parent = root.join("parent");
-				equalParent = builder.equal(parent.get("id"), issuePayload.getParent().getId());
-			}
-			Predicate equalIndex = builder.equal(root.get("index"), issuePayload.getIndex());
-			Predicate equalName = builder.equal(root.get("name"), issuePayload.getName());
-			Predicate equalDescription = builder.equal(root.get("description"), issuePayload.getName());
-			Predicate isActive = builder.isTrue(root.get("active"));
-			if (issuePayload.getId() == null) {
-				return builder.and(equalParent, builder.or(equalIndex, equalName, equalDescription), isActive);
-			}
-			Predicate notEqualId = builder.notEqual(root.get("id"), issuePayload.getId());
-			return builder.and(notEqualId, equalParent, builder.or(equalIndex, equalName, equalDescription), isActive);
-		});
-	}
+	@Autowired
+	private PriorityValidator priorityValidator;
+
+	@Autowired
+	private StageValidator stageValidator;
 
 	public IssuePayload create(IssuePayload issuePayload) {
 		issuePayload.setId(null);
 		issuePayload.setActive(true);
-		if (!isValidType(issuePayload.getType().getId())) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "project.goal.type.not-found");
+		if (!projectValidator.isActive(issuePayload.getProject().getId())) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "project.not-found");
 		}
-		if (issuePayload.getParent().getId() != null && !isValidIssue(issuePayload.getParent().getId())) {
+		if (!issueValidator.isActive(issuePayload.getParent().getId())) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "project.goal.issue.not-found");
 		}
-		if (isConflictingIssue(issuePayload)) {
+		if (!typeValidator.isActive(issuePayload.getType().getId())) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "project.goal.type.not-found");
+		}
+		if (!priorityValidator.isActive(issuePayload.getPriority().getId())) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "project.goal.priority.not-found");
+		}
+		if (!stageValidator.isActive(issuePayload.getStage().getId())) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "project.stage.not-found");
+		}
+		if (issueValidator.isConflicting(issuePayload)) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "project.goal.issue.conflict");
 		}
 		return modelMapper.map(issueRepository.save(modelMapper.map(issuePayload, IssueEntity.class)), IssuePayload.class);
 	}
 
 	public Page<IssuePayload> retrieveByParentId(Integer parentId, Pageable pageable) {
-		if (parentId != null && !isValidIssue(parentId)) {
+		if (!issueValidator.isActive(parentId)) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "project.goal.issue.not-found");
 		}
-		return issueRepository.findAll((root, query, builder) -> {
+		return issueRepository.findAll((issue, query, builder) -> {
 			Predicate equalParent;
 			if (parentId == null) {
-				equalParent = builder.isNull(root.get("parent"));
+				equalParent = builder.isNull(issue.get("parent"));
 			} else {
-				Join<?, ?> parent = root.join("parent");
+				Join<?, ?> parent = issue.join("parent");
 				equalParent = builder.equal(parent.get("id"), parentId);
 			}
-			Predicate isActive = builder.isTrue(root.get("active"));
+			Predicate isActive = builder.isTrue(issue.get("active"));
 			return builder.and(equalParent, isActive);
 		}, pageable)
 			.map(issueEntity -> modelMapper.map(issueEntity, IssuePayload.class));
 	}
 
-	public ChangelogPayload<IssuePayload> update(IssuePayload issuePayload) {
-		if (!isValidType(issuePayload.getType().getId())) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "project.goal.type.not-found");
+	public Page<IssuePayload> retrieveByStageId(Integer stageId, Pageable pageable) {
+		if (!stageValidator.isActive(stageId)) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "project.stage.not-found");
 		}
-		if (issuePayload.getParent().getId() != null && !isValidIssue(issuePayload.getParent().getId())) {
+		return issueRepository.findAll((issue, query, builder) -> {
+			Join<?, ?> stage = issue.join("stage");
+			Predicate equalStage = builder.equal(stage.get("id"), stageId);
+			Predicate isActive = builder.isTrue(issue.get("active"));
+			return builder.and(equalStage, isActive);
+		}, pageable)
+			.map(issueEntity -> modelMapper.map(issueEntity, IssuePayload.class));
+	}
+
+	public ChangelogPayload<IssuePayload> update(IssuePayload newIssuePayload) {
+		if (!projectValidator.isActive(newIssuePayload.getProject().getId())) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "project.not-found");
+		}
+		if (!issueValidator.isActive(newIssuePayload.getParent().getId())) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "project.goal.issue.not-found");
 		}
-		if (isConflictingIssue(issuePayload)) {
+		if (!typeValidator.isActive(newIssuePayload.getType().getId())) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "project.goal.type.not-found");
+		}
+		if (!priorityValidator.isActive(newIssuePayload.getPriority().getId())) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "project.goal.priority.not-found");
+		}
+		if (!stageValidator.isActive(newIssuePayload.getStage().getId())) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "project.stage.not-found");
+		}
+		if (issueValidator.isConflicting(newIssuePayload)) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "project.goal.issue.conflict");
 		}
-		return new ChangelogPayload<IssuePayload>(issueRepository.findOne((root, query, builder) -> {
-			Predicate equalId = builder.equal(root.get("id"), issuePayload.getId());
-			Predicate isActive = builder.isTrue(root.get("active"));
+		return issueRepository.findOne((issue, query, builder) -> {
+			Predicate equalId = builder.equal(issue.get("id"), newIssuePayload.getId());
+			Predicate isActive = builder.isTrue(issue.get("active"));
 			return builder.and(equalId, isActive);
 		})
 			.map(issueEntity -> {
-				IssuePayload previousIssuePayload = modelMapper.map(issueEntity, IssuePayload.class);
-				issuePayload.setActive(true);
-				issueRepository.save(modelMapper.map(issuePayload, IssueEntity.class));
-				return previousIssuePayload;
-			}).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "project.goal.issue.not-found")),
-			issuePayload);
+				IssuePayload oldIssuePayload = modelMapper.map(issueEntity, IssuePayload.class);
+				newIssuePayload.setActive(true);
+				issueRepository.save(modelMapper.map(newIssuePayload, IssueEntity.class));
+				return new ChangelogPayload<IssuePayload>(oldIssuePayload, newIssuePayload);
+			})
+			.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "project.goal.issue.not-found"));
 	}
 
 	public IssuePayload deleteById(Integer issueId) {
-		return issueRepository.findOne((root, query, builder) -> {
-			Predicate equalId = builder.equal(root.get("id"), issueId);
-			Predicate isActive = builder.isTrue(root.get("active"));
+		return issueRepository.findOne((issue, query, builder) -> {
+			Predicate equalId = builder.equal(issue.get("id"), issueId);
+			Predicate isActive = builder.isTrue(issue.get("active"));
 			return builder.and(equalId, isActive);
 		})
 			.map(issueEntity -> {

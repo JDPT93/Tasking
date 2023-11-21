@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import brainary.tasking.entity.project.goal.IssueEntity;
 
-@Repository(value = "repository:project:goal:issue")
+@Repository(value = "repository.project.goal.issue")
 public interface IssueRepository extends JpaRepository<IssueEntity, Integer>, JpaSpecificationExecutor<IssueEntity> {
 
 }

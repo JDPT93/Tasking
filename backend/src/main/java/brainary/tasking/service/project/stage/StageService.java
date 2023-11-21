@@ -1,5 +1,8 @@
 package brainary.tasking.service.project.stage;
 
+import java.util.List;
+import java.util.stream.Stream;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,13 +14,15 @@ import org.springframework.web.server.ResponseStatusException;
 import brainary.tasking.entity.project.stage.StageEntity;
 import brainary.tasking.payload.ChangelogPayload;
 import brainary.tasking.payload.project.stage.StagePayload;
-import brainary.tasking.repository.project.ProjectRepository;
 import brainary.tasking.repository.project.stage.StageRepository;
-import brainary.tasking.repository.project.stage.TypeRepository;
+import brainary.tasking.validator.project.ProjectValidator;
+import brainary.tasking.validator.project.goal.TypeValidator;
+import brainary.tasking.validator.project.stage.StageValidator;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
+import jakarta.transaction.Transactional;
 
-@Service(value = "service:project:stage")
+@Service(value = "service.project.stage")
 public class StageService {
 
 	@Autowired
@@ -27,98 +32,102 @@ public class StageService {
 	private StageRepository stageRepository;
 
 	@Autowired
-	private ProjectRepository projectRepository;
+	private StageValidator stageValidator;
 
 	@Autowired
-	private TypeRepository typeRepository;
+	private ProjectValidator projectValidator;
 
-	private Boolean isValidProject(Integer projectId) {
-		return projectRepository.exists((root, query, builder) -> {
-			Predicate equalId = builder.equal(root.get("id"), projectId);
-			Predicate isActive = builder.isTrue(root.get("active"));
-			return builder.and(equalId, isActive);
-		});
-	}
-
-	private Boolean isValidType(Integer typeId) {
-		return typeRepository.exists((root, query, builder) -> {
-			Predicate equalId = builder.equal(root.get("id"), typeId);
-			Predicate isActive = builder.isTrue(root.get("active"));
-			return builder.and(equalId, isActive);
-		});
-	}
-
-	private Boolean isConflictingStage(StagePayload stagePayload) {
-		return stageRepository.exists((root, query, builder) -> {
-			Join<?, ?> project = root.join("project");
-			Predicate equalProject = builder.equal(project.get("id"), stagePayload.getProject().getId());
-			Predicate equalIndex = builder.equal(root.get("index"), stagePayload.getIndex());
-			Predicate equalName = builder.equal(root.get("name"), stagePayload.getName());
-			Predicate isActive = builder.isTrue(root.get("active"));
-			if (stagePayload.getId() == null) {
-				return builder.and(equalProject, builder.or(equalIndex, equalName), isActive);
-			}
-			Predicate notEqualId = builder.notEqual(root.get("id"), stagePayload.getId());
-			return builder.and(notEqualId, equalProject, builder.or(equalIndex, equalName), isActive);
-		});
-	}
+	@Autowired
+	private TypeValidator typeValidator;
 
 	public StagePayload create(StagePayload stagePayload) {
 		stagePayload.setId(null);
 		stagePayload.setActive(true);
-		if (!isValidProject(stagePayload.getProject().getId())) {
+		if (!projectValidator.isActive(stagePayload.getProject().getId())) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "project.not-found");
 		}
-		if (!isValidType(stagePayload.getType().getId())) {
+		if (!typeValidator.isActive(stagePayload.getType().getId())) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "project.stage.type.not-found");
 		}
-		if (isConflictingStage(stagePayload)) {
+		if (stageValidator.isConflicting(stagePayload)) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "project.stage.conflict");
 		}
 		return modelMapper.map(stageRepository.save(modelMapper.map(stagePayload, StageEntity.class)), StagePayload.class);
 	}
 
 	public Page<StagePayload> retrieveByProjectId(Integer projectId, Pageable pageable) {
-		if (!isValidProject(projectId)) {
+		if (!projectValidator.isActive(projectId)) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "project.not-found");
 		}
-		return stageRepository.findAll((root, query, builder) -> {
-			Join<?, ?> project = root.join("project");
+		return stageRepository.findAll((stage, query, builder) -> {
+			Join<?, ?> project = stage.join("project");
 			Predicate equalProject = builder.equal(project.get("id"), projectId);
-			Predicate isActive = builder.isTrue(root.get("active"));
+			Predicate isActive = builder.isTrue(stage.get("active"));
 			return builder.and(equalProject, isActive);
 		}, pageable)
 			.map(typeEntity -> modelMapper.map(typeEntity, StagePayload.class));
 	}
 
-	public ChangelogPayload<StagePayload> update(StagePayload stagePayload) {
-		if (!isValidProject(stagePayload.getProject().getId())) {
+	@Transactional
+	public List<ChangelogPayload<StagePayload>> update(StagePayload newStagePayload) {
+		if (!projectValidator.isActive(newStagePayload.getProject().getId())) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "project.not-found");
 		}
-		if (!isValidType(stagePayload.getType().getId())) {
+		if (!typeValidator.isActive(newStagePayload.getType().getId())) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "project.stage.type.not-found");
 		}
-		if (isConflictingStage(stagePayload)) {
+		if (stageValidator.isConflicting(newStagePayload)) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "project.stage.conflict");
 		}
-		return new ChangelogPayload<StagePayload>(stageRepository.findOne((root, query, builder) -> {
-			Predicate equalId = builder.equal(root.get("id"), stagePayload.getId());
-			Predicate isActive = builder.isTrue(root.get("active"));
+		return stageRepository.findOne((stage, query, builder) -> {
+			Predicate equalId = builder.equal(stage.get("id"), newStagePayload.getId());
+			Predicate isActive = builder.isTrue(stage.get("active"));
 			return builder.and(equalId, isActive);
 		})
 			.map(stageEntity -> {
-				StagePayload previousStagePayload = modelMapper.map(stageEntity, StagePayload.class);
-				stagePayload.setActive(true);
-				stageRepository.save(modelMapper.map(stagePayload, StageEntity.class));
-				return previousStagePayload;
-			}).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "project.stage.not-found")),
-			stagePayload);
+				StagePayload oldStagePayload = modelMapper.map(stageEntity, StagePayload.class);
+				newStagePayload.setActive(true);
+				stageRepository.save(modelMapper.map(newStagePayload, StageEntity.class));
+				ChangelogPayload<StagePayload> changelogPayload = new ChangelogPayload<StagePayload>(oldStagePayload, newStagePayload);
+				if (newStagePayload.getIndex() < oldStagePayload.getIndex()) {
+					return Stream.concat(Stream.of(changelogPayload), stageRepository.findAll((stage, query, builder) -> {
+						Join<?, ?> project = stage.join("project");
+						Predicate notEqualId = builder.notEqual(stage.get("id"), newStagePayload.getId());
+						Predicate equalProject = builder.equal(project.get("id"), newStagePayload.getProject().getId());
+						Predicate isActive = builder.isTrue(stage.get("active"));
+						Predicate indexBetweenNewIndexAndOldIndex = builder.between(stage.get("index"), newStagePayload.getIndex(), oldStagePayload.getIndex());
+						return builder.and(notEqualId, equalProject, indexBetweenNewIndexAndOldIndex, isActive);
+					}).stream().map(adjacentStageEntity -> {
+						StagePayload oldAdjacentStagePayload = modelMapper.map(adjacentStageEntity, StagePayload.class);
+						adjacentStageEntity.setIndex(adjacentStageEntity.getIndex() + 1);
+						StagePayload newAdjacentStagePayload = modelMapper.map(stageRepository.save(adjacentStageEntity), StagePayload.class);
+						return new ChangelogPayload<StagePayload>(oldAdjacentStagePayload, newAdjacentStagePayload);
+					})).toList();
+				}
+				if (newStagePayload.getIndex() > oldStagePayload.getIndex()) {
+					return Stream.concat(Stream.of(changelogPayload), stageRepository.findAll((stage, query, builder) -> {
+						Join<?, ?> project = stage.join("project");
+						Predicate notEqualId = builder.notEqual(stage.get("id"), newStagePayload.getId());
+						Predicate equalProject = builder.equal(project.get("id"), newStagePayload.getProject().getId());
+						Predicate isActive = builder.isTrue(stage.get("active"));
+						Predicate indexBetweenOldIndexAndNewIndex = builder.between(stage.get("index"), oldStagePayload.getIndex(), newStagePayload.getIndex());
+						return builder.and(notEqualId, equalProject, indexBetweenOldIndexAndNewIndex, isActive);
+					}).stream().map(adjacentStageEntity -> {
+						StagePayload oldAdjacentStagePayload = modelMapper.map(adjacentStageEntity, StagePayload.class);
+						adjacentStageEntity.setIndex(adjacentStageEntity.getIndex() - 1);
+						StagePayload newAdjacentStagePayload = modelMapper.map(stageRepository.save(adjacentStageEntity), StagePayload.class);
+						return new ChangelogPayload<StagePayload>(oldAdjacentStagePayload, newAdjacentStagePayload);
+					})).toList();
+				}
+				return List.of(changelogPayload);
+			})
+			.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "project.stage.not-found"));
 	}
 
 	public StagePayload deleteById(Integer stageId) {
-		return stageRepository.findOne((root, query, builder) -> {
-			Predicate equalId = builder.equal(root.get("id"), stageId);
-			Predicate isActive = builder.isTrue(root.get("active"));
+		return stageRepository.findOne((stage, query, builder) -> {
+			Predicate equalId = builder.equal(stage.get("id"), stageId);
+			Predicate isActive = builder.isTrue(stage.get("active"));
 			return builder.and(equalId, isActive);
 		})
 			.map(stageEntity -> {

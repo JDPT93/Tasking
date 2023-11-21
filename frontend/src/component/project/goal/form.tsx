@@ -1,0 +1,163 @@
+import React from "react";
+
+import {
+	Button as MuiButton,
+	Stack as MuiStack,
+	TextField as MuiTextField,
+	Typography as MuiTypography
+} from "@mui/material";
+
+import Main, { MainContextValue } from "component/main";
+
+import Changelog from "model/common/changelog";
+import Goal, { defaultGoal } from "model/project/goal/goal";
+import PriorityInput from "component/project/goal/priority/input";
+
+interface Setup {
+
+}
+
+const setup: Setup = {
+
+};
+
+interface State {
+	readonly value: Goal;
+}
+
+const defaultState: State = {
+	value: defaultGoal
+};
+
+type Action =
+	{ type: "value.set", payload: Goal }
+	;
+
+function reducer(state: State, action: Action): State {
+	switch (action.type) {
+		case "value.set": {
+			return {
+				...state,
+				value: action.payload
+			};
+		}
+	}
+}
+
+interface ContextValue {
+	readonly state: State;
+	readonly dispatch?: (action: Action) => void;
+}
+
+const Context = React.createContext<ContextValue>({ state: defaultState });
+
+type Properties = {
+	onCancel?: () => void,
+	onError?: (error: Error) => void
+} & ({
+	value?: Goal,
+	variant: "create",
+	onSuccess?: (value: Goal) => void
+} | {
+	value: Goal,
+	variant: "update",
+	onSuccess?: (changelog: Changelog<Goal>) => void
+});
+
+function Component({
+	value,
+	variant,
+	onCancel,
+	onError,
+	onSuccess
+}: Properties) {
+	const mainContext: MainContextValue = React.useContext(Main.Context);
+	const initialState: State = {
+		...defaultState,
+		...(value !== undefined && { value })
+	};
+	const [state, dispatch] = React.useReducer(reducer, initialState);
+	const locale: any = require(`locale/${mainContext.state.locale}/project/goal/form.json`);
+	return (
+		<MuiStack
+			component="form"
+			spacing={2}
+			width={400}
+			onSubmit={(event: any) => {
+				event.preventDefault();
+				// goalService[variant](state.value)
+				// 	.then(async (response: Response) => {
+				// 		const body: any = await response.json();
+				// 		if (!response.ok) {
+				// 			const error: { message: string } = body;
+				// 			throw new Error(error.message);
+				// 		}
+				// 		switch (variant) {
+				// 			case "create": {
+				// 				const goal: Goal = body;
+				// 				onSuccess?.(goal);
+				// 				break;
+				// 			}
+				// 			case "update": {
+				// 				const changelog: Changelog<Goal> = body;
+				// 				onSuccess?.(changelog);
+				// 				break;
+				// 			}
+				// 		}
+				// 	})
+				// 	.catch((error: Error) => {
+				// 		onError?.(error);
+				// 	});
+			}}
+		>
+			<MuiTypography marginLeft={1} variant="h6">{locale.titles[variant]}</MuiTypography>
+			<MuiTextField
+				autoComplete="new-password"
+				autoFocus
+				fullWidth
+				label={locale.labels.name}
+				required
+				type="text"
+				value={state.value.name}
+				variant="outlined"
+				onChange={(event: any) => {
+					const goal: Goal = {
+						...state.value,
+						name: event.target.value
+					};
+					dispatch({ type: "value.set", payload: goal });
+				}}
+			/>
+			<MuiStack direction="row-reverse" spacing={1}>
+				<MuiButton
+					fullWidth={onCancel === undefined}
+					type="submit"
+					variant="contained"
+				>
+					{locale.actions[variant]}
+				</MuiButton>
+				<MuiButton
+					hidden={onCancel === undefined}
+					variant="text"
+					onClick={onCancel}
+				>
+					{locale.actions.cancel}
+				</MuiButton>
+			</MuiStack>
+		</MuiStack>
+	);
+}
+
+export type GoalFormSetup = Setup;
+export type GoalFormState = State;
+export type GoalFormAction = Action;
+export type GoalFormContextValue = ContextValue;
+export type GoalFormProperties = Properties;
+export const GoalForm = Object.assign(Component, {
+	Context,
+	defaultState,
+	reducer,
+	setup
+});
+
+export default GoalForm;

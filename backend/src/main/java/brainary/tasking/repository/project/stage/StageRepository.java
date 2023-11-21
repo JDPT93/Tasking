@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import brainary.tasking.entity.project.stage.StageEntity;
 
-@Repository(value = "repository:project:stage")
+@Repository(value = "repository.project.stage")
 public interface StageRepository extends JpaRepository<StageEntity, Integer>, JpaSpecificationExecutor<StageEntity> {
 
 }

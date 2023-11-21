@@ -45,7 +45,10 @@ type Properties = {
 function Component({
 
 }: Properties) {
-	const [state, dispatch] = React.useReducer(reducer, defaultState);
+	const initialState: State = {
+		...defaultState
+	};
+	const [state, dispatch] = React.useReducer(reducer, initialState);
 	return (
 		<Context.Provider value={{ state, dispatch }}>
 

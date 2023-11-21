@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import brainary.tasking.payload.project.ProjectPayload;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,20 +15,16 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(name = "project:goal")
+@Schema(name = "project.goal")
 public class GoalPayload implements Serializable {
 
 	private Integer id;
 
-	private TypePayload type;
-
-	private PriorityPayload priority;
+	private ProjectPayload project;
 
 	private Integer index;
 
 	private String name;
-
-	private String description;
 
 	@JsonIgnore
 	private Boolean active;

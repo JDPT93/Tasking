@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(name = "user:authentication")
+@Schema(name = "user.authentication")
 public class AuthenticationPayload implements Serializable {
 
 	private String email;

@@ -1,0 +1,15 @@
+{
+	"actions": {
+		"cancel": "Cancelar",
+		"create": "Crear",
+		"update": "Guardar"
+	},
+	"labels": {
+		"name": "Nombre",
+		"description": "Descripción"
+	},
+	"titles": {
+		"create": "Nuevo proyecto",
+		"update": "Editar proyecto"
+	}
+}

@@ -15,10 +15,16 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(name = "project:goal:issue")
+@Schema(name = "project.goal.issue")
 public class IssuePayload extends GoalPayload {
 
 	private GoalPayload parent;
+
+	private TypePayload type;
+
+	private PriorityPayload priority;
+
+	private String description;
 
 	private Integer complexity;
 

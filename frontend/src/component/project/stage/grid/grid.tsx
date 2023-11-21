@@ -18,6 +18,7 @@ import Project from "model/project/project";
 import Stage from "model/project/stage/stage";
 
 import stageService from "service/project/stage/stage-service";
+import Type from "model/project/stage/type";
 
 interface Setup {
 	readonly column: {
@@ -43,7 +44,8 @@ const defaultState: State = {
 
 type Action =
 	{ type: "page.load", payload: Page<Stage> } |
-	{ type: "page.reload" }
+	{ type: "page.reload" } |
+	{ type: "page.reorder", payload: { source: number, destination: number } }
 	;
 
 function reducer(state: State, action: Action): State {
@@ -59,6 +61,22 @@ function reducer(state: State, action: Action): State {
 			return {
 				...state,
 				ready: false
+			};
+		}
+		case "page.reorder": {
+			const content: Stage[] = [...state.page.content];
+			const source: Stage = content[action.payload.source];
+			content.splice(action.payload.source, 1);
+			content.splice(action.payload.destination, 0, source);
+			return {
+				...state,
+				page: {
+					...state.page,
+					content: content.map((stage: Stage, index: number) => ({
+						...stage,
+						index
+					}))
+				}
 			};
 		}
 	}
@@ -108,14 +126,29 @@ function Component({
 					if (event.destination !== undefined && event.destination !== null) {
 						switch (event.type) {
 							case "stage":
-							// return dispatch({
-							// 	type: "project.stage.move",
-							// 	payload: {
-							// 		stageId: +event.draggableId,
-							// 		sourceStageIndex: event.source.index,
-							// 		destinationStageIndex: event.destination.index
-							// 	}
-							// });
+								stageService.update({
+									...state.page.content[+event.source.index],
+									index: event.destination.index
+								})
+									.then(async (response: Response) => {
+										const body: any = await response.json();
+										if (!response.ok) {
+											const error: { message: string } = body;
+											throw new Error(error.message);
+										}
+										dispatch({ type: "page.reload" });
+									})
+									.catch((error: Error) => {
+										dispatch({ type: "page.reload" });
+										onError?.(error);
+									});
+								dispatch({
+									type: "page.reorder",
+									payload: {
+										source: event.source.index,
+										destination: event.destination.index
+									}
+								});
 							case "issue":
 							// return dispatch({
 							// 	type: "project.issue.move",
@@ -131,38 +164,40 @@ function Component({
 					}
 				}}
 			>
-				<Droppable droppableId="canva" direction="horizontal" type="stage">
-					{provider => (
-						<MuiImageList gap={0} ref={provider.innerRef} sx={{
+				<Droppable droppableId="stage-grid" direction="horizontal" type="stage">
+					{(provided: any) => (
+						<MuiImageList gap={0} ref={provided.innerRef} sx={{
 							gridAutoColumns: `${setup.column.width}px`,
 							gridAutoFlow: "column",
 							gridTemplateColumns: `repeat(auto-fill, ${setup.column.width}px) !important`,
 							marginTop: 0,
 							minHeight: "100vh",
 							paddingLeft: 2
-						}} {...provider.droppableProps}>
-							{state.page.content.map(stage => (
+						}} {...provided.droppableProps}>
+							{state.page.content.map((stage: Stage) => (
 								<RbdDraggable
-									key={stage.id.toString()}
-									draggableId={"+".concat(stage.id.toString())}
+									key={stage.index.toString()}
+									draggableId={stage.index.toString()}
 									index={stage.index}
 								>
-									{provider => (
+									{provided => (
 										<MuiImageListItem
-											ref={provider.innerRef}
+											ref={provided.innerRef}
 											sx={{
 												paddingRight: 2,
 												width: "100%"
 											}}
-											{...provider.draggableProps}
-											{...provider.dragHandleProps}
+											{...provided.draggableProps}
+											{...provided.dragHandleProps}
 										>
-											<StageGridColumn key={stage.id.toString()} value={stage} />
+											<Droppable droppableId={stage.id.toString()} type="issue">
+												{provided => (<StageGridColumn key={stage.id.toString()} provided={provided} value={stage} />)}
+											</Droppable>
 										</MuiImageListItem>
 									)}
 								</RbdDraggable>
 							))}
-							{provider.placeholder}
+							{provided.placeholder}
 						</MuiImageList>
 					)}
 				</Droppable>

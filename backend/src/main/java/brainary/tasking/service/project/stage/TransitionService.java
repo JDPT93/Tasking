@@ -12,8 +12,9 @@ import brainary.tasking.entity.project.stage.TransitionEntity;
 import brainary.tasking.payload.ChangelogPayload;
 import brainary.tasking.payload.project.goal.IssuePayload;
 import brainary.tasking.payload.project.stage.TransitionPayload;
-import brainary.tasking.repository.project.stage.StageRepository;
 import brainary.tasking.repository.project.stage.TransitionRepository;
+import brainary.tasking.validator.project.stage.StageValidator;
+import brainary.tasking.validator.project.stage.TransitionValidator;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 
@@ -27,87 +28,67 @@ public class TransitionService {
 	private TransitionRepository transitionRepository;
 
 	@Autowired
-	private StageRepository stageRepository;
+	private TransitionValidator transitionValidator;
 
-	private Boolean isValidStage(Integer stageId) {
-		return stageRepository.exists((root, query, builder) -> {
-			Predicate equalId = builder.equal(root.get("id"), stageId);
-			Predicate isActive = builder.isTrue(root.get("active"));
-			return builder.and(equalId, isActive);
-		});
-	}
-
-	private Boolean isConflictingTransition(TransitionPayload transitionPayload) {
-		return transitionRepository.exists((root, query, builder) -> {
-			Join<?, ?> source = root.join("source");
-			Join<?, ?> target = root.join("target");
-			Predicate equalSource = builder.equal(source.get("id"), transitionPayload.getSource().getId());
-			Predicate equalTarget = builder.equal(target.get("id"), transitionPayload.getTarget().getId());
-			Predicate isActive = builder.isTrue(root.get("active"));
-			if (transitionPayload.getId() == null) {
-				return builder.and(equalSource, equalTarget, isActive);
-			}
-			Predicate notEqualId = builder.notEqual(root.get("id"), transitionPayload.getId());
-			return builder.and(notEqualId, equalSource, equalTarget, isActive);
-		});
-	}
+	@Autowired
+	private StageValidator stageValidator;
 
 	public TransitionPayload create(TransitionPayload transitionPayload) {
 		transitionPayload.setId(null);
 		transitionPayload.setActive(true);
-		if (!isValidStage(transitionPayload.getSource().getId())) {
+		if (!stageValidator.isActive(transitionPayload.getSource().getId())) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "project.stage.source.not-found");
 		}
-		if (!isValidStage(transitionPayload.getTarget().getId())) {
+		if (!stageValidator.isActive(transitionPayload.getTarget().getId())) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "project.stage.target.not-found");
 		}
-		if (isConflictingTransition(transitionPayload)) {
+		if (transitionValidator.isConflicting(transitionPayload)) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "project.stage.transition.conflict");
 		}
 		return modelMapper.map(transitionRepository.save(modelMapper.map(transitionPayload, TransitionEntity.class)), TransitionPayload.class);
 	}
 
 	public Page<IssuePayload> retrieveByProjectId(Integer stageId, Pageable pageable) {
-		if (!isValidStage(stageId)) {
+		if (!stageValidator.isActive(stageId)) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "project.not-found");
 		}
-		return transitionRepository.findAll((root, query, builder) -> {
-			Join<?, ?> stage = root.join("stage");
+		return transitionRepository.findAll((transition, query, builder) -> {
+			Join<?, ?> stage = transition.join("stage");
 			Predicate equalStage = builder.equal(stage.get("id"), stageId);
-			Predicate isActive = builder.isTrue(root.get("active"));
+			Predicate isActive = builder.isTrue(transition.get("active"));
 			return builder.and(equalStage, isActive);
 		}, pageable)
 			.map(typeEntity -> modelMapper.map(typeEntity, IssuePayload.class));
 	}
 
-	public ChangelogPayload<TransitionPayload> update(TransitionPayload transitionPayload) {
-		if (!isValidStage(transitionPayload.getSource().getId())) {
+	public ChangelogPayload<TransitionPayload> update(TransitionPayload newTransitionPayload) {
+		if (!stageValidator.isActive(newTransitionPayload.getSource().getId())) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "project.stage.source.not-found");
 		}
-		if (!isValidStage(transitionPayload.getTarget().getId())) {
+		if (!stageValidator.isActive(newTransitionPayload.getTarget().getId())) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "project.stage.target.not-found");
 		}
-		if (isConflictingTransition(transitionPayload)) {
+		if (transitionValidator.isConflicting(newTransitionPayload)) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "project.stage.transition.conflict");
 		}
-		return new ChangelogPayload<TransitionPayload>(transitionRepository.findOne((root, query, builder) -> {
-			Predicate equalId = builder.equal(root.get("id"), transitionPayload.getId());
-			Predicate isActive = builder.isTrue(root.get("active"));
+		return transitionRepository.findOne((transition, query, builder) -> {
+			Predicate equalId = builder.equal(transition.get("id"), newTransitionPayload.getId());
+			Predicate isActive = builder.isTrue(transition.get("active"));
 			return builder.and(equalId, isActive);
 		})
 			.map(transitionEntity -> {
-				TransitionPayload previousTransitionPayload = modelMapper.map(transitionEntity, TransitionPayload.class);
-				transitionPayload.setActive(true);
-				transitionRepository.save(modelMapper.map(transitionPayload, TransitionEntity.class));
-				return previousTransitionPayload;
-			}).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "project.stage.transition.not-found")),
-			transitionPayload);
+				TransitionPayload oldTransitionPayload = modelMapper.map(transitionEntity, TransitionPayload.class);
+				newTransitionPayload.setActive(true);
+				transitionRepository.save(modelMapper.map(newTransitionPayload, TransitionEntity.class));
+				return new ChangelogPayload<TransitionPayload>(oldTransitionPayload, newTransitionPayload);
+			})
+			.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "project.stage.transition.not-found"));
 	}
 
 	public TransitionPayload deleteById(Integer transitionId) {
-		return transitionRepository.findOne((root, query, builder) -> {
-			Predicate equalId = builder.equal(root.get("id"), transitionId);
-			Predicate isActive = builder.isTrue(root.get("active"));
+		return transitionRepository.findOne((transition, query, builder) -> {
+			Predicate equalId = builder.equal(transition.get("id"), transitionId);
+			Predicate isActive = builder.isTrue(transition.get("active"));
 			return builder.and(equalId, isActive);
 		})
 			.map(transitionEntity -> {

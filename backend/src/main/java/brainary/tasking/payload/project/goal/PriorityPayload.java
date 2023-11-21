@@ -14,7 +14,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(name = "project:goal:priority")
+@Schema(name = "project.goal.priority")
 public class PriorityPayload implements Serializable {
 
 	private Integer id;

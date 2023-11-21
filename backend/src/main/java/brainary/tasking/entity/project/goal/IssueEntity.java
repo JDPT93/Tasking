@@ -26,6 +26,17 @@ public class IssueEntity extends GoalEntity {
 	@JoinColumn(nullable = true)
 	private GoalEntity parent;
 
+	@ManyToOne
+	@JoinColumn(nullable = false)
+	private TypeEntity type;
+
+	@ManyToOne
+	@JoinColumn(nullable = false)
+	private PriorityEntity priority;
+
+	@Column(nullable = false)
+	private String description;
+
 	@Column(nullable = false)
 	private Integer complexity;
 
@@ -41,7 +52,7 @@ public class IssueEntity extends GoalEntity {
 	private UserEntity assignee;
 
 	@ManyToOne
-	@JoinColumn(nullable = false)
+	@JoinColumn(nullable = true)
 	private StageEntity stage;
 
 }

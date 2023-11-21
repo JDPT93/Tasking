@@ -41,7 +41,7 @@ export default new class IssueService extends Service {
 		if (pagination?.sort !== undefined) {
 			Object.entries(pagination.sort).forEach(([property, order]) => query.append("sort", `${property},${order}`));
 		}
-		return fetch(`${this.endpoint}/api/project/${stageId}/issue?${query.size === 0 ? "" : query.toString()}`, {
+		return fetch(`${this.endpoint}/api/project/goal/issue/by/stage/${stageId}?${query.size === 0 ? "" : query.toString()}`, {
 			headers,
 			method: "GET",
 			mode: "cors",

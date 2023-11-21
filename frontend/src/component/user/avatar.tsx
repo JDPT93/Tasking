@@ -31,7 +31,7 @@ function Component({
 			alt={value.name}
 			src={`/user/avatar/${value.id}.jpg`}
 			sx={{
-				backgroundColor: ColorUtility.textInterpolation(value.name),
+				backgroundColor: ColorUtility.toString(ColorUtility.textInterpolation(value.name)),
 				...{
 					small: {
 						fontSize: 11,

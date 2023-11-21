@@ -92,25 +92,25 @@ function BoardPage({ onError }: Properties) {
 							}
 						}}>
 							<StrictModeDroppable droppableId="canva" direction="horizontal" type="stage">
-								{provider => (
-									<ImageList gap={0} ref={provider.innerRef} sx={{
+								{provided => (
+									<ImageList gap={0} ref={provided.innerRef} sx={{
 										gridAutoColumns: "300px",
 										gridAutoFlow: "column",
 										gridTemplateColumns: "repeat(auto-fill, 300px) !important",
 										marginTop: 0,
 										minHeight: "100vh",
 										paddingLeft: 2
-									}} {...provider.droppableProps}>
+									}} {...provided.droppableProps}>
 										{project.stages.sort((left, right) => left.index - right.index).map(stage => (
 											<Draggable key={stage.id.toString()} draggableId={"+".concat(stage.id.toString())} index={stage.index}>
-												{provider => (
-													<ImageListItem ref={provider.innerRef} sx={{ paddingRight: 2 }} {...provider.draggableProps} {...provider.dragHandleProps} >
+												{provided => (
+													<ImageListItem ref={provided.innerRef} sx={{ paddingRight: 2 }} {...provided.draggableProps} {...provided.dragHandleProps} >
 														<StageColumn key={stage.id.toString()} stage={stage} />
 													</ImageListItem>
 												)}
 											</Draggable>
 										))}
-										{provider.placeholder}
+										{provided.placeholder}
 									</ImageList>
 								)}
 							</StrictModeDroppable>
