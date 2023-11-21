@@ -150,6 +150,7 @@ function Component({
 									}
 								});
 							case "issue":
+								console.log(event);
 							// return dispatch({
 							// 	type: "project.issue.move",
 							// 	payload: {
@@ -164,7 +165,7 @@ function Component({
 					}
 				}}
 			>
-				<Droppable droppableId="stage-grid" direction="horizontal" type="stage">
+				<Droppable droppableId={`droppable-project-${project.id}`} direction="horizontal" type="stage">
 					{(provided: any) => (
 						<MuiImageList gap={0} ref={provided.innerRef} sx={{
 							gridAutoColumns: `${setup.column.width}px`,
@@ -176,8 +177,8 @@ function Component({
 						}} {...provided.droppableProps}>
 							{state.page.content.map((stage: Stage) => (
 								<RbdDraggable
-									key={stage.index.toString()}
-									draggableId={stage.index.toString()}
+									key={`draggable-stage-${stage.id}`}
+									draggableId={`draggable-stage-${stage.id}`}
 									index={stage.index}
 								>
 									{provided => (
@@ -190,8 +191,10 @@ function Component({
 											{...provided.draggableProps}
 											{...provided.dragHandleProps}
 										>
-											<Droppable droppableId={stage.id.toString()} type="issue">
-												{provided => (<StageGridColumn key={stage.id.toString()} provided={provided} value={stage} />)}
+											<Droppable droppableId={`droppable-stage-${stage.id}`} type="issue">
+												{provided => (
+													<StageGridColumn key={`droppable-stage-${stage.id}`} provided={provided} value={stage} />
+												)}
 											</Droppable>
 										</MuiImageListItem>
 									)}

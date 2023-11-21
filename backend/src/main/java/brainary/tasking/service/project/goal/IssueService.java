@@ -96,7 +96,12 @@ public class IssueService {
 			Predicate isActive = builder.isTrue(issue.get("active"));
 			return builder.and(equalStage, isActive);
 		}, pageable)
-			.map(issueEntity -> modelMapper.map(issueEntity, IssuePayload.class));
+			.map(issueEntity -> {
+				IssuePayload issuePayload = modelMapper.map(issueEntity, IssuePayload.class);
+				issuePayload.getPeriod().setFrom(issueEntity.getPeriod().getFrom());
+				issuePayload.getPeriod().setTo(issueEntity.getPeriod().getTo());
+				return issuePayload;
+			});
 	}
 
 	public ChangelogPayload<IssuePayload> update(IssuePayload newIssuePayload) {

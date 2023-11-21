@@ -16,9 +16,11 @@ import {
 	Typography as MuiTypography
 } from "@mui/material";
 
+import PriorityIcon from "component/project/goal/priority/icon";
 import UserAvatar from "component/user/avatar";
 
 import Issue from "model/project/goal/issue";
+
 import ColorUtility from "utility/color-utility";
 
 interface Setup {
@@ -95,7 +97,7 @@ function Component({
 								</MuiTooltip>
 								<MuiTooltip title={`Prioridad: Alta}`}>
 									<span>
-										{/* <IssuePriorityIcon priority={value.priority} /> */}
+										<PriorityIcon value={value.priority} />
 									</span>
 								</MuiTooltip>
 								{value.complexity > 0 &&
