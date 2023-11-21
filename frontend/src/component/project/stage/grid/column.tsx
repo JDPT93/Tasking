@@ -7,7 +7,6 @@ import {
 	Typography as MuiTypography
 } from "@mui/material";
 
-import Droppable from "component/droppable";
 import IssueCard from "component/project/goal/issue/card";
 
 import Page, { defaultPage } from "model/common/page";

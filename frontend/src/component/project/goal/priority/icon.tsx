@@ -14,15 +14,7 @@ import {
 	red
 } from "@mui/material/colors";
 
-import Priority from "model/project/goal/priority";
-
-interface Setup {
-
-}
-
-const setup: Setup = {
-
-};
+import Priority, { PriorityId } from "model/project/goal/priority";
 
 type Properties = {
 	value: Priority
@@ -31,26 +23,21 @@ type Properties = {
 function Component({
 	value
 }: Properties) {
-	switch (value.id) {
-		case 1:
+	switch (value.id as PriorityId) {
+		case PriorityId.HIGHER:
 			return <KeyboardDoubleArrowUpSharp sx={{ color: red[500] }} />;
-		case 2:
+		case PriorityId.HIGH:
 			return <KeyboardArrowUpSharp sx={{ color: red[500] }} />;
-		case 3:
+		case PriorityId.MEDIUM:
 			return <DragHandleSharp sx={{ color: amber[500] }} />;
-		case 4:
+		case PriorityId.LOW:
 			return <KeyboardArrowDownSharp sx={{ color: green[500] }} />;
-		case 5:
+		case PriorityId.LOWER:
 			return <KeyboardDoubleArrowDownSharp sx={{ color: green[500] }} />;
-		default:
-			return <></>;
 	}
 }
 
-export type PriorityIconSetup = Setup;
 export type PriorityIconProperties = Properties;
-export const PriorityIcon = Object.assign(Component, {
-	setup
-});
+export const PriorityIcon = Component;
 
 export default PriorityIcon;

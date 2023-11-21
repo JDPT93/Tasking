@@ -1,5 +1,13 @@
+export enum PriorityId {
+	HIGHER = 1,
+	HIGH = 2,
+	MEDIUM = 3,
+	LOW = 4,
+	LOWER = 5
+}
+
 export interface Priority {
-	id: number;
+	id: PriorityId;
 	name: string;
 }
 
