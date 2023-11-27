@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import brainary.tasking.entity.project.ProjectEntity;
-import brainary.tasking.payload.ChangelogPayload;
+import brainary.tasking.payload.common.ChangelogPayload;
 import brainary.tasking.payload.project.ProjectPayload;
 import brainary.tasking.repository.project.ProjectRepository;
 import brainary.tasking.validator.project.ProjectValidator;
@@ -41,7 +41,8 @@ public class ProjectService {
 		if (projectValidator.isConflicting(projectPayload)) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "project.conflict");
 		}
-		return modelMapper.map(projectRepository.save(modelMapper.map(projectPayload, ProjectEntity.class)), ProjectPayload.class);
+		ProjectEntity projectEntity = projectRepository.save(modelMapper.map(projectPayload, ProjectEntity.class));
+		return modelMapper.map(projectEntity, ProjectPayload.class);
 	}
 
 	public ProjectPayload retrieveById(Integer projectId) {

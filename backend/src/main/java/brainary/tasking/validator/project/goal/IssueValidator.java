@@ -41,4 +41,14 @@ public class IssueValidator {
 		});
 	}
 
+	public Boolean doesProjectLeaderMatchById(Integer leaderId, Integer goalId) {
+		return issueRepository.exists((issue, query, builder) -> {
+			Join<?, ?> project = issue.join("project");
+			Join<?, ?> leader = project.join("leader");
+			Predicate equalId = builder.equal(issue.get("id"), goalId);
+			Predicate equalLeader = builder.equal(leader.get("id"), leaderId);
+			return builder.and(equalId, equalLeader);
+		});
+	}
+
 }

@@ -10,11 +10,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@Schema(name = "project.goal.priority")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(name = "project.goal.priority")
 public class PriorityPayload implements Serializable {
 
 	private Integer id;

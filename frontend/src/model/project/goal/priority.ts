@@ -1,9 +1,9 @@
 export enum PriorityId {
-	HIGHER = 1,
-	HIGH = 2,
-	MEDIUM = 3,
-	LOW = 4,
-	LOWER = 5
+	Higher = 1,
+	High = 2,
+	Medium = 3,
+	Low = 4,
+	Lower = 5
 }
 
 export interface Priority {

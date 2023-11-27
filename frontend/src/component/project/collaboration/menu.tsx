@@ -12,54 +12,28 @@ import {
 	Menu as MuiMenu
 } from "@mui/material";
 
-import Main, { MainContextValue } from "component/main";
+import { MainContext, MainContextValue } from "component/main";
 import CollaborationDialog from "component/project/collaboration/dialog";
-
 import Collaboration from "model/project/collaboration";
 
-interface Setup {
-
-}
-
-const setup: Setup = {
-
-};
-
 interface State {
-	readonly dialog: {
-		readonly open: boolean
-	};
+	readonly delete: boolean;
 }
 
-const defaultState: State = {
-	dialog: {
-		open: false
-	}
+export const defaultState: State = {
+	delete: false
 };
 
 type Action =
-	{ type: "dialog.close" } |
-	{ type: "dialog.open" }
+	{ type: "delete.toggle" }
 	;
 
-function reducer(state: State, action: Action): State {
+export function reducer(state: State, action: Action): State {
 	switch (action.type) {
-		case "dialog.close": {
+		case "delete.toggle": {
 			return {
 				...state,
-				dialog: {
-					...state.dialog,
-					open: false
-				}
-			};
-		}
-		case "dialog.open": {
-			return {
-				...state,
-				dialog: {
-					...state.dialog,
-					open: true
-				}
+				delete: !state.delete
 			};
 		}
 	}
@@ -87,16 +61,15 @@ function Component({
 	onError,
 	onDelete
 }: Properties) {
-	const mainContext: MainContextValue = React.useContext(Main.Context);
-	const [state, dispatch] = React.useReducer(reducer, defaultState);
+	const mainContext: MainContextValue = React.useContext(MainContext);
 	const locale: any = require(`locale/${mainContext.state.locale}/project/collaboration/menu.json`);
-	if (anchor !== null) console.log(value)
+	const [state, dispatch] = React.useReducer(reducer, defaultState);
 	return (
 		<Context.Provider value={{ state, dispatch }}>
 			<MuiMenu anchorEl={anchor} open={anchor !== null} onClose={onClose}>
 				<MuiMenuItem
 					onClick={() => {
-						dispatch({ type: "dialog.open" });
+						dispatch({ type: "delete.toggle" });
 						onClose?.();
 					}}
 				>
@@ -107,13 +80,13 @@ function Component({
 				</MuiMenuItem>
 			</MuiMenu>
 			<CollaborationDialog
-				open={state.dialog.open}
+				open={state.delete}
 				value={value}
 				variant="leave"
-				onCancel={() => dispatch({ type: "dialog.close" })}
+				onCancel={() => dispatch({ type: "delete.toggle" })}
 				onError={onError}
 				onSuccess={(value: Collaboration) => {
-					dispatch({ type: "dialog.close" });
+					dispatch({ type: "delete.toggle" });
 					setTimeout(() => onDelete?.(value), 250);
 				}}
 			/>
@@ -121,16 +94,10 @@ function Component({
 	);
 }
 
-export type CollaborationMenuSetup = Setup;
-export type CollaborationMenuState = State;
-export type CollaborationMenuAction = Action;
 export type CollaborationMenuContextValue = ContextValue;
 export type CollaborationMenuProperties = Properties;
-export const CollaborationMenu = Object.assign(Component, {
-	Context,
-	defaultState,
-	reducer,
-	setup
-});
+
+export const CollaborationMenu = Component;
+export const CollaborationMenuContext = Context;
 
 export default CollaborationMenu;

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import brainary.tasking.entity.user.UserEntity;
-import brainary.tasking.payload.ChangelogPayload;
+import brainary.tasking.payload.common.ChangelogPayload;
 import brainary.tasking.payload.user.AuthenticationPayload;
 import brainary.tasking.payload.user.AuthorizationPayload;
 import brainary.tasking.payload.user.UserPayload;

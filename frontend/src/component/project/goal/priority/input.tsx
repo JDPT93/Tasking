@@ -11,14 +11,6 @@ import Priority from "model/project/goal/priority";
 
 import priorityService from "service/project/goal/priority-service";
 
-interface Setup {
-
-}
-
-const setup: Setup = {
-
-};
-
 interface State {
 	readonly page: Page<Priority>;
 	readonly ready: Boolean;
@@ -26,7 +18,7 @@ interface State {
 
 }
 
-const defaultState: State = {
+export const defaultState: State = {
 	page: defaultPage,
 	ready: false,
 	value: null
@@ -37,7 +29,7 @@ type Action =
 	{ type: "page.reload" }
 	;
 
-function reducer(state: State, action: Action): State {
+export function reducer(state: State, action: Action): State {
 	switch (action.type) {
 		case "page.load": {
 			return {
@@ -106,16 +98,10 @@ function Component({
 	);
 }
 
-export type PriorityInputSetup = Setup;
-export type PriorityInputState = State;
-export type PriorityInputAction = Action;
 export type PriorityInputContextValue = ContextValue;
 export type PriorityInputProperties = Properties;
-export const PriorityInput = Object.assign(Component, {
-	Context,
-	defaultState,
-	reducer,
-	setup
-});
+
+export const PriorityInput = Component;
+export const PriorityInputContext = Context;
 
 export default PriorityInput;

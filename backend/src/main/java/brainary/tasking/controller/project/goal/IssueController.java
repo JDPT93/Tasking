@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import brainary.tasking.payload.ChangelogPayload;
+import brainary.tasking.payload.common.ChangelogPayload;
 import brainary.tasking.payload.project.goal.IssuePayload;
 import brainary.tasking.security.JwtToken;
 import brainary.tasking.service.project.goal.IssueService;
@@ -66,18 +66,18 @@ public class IssueController {
 	@SecurityRequirement(name = "Jwt")
 	@PutMapping(path = "api/project/goal/issue")
 	public ResponseEntity<List<ChangelogPayload<IssuePayload>>> update(JwtToken jwtToken, @RequestBody IssuePayload issuePayload) {
-		// if (!issueValidator.doesLeaderMatchById(Integer.parseInt(jwtToken.getSubject()), issuePayload.getId())) {
-		// throw new ResponseStatusException(HttpStatus.FORBIDDEN, "project.goal.issue.update.forbidden");
-		// }
+		if (!issueValidator.doesProjectLeaderMatchById(Integer.parseInt(jwtToken.getSubject()), issuePayload.getId())) {
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN, "project.goal.issue.update.forbidden");
+		}
 		return new ResponseEntity<>(issueService.update(issuePayload), HttpStatus.OK);
 	}
 
 	@SecurityRequirement(name = "Jwt")
 	@DeleteMapping(path = "api/project/goal/issue/{issue-id}")
 	public ResponseEntity<IssuePayload> deleteById(JwtToken jwtToken, @PathVariable(name = "issue-id") Integer issueId) {
-		// if (!issueValidator.doesLeaderMatchById(Integer.parseInt(jwtToken.getSubject()), issueId)) {
-		// throw new ResponseStatusException(HttpStatus.FORBIDDEN, "project.goal.issue.delete-by-id.forbidden");
-		// }
+		if (!issueValidator.doesProjectLeaderMatchById(Integer.parseInt(jwtToken.getSubject()), issueId)) {
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN, "project.goal.issue.delete-by-id.forbidden");
+		}
 		return new ResponseEntity<>(issueService.deleteById(issueId), HttpStatus.OK);
 	}
 

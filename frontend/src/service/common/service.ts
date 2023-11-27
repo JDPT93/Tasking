@@ -62,7 +62,7 @@ export class Service {
 	//	 });
 	// }
 
-	// public retrieveAll(pagination?: Pagination): Promise<Response> {
+	// public retrieveAll(pagination?: Partial<Pagination>): Promise<Response> {
 	//	 const headers = new Headers({
 	//		 "Accept": "application/json"
 	//	 });

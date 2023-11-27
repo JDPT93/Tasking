@@ -79,6 +79,7 @@ function Component({
 }
 
 export type IssueCardProperties = Properties;
+
 export const IssueCard = Component;
 
 export default IssueCard;

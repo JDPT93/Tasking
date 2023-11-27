@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import brainary.tasking.payload.ChangelogPayload;
+import brainary.tasking.payload.common.ChangelogPayload;
 import brainary.tasking.payload.project.ProjectPayload;
 import brainary.tasking.security.JwtToken;
 import brainary.tasking.service.project.ProjectService;

@@ -24,25 +24,12 @@ import UserAvatar from "component/user/avatar";
 import Changelog from "model/common/changelog";
 import Collaboration from "model/project/collaboration";
 
-interface Setup {
-
-}
-
-const setup: Setup = {
-
-};
-
 interface State {
-	readonly menu: {
-		readonly anchor: HTMLElement | null
-	};
+	readonly menu: HTMLElement | null;
 }
 
-const defaultState: State = {
-	menu: {
-		anchor:
-			null
-	}
+export const defaultState: State = {
+	menu: null
 };
 
 type Action =
@@ -50,24 +37,18 @@ type Action =
 	{ type: "menu.open", payload: HTMLElement }
 	;
 
-function reducer(state: State, action: Action): State {
+export function reducer(state: State, action: Action): State {
 	switch (action.type) {
 		case "menu.close": {
 			return {
 				...state,
-				menu: {
-					...state.menu,
-					anchor: null
-				}
+				menu: null
 			};
 		}
 		case "menu.open": {
 			return {
 				...state,
-				menu: {
-					...state.menu,
-					anchor: action.payload
-				}
+				menu: action.payload
 			};
 		}
 	}
@@ -127,7 +108,7 @@ function Component({
 								<MuiMoreVert fontSize="small" />
 							</MuiIconButton>
 							<CollaborationMenu
-								anchor={state.menu.anchor}
+								anchor={state.menu}
 								value={value}
 								onClose={() => dispatch({ type: "menu.close" })}
 								onDelete={onDelete}
@@ -139,16 +120,10 @@ function Component({
 	);
 }
 
-export type ProjectTableRowSetup = Setup;
-export type ProjectTableRowState = State;
-export type ProjectTableRowAction = Action;
 export type ProjectTableRowContextValue = ContextValue;
 export type ProjectTableRowProperties = Properties;
-export const ProjectTableRow = Object.assign(Component, {
-	Context,
-	defaultState,
-	reducer,
-	setup
-});
+
+export const ProjectTableRow = Component;
+export const ProjectTableRowContext = Context;
 
 export default ProjectTableRow;

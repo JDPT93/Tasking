@@ -27,7 +27,7 @@ export default new class UserService extends Service {
 			body,
 			headers,
 			method: "POST",
-			mode: "cors",
+			mode: "cors"
 		});
 	}
 
@@ -41,7 +41,7 @@ export default new class UserService extends Service {
 			body,
 			headers,
 			method: "POST",
-			mode: "cors",
+			mode: "cors"
 		});
 	}
 
@@ -57,7 +57,7 @@ export default new class UserService extends Service {
 		return fetch(`${this.endpoint}/api/user/token`, {
 			headers,
 			method: "POST",
-			mode: "cors",
+			mode: "cors"
 		});
 	}
 
@@ -73,7 +73,7 @@ export default new class UserService extends Service {
 		return fetch(`${this.endpoint}/api/user/who-am-i`, {
 			headers,
 			method: "GET",
-			mode: "cors",
+			mode: "cors"
 		});
 	}
 

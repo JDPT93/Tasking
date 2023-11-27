@@ -17,46 +17,38 @@ import {
 	Typography as MuiTypography
 } from "@mui/material";
 
-import Main, { MainContextValue } from "component/main";
+import { MainContext, MainContextValue } from "component/main";
 import ProjectTableHead from "component/project/table/head";
 import ProjectTablePagination from "component/project/table/pagination";
 import ProjectTableRow from "component/project/table/row";
 
 import Changelog from "model/common/changelog";
 import Page, { defaultPage } from "model/common/page";
-import Pagination from "model/common/pagination";
+import Pagination, { defaultPagination } from "model/common/pagination";
 import Sort from "model/common/sort";
 import Project from "model/project/project";
 
 import projectService from "service/project/project-service";
 
-interface Setup {
-
-}
-
-const setup: Setup = {
-
-};
-
 interface State {
 	readonly page: Page<Project>;
-	readonly pagination: Required<Pagination>;
+	readonly pagination: Pagination;
 	readonly ready: boolean;
 }
 
-const defaultState: State = {
+export const defaultState: State = {
 	page: defaultPage,
-	pagination: ProjectTablePagination.defaultState.value,
+	pagination: defaultPagination,
 	ready: false
 };
 
 type Action =
 	{ type: "page.load", payload: Page<Project> } |
 	{ type: "page.reload" } |
-	{ type: "pagination.change", payload: Required<Pagination> }
+	{ type: "pagination.change", payload: Pagination }
 	;
 
-function reducer(state: State, action: Action): State {
+export function reducer(state: State, action: Action): State {
 	switch (action.type) {
 		case "page.load": {
 			return {
@@ -103,9 +95,9 @@ function Component({
 	onRetrieve,
 	onUpdate
 }: Properties) {
-	const mainContext: MainContextValue = React.useContext(Main.Context);
-	const [state, dispatch] = React.useReducer(reducer, defaultState);
+	const mainContext: MainContextValue = React.useContext(MainContext);
 	const locale: any = require(`locale/${mainContext.state.locale}/project/table/table.json`);
+	const [state, dispatch] = React.useReducer(reducer, defaultState);
 	React.useEffect(() => {
 		if (!state.ready) {
 			projectService.retrieveAll(state.pagination)
@@ -137,7 +129,7 @@ function Component({
 					<MuiTable sx={{ minWidth: 650 }}>
 						<ProjectTableHead
 							onSort={(sort: Sort) => {
-								const pagination: Required<Pagination> = {
+								const pagination: Pagination = {
 									...state.pagination,
 									sort
 								};
@@ -173,7 +165,7 @@ function Component({
 					</MuiTable>
 					<ProjectTablePagination
 						count={state.page.totalElements}
-						onChange={(pagination: Required<Pagination>) => dispatch({ type: "pagination.change", payload: pagination })}
+						onChange={(pagination: Pagination) => dispatch({ type: "pagination.change", payload: pagination })}
 						value={state.pagination}
 					/>
 				</MuiTableContainer>
@@ -182,16 +174,10 @@ function Component({
 	);
 }
 
-export type ProjectTableSetup = Setup;
-export type ProjectTableState = State;
-export type ProjectTableAction = Action;
 export type ProjectTableContextValue = ContextValue;
 export type ProjectTableProperties = Properties;
-export const ProjectTable = Object.assign(Component, {
-	Context,
-	defaultState,
-	reducer,
-	setup
-});
+
+export const ProjectTable = Component;
+export const ProjectTableContext = Context;
 
 export default ProjectTable;

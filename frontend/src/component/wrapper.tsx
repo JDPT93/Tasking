@@ -21,7 +21,7 @@ import {
 	useTheme as muiUseTheme
 } from "@mui/material";
 
-import Main, { MainContextValue } from "component/main";
+import { MainContext, MainContextValue } from "component/main";
 import UserAvatar from "component/user/avatar";
 
 interface Setup {
@@ -37,15 +37,11 @@ const setup: Setup = {
 };
 
 interface State {
-	readonly drawer: {
-		readonly open: boolean
-	};
+	readonly drawer: boolean;
 };
 
-const defaultState: State = {
-	drawer: {
-		open: false
-	}
+export const defaultState: State = {
+	drawer: false
 };
 
 type Action =
@@ -53,24 +49,18 @@ type Action =
 	{ type: "drawer.open" }
 	;
 
-function reducer(state: State, action: Action): State {
+export function reducer(state: State, action: Action): State {
 	switch (action.type) {
 		case "drawer.close": {
 			return {
 				...state,
-				drawer: {
-					...state.drawer,
-					open: false
-				}
+				drawer: false
 			};
 		}
 		case "drawer.open": {
 			return {
 				...state,
-				drawer: {
-					...state.drawer,
-					open: true
-				}
+				drawer: true
 			};
 		}
 	}
@@ -90,11 +80,11 @@ type Properties = {
 function Component({
 	children
 }: Properties) {
-	const mainContext: MainContextValue = React.useContext(Main.Context);
-	const [state, dispatch] = React.useReducer(reducer, defaultState);
-	const theme: MuiTheme = muiUseTheme();
+	const mainContext: MainContextValue = React.useContext(MainContext);
 	const locale: any = require(`locale/${mainContext.state.locale}/wrapper.json`);
-	const transition = (properties: string | string[], options: MuiSxProps<MuiTheme>): MuiSxProps<MuiTheme> => state.drawer.open
+	const theme: MuiTheme = muiUseTheme();
+	const [state, dispatch] = React.useReducer(reducer, defaultState);
+	const transition = (properties: string | string[], options: MuiSxProps<MuiTheme>): MuiSxProps<MuiTheme> => state.drawer
 		? {
 			...options,
 			transition: theme.transitions.create(properties, {
@@ -116,9 +106,45 @@ function Component({
 	}
 	return (
 		<>
+			<MuiAppBar
+				sx={transition(["margin-left", "width"], {
+					marginLeft: { md: `${setup.drawer.width}px` },
+					width: { md: `calc(100% - ${setup.drawer.width}px)` }
+				})}
+			>
+				<MuiToolbar>
+					<MuiIconButton
+						color="inherit"
+						edge="start"
+						onClick={() => dispatch({ type: "drawer.open" })}
+						sx={transition("margin-left", {
+							marginLeft: { md: "-64px" }
+						})}
+					>
+						<MenuIcon />
+					</MuiIconButton>
+					<MuiTypography component="h1" marginLeft={2} noWrap variant="h6">{locale.title}</MuiTypography>
+					<MuiBox flexGrow={1} />
+					<MuiBox sx={{ display: { xs: "none", md: "flex" }, gap: 1 }}>
+						<MuiIconButton color="inherit" size="large">
+							<MuiBadge badgeContent={0} color="error">
+								<MailIcon />
+							</MuiBadge>
+						</MuiIconButton>
+						<MuiIconButton color="inherit" size="large">
+							<MuiBadge badgeContent={3} color="error">
+								<NotificationsIcon />
+							</MuiBadge>
+						</MuiIconButton>
+						<MuiIconButton color="inherit" size="small">
+							<UserAvatar value={mainContext.state.user} />
+						</MuiIconButton>
+					</MuiBox>
+				</MuiToolbar>
+			</MuiAppBar>
 			<MuiDrawer
 				anchor="left"
-				open={state.drawer.open}
+				open={state.drawer}
 				sx={{
 					flexShrink: 0,
 					"& .MuiDrawer-paper": {
@@ -148,42 +174,6 @@ function Component({
 				</MuiBox>
 				<MuiDivider />
 			</MuiDrawer>
-			<MuiAppBar sx={transition(["margin-left", "width"], {
-				marginLeft: { md: `${setup.drawer.width}px` },
-				width: { md: `calc(100% - ${setup.drawer.width}px)` }
-			})}>
-				<MuiToolbar>
-					<MuiIconButton
-						color="inherit"
-						edge="start"
-						onClick={() => dispatch({ type: "drawer.open" })}
-						sx={transition("margin-left", {
-							marginLeft: { md: "-64px" }
-						})}
-					>
-						<MenuIcon />
-					</MuiIconButton>
-					<MuiTypography component="h1" marginLeft={2} noWrap variant="h6">
-						{locale.title}
-					</MuiTypography>
-					<MuiBox flexGrow={1} />
-					<MuiBox sx={{ display: { xs: "none", md: "flex" }, gap: 1 }}>
-						<MuiIconButton color="inherit" size="large">
-							<MuiBadge badgeContent={0} color="error">
-								<MailIcon />
-							</MuiBadge>
-						</MuiIconButton>
-						<MuiIconButton color="inherit" size="large">
-							<MuiBadge badgeContent={3} color="error">
-								<NotificationsIcon />
-							</MuiBadge>
-						</MuiIconButton>
-						<MuiIconButton color="inherit" size="small">
-							<UserAvatar value={mainContext.state.user} />
-						</MuiIconButton>
-					</MuiBox>
-				</MuiToolbar>
-			</MuiAppBar>
 			<MuiBox
 				flexGrow={1}
 				marginTop={{ xs: "56px", md: "64px" }}
@@ -193,21 +183,15 @@ function Component({
 				})}
 			>
 				{children}
-			</MuiBox >
+			</MuiBox>
 		</>
 	);
 }
 
-export type WrapperSetup = Setup;
-export type WrapperState = State;
-export type WrapperAction = Action;
 export type WrapperContextValue = ContextValue;
 export type WrapperProperties = Properties;
-export const Wrapper = Object.assign(Component, {
-	Context,
-	defaultState,
-	reducer,
-	setup
-});
+
+export const Wrapper = Component;
+export const WrapperContext = Context;
 
 export default Wrapper;

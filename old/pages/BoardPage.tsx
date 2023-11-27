@@ -70,7 +70,7 @@ function BoardPage({ onError }: Properties) {
 								switch (event.type) {
 									case "stage":
 										return dispatch({
-											type: "project.stage.move",
+											type: "project.goal.stage.move",
 											payload: {
 												stageId: +event.draggableId,
 												sourceStageIndex: event.source.index,
@@ -101,7 +101,7 @@ function BoardPage({ onError }: Properties) {
 										minHeight: "100vh",
 										paddingLeft: 2
 									}} {...provided.droppableProps}>
-										{project.stages.sort((left, right) => left.index - right.index).map(stage => (
+										{project.goal.stages.sort((left, right) => left.index - right.index).map(stage => (
 											<Draggable key={stage.id.toString()} draggableId={"+".concat(stage.id.toString())} index={stage.index}>
 												{provided => (
 													<ImageListItem ref={provided.innerRef} sx={{ paddingRight: 2 }} {...provided.draggableProps} {...provided.dragHandleProps} >

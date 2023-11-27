@@ -4,8 +4,8 @@ import {
 	Link
 } from "react-router-dom";
 
-
 import {
+	Checklist as ChecklistIcon,
 	DashboardOutlined as DashboardOutlinedIcon,
 	FolderOutlined as FolderOutlinedIcon,
 	InsertDriveFileOutlined as InsertDriveFileOutlinedIcon
@@ -17,103 +17,57 @@ import {
 	Typography as MuiTypography
 } from "@mui/material";
 
-import Main, { MainContextValue } from "component/main";
+import { MainContext, MainContextValue } from "component/main";
 
 import Project from "model/project/project";
 
-interface Setup {
-
-}
-
-const setup: Setup = {
-
-};
-
-interface State {
-
-}
-
-const defaultState: State = {
-
-};
-
-type Action =
-	{ type: "", payload: any }
-	;
-
-function reducer(state: State, action: Action): State {
-	switch (action.type) {
-		case "": {
-			return {
-				...state,
-
-			};
-		}
-	}
-}
-
-interface ContextValue {
-	readonly state: State;
-	readonly dispatch?: (action: Action) => void;
-}
-
-const Context = React.createContext<ContextValue>({ state: defaultState });
-
 type Properties = {
-	value: Project
+	value: Project,
+	variant: "backlog" | "board" | "timeline"
 };
 
 function Component({
-	value
+	value,
+	variant
 }: Properties) {
-	const mainContext: MainContextValue = React.useContext(Main.Context);
-	const [state, dispatch] = React.useReducer(reducer, defaultState);
-	const locale: any = require(`locale/${mainContext.state.locale}/project/page/breadcrumbs.json`);
+	const mainContext: MainContextValue = React.useContext(MainContext);
+	const locale: any = require(`locale/${mainContext.state.locale}/project/breadcrumbs.json`);
 	return (
-		<Context.Provider value={{ state, dispatch }}>
-			<MuiBreadcrumbs sx={{ margin: 2 }}>
-				<MuiLink
-					alignItems="center"
-					color="inherit"
-					component={Link}
-					display="flex"
-					to="/project"
-					underline="hover">
-					<FolderOutlinedIcon sx={{ mr: 0.5 }} />
-					{locale.links.projects}
-				</MuiLink>
-				<MuiLink
-					alignItems="center"
-					color="inherit"
-					component={Link}
-					display="flex"
-					to={`/project/${value.id}`}
-					underline="hover">
-					<InsertDriveFileOutlinedIcon sx={{ mr: 0.5 }} />
-					{value?.name}
-				</MuiLink>
-				<MuiTypography
-					color="text.primary"
-					display="flex"
-					alignItems="center">
-					<DashboardOutlinedIcon sx={{ mr: 0.5 }} />
-					{locale.links.board}
-				</MuiTypography>
-			</MuiBreadcrumbs>
-		</Context.Provider>
+		<MuiBreadcrumbs sx={{ margin: 2 }}>
+			<MuiLink
+				alignItems="center"
+				color="inherit"
+				component={Link}
+				display="flex"
+				to="/project"
+				underline="hover">
+				<FolderOutlinedIcon sx={{ mr: 0.5 }} />
+				{locale.links.projects}
+			</MuiLink>
+			<MuiLink
+				alignItems="center"
+				color="inherit"
+				component={Link}
+				display="flex"
+				to={`/project/${value.id}`}
+				underline="hover">
+				<InsertDriveFileOutlinedIcon sx={{ mr: 0.5 }} />
+				{value?.name}
+			</MuiLink>
+			<MuiTypography
+				color="text.primary"
+				display="flex"
+				alignItems="center">
+				{variant === "backlog" && <ChecklistIcon sx={{ mr: 0.5 }} />}
+				{variant === "board" && <DashboardOutlinedIcon sx={{ mr: 0.5 }} />}
+				{locale.links[variant]}
+			</MuiTypography>
+		</MuiBreadcrumbs>
 	);
 }
 
-export type ProjectBreadcrumbsSetup = Setup;
-export type ProjectBreadcrumbsState = State;
-export type ProjectBreadcrumbsAction = Action;
-export type ProjectBreadcrumbsContextValue = ContextValue;
 export type ProjectBreadcrumbsProperties = Properties;
-export const ProjectBreadcrumbs = Object.assign(Component, {
-	Context,
-	defaultState,
-	reducer,
-	setup
-});
+
+export const ProjectBreadcrumbs = Component;
 
 export default ProjectBreadcrumbs;

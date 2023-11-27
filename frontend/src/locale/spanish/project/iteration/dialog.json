@@ -1,0 +1,16 @@
+{
+	"actions": {
+		"cancel": "Cancelar",
+		"delete": "Eliminar"
+	},
+	"labels": {
+		"name": "Nombre",
+		"description": "Descripción"
+	},
+	"titles": {
+		"delete": "Eliminar iteración"
+	},
+	"messages": {
+		"delete": "¿Está seguro de eliminar la iteración?"
+	}
+}

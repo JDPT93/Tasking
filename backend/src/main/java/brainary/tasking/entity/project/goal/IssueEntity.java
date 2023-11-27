@@ -3,7 +3,8 @@ package brainary.tasking.entity.project.goal;
 import java.time.LocalDate;
 
 import brainary.tasking.entity.common.IntervalEntity;
-import brainary.tasking.entity.project.stage.StageEntity;
+import brainary.tasking.entity.project.IterationEntity;
+import brainary.tasking.entity.project.goal.stage.StageEntity;
 import brainary.tasking.entity.user.UserEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -25,6 +26,10 @@ public class IssueEntity extends GoalEntity {
 	@ManyToOne
 	@JoinColumn(nullable = true)
 	private GoalEntity parent;
+
+	@ManyToOne
+	@JoinColumn(nullable = true)
+	private IterationEntity iteration;
 
 	@ManyToOne
 	@JoinColumn(nullable = false)

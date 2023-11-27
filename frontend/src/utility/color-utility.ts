@@ -2,12 +2,8 @@ import StringUtility from "utility/string-utility";
 
 export default class ColorUtility {
 
-	// public static toInteger(color: string): number {
-	// 	return Number.parseInt(color.substring(1), 16);
-	// }
-
 	public static toString(integer: number): string {
-		return "#".concat(integer.toString(16).padStart(6, "0"));
+		return `#${integer.toString(16).padStart(6, "0")}`;
 	}
 
 	public static brightness(color: number): number {

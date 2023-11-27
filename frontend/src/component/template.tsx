@@ -1,18 +1,10 @@
 import React from "react";
 
-interface Setup {
-
-}
-
-const setup: Setup = {
-
-};
-
 interface State {
 
 }
 
-const defaultState: State = {
+export const defaultState: State = {
 
 };
 
@@ -20,7 +12,7 @@ type Action =
 	{ type: "", payload: any }
 	;
 
-function reducer(state: State, action: Action): State {
+export function reducer(state: State, action: Action): State {
 	switch (action.type) {
 		case "": {
 			return {
@@ -46,7 +38,8 @@ function Component({
 
 }: Properties) {
 	const initialState: State = {
-		...defaultState
+		...defaultState,
+
 	};
 	const [state, dispatch] = React.useReducer(reducer, initialState);
 	return (
@@ -56,16 +49,10 @@ function Component({
 	);
 }
 
-export type TemplateSetup = Setup;
-export type TemplateState = State;
-export type TemplateAction = Action;
 export type TemplateContextValue = ContextValue;
 export type TemplateProperties = Properties;
-export const Template = Object.assign(Component, {
-	Context,
-	defaultState,
-	reducer,
-	setup
-});
+
+export const Template = Component;
+export const TemplateContext = Context;
 
 export default Template;

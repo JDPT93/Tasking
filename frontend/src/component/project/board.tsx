@@ -8,29 +8,20 @@ import {
 	Stack as MuiStack
 } from "@mui/material";
 
-import Main, { MainContextValue } from "component/main";
 import ProjectBreadcrumbs from "component/project/breadcrumbs";
-import StageGrid from "component/project/stage/grid/grid";
+import StageGrid from "component/project/goal/stage/grid/grid";
 
 import Changelog from "model/common/changelog";
 import Project from "model/project/project";
 
 import projectService from "service/project/project-service";
 
-interface Setup {
-
-}
-
-const setup: Setup = {
-
-};
-
 interface State {
 	readonly content: Project | null;
 	readonly ready: boolean;
 }
 
-const defaultState: State = {
+export const defaultState: State = {
 	content: null,
 	ready: false
 };
@@ -40,7 +31,7 @@ type Action =
 	{ type: "content.reload" }
 	;
 
-function reducer(state: State, action: Action): State {
+export function reducer(state: State, action: Action): State {
 	switch (action.type) {
 		case "content.load": {
 			return {
@@ -74,14 +65,14 @@ type Properties = {
 
 function Component({
 	onError,
-	onRetrieve
+	onDelete,
+	onRetrieve,
+	onUpdate
 }: Properties) {
-	const mainContext: MainContextValue = React.useContext(Main.Context);
-	const [state, dispatch] = React.useReducer(reducer, defaultState);
-	const locale: any = require(`locale/${mainContext.state.locale}/project/page/page.json`);
 	const { projectId } = useParams();
+	const [state, dispatch] = React.useReducer(reducer, defaultState);
 	React.useEffect(() => {
-		if (!state.ready && Number.isInteger(+projectId!)) {
+		if (!state.ready && !Number.isInteger(+projectId!)) {
 			projectService.retrieveById(+projectId!)
 				.then(async (response: Response) => {
 					const body: any = await response.json();
@@ -99,31 +90,33 @@ function Component({
 		}
 	}, [state.ready]);
 	if (!state.ready) {
-		return (<></>); // TODO: Loading.
+		return (
+			<Context.Provider value={{ state, dispatch }}>
+				{/* TODO: Skeleton. */}
+			</Context.Provider>
+		);
 	}
 	if (state.content === null) {
-		return (<></>); // TODO: Not found.
+		return (
+			<Context.Provider value={{ state, dispatch }}>
+				{/* TODO: Not found. */}
+			</Context.Provider>
+		);
 	}
 	return (
 		<Context.Provider value={{ state, dispatch }}>
 			<MuiStack>
-				<ProjectBreadcrumbs value={state.content!} />
+				<ProjectBreadcrumbs value={state.content!} variant="board" />
 				<StageGrid project={state.content} />
 			</MuiStack>
 		</Context.Provider>
 	);
 }
 
-export type ProjectBoardSetup = Setup;
-export type ProjectBoardState = State;
-export type ProjectBoardAction = Action;
 export type ProjectBoardContextValue = ContextValue;
 export type ProjectBoardProperties = Properties;
-export const ProjectBoard = Object.assign(Component, {
-	Context,
-	defaultState,
-	reducer,
-	setup
-});
+
+export const ProjectBoard = Component;
+export const ProjectBoardContext = Context;
 
 export default ProjectBoard;

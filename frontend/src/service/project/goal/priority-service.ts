@@ -3,7 +3,7 @@ import Service from "service/common/service";
 
 export default new class PriorityService extends Service {
 
-	retrieveAll(pagination?: Pagination): Promise<Response> {
+	public retrieveAll(pagination?: Partial<Pagination>): Promise<Response> {
 		const headers = new Headers({
 			"Accept": "application/json"
 		});
@@ -24,7 +24,7 @@ export default new class PriorityService extends Service {
 		return fetch(`${this.endpoint}/api/project/goal/priority?${query.size === 0 ? "" : query.toString()}`, {
 			headers,
 			method: "GET",
-			mode: "cors",
+			mode: "cors"
 		});
 	}
 

@@ -2,6 +2,10 @@ export interface Sort {
 	[property: string]: "asc" | "desc";
 }
 
+export const defaultSort: Sort = {
+
+};
+
 export function orderBy(property: string, sort: Sort): void {
 	switch (sort[property]) {
 		case undefined:

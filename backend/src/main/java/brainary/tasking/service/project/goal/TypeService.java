@@ -12,7 +12,7 @@ import brainary.tasking.repository.project.goal.TypeRepository;
 import brainary.tasking.validator.project.ProjectValidator;
 import brainary.tasking.validator.project.goal.TypeValidator;
 import brainary.tasking.entity.project.goal.TypeEntity;
-import brainary.tasking.payload.ChangelogPayload;
+import brainary.tasking.payload.common.ChangelogPayload;
 import brainary.tasking.payload.project.goal.IssuePayload;
 import brainary.tasking.payload.project.goal.TypePayload;
 import jakarta.persistence.criteria.Join;

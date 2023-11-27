@@ -1,5 +1,5 @@
-import User, { defaultUser } from "../user/user";
-import Project, { defaultProject } from "./project";
+import User, { defaultUser } from "model/user/user";
+import Project, { defaultProject } from "model/project/project";
 
 export interface Collaboration {
 	id: number;

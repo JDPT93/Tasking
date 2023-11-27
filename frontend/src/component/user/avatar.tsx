@@ -8,16 +8,10 @@ import User from "model/user/user";
 
 import ColorUtility from "utility/color-utility";
 
-interface Setup {
-
-}
-
-const setup: Setup = {
-
-};
+type Size = "small" | "medium" | "large";
 
 type Properties = {
-	size?: "small" | "medium" | "large"
+	size?: Size,
 	value: User
 };
 
@@ -55,8 +49,7 @@ function Component({
 }
 
 export type UserAvatarProperties = Properties;
-export const UserAvatar = Object.assign(Component, {
-	setup
-});
+
+export const UserAvatar = Component;
 
 export default UserAvatar;

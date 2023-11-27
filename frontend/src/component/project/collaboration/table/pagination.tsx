@@ -5,36 +5,23 @@ import {
 	TablePagination as MuiTablePagination
 } from "@mui/material";
 
-import Main, { MainContextValue } from "component/main";
-import CollaborationTableHead from "component/project/collaboration/table/head";
+import { MainContext, MainContextValue } from "component/main";
 
-import Pagination from "model/common/pagination";
-
-interface Setup {
-	readonly options: number[];
-}
-
-const setup: Setup = {
-	options: [5, 10, 20]
-};
+import Pagination, { defaultPagination } from "model/common/pagination";
 
 interface State {
-	value: Required<Pagination>;
+	value: Pagination;
 }
 
-const defaultState: State = {
-	value: {
-		page: 0,
-		size: setup.options[0],
-		sort: CollaborationTableHead.defaultState.sort
-	}
+export const defaultState: State = {
+	value: defaultPagination
 };
 
 type Action =
-	{ type: "value.change", payload: Required<Pagination> }
+	{ type: "value.change", payload: Pagination }
 	;
 
-function reducer(state: State, action: Action): State {
+export function reducer(state: State, action: Action): State {
 	switch (action.type) {
 		case "value.change": {
 			return {
@@ -54,8 +41,8 @@ const Context = React.createContext<ContextValue>({ state: defaultState });
 
 type Properties = {
 	count?: number,
-	value?: Required<Pagination>,
-	onChange?: (pagination: Required<Pagination>) => void
+	value?: Pagination,
+	onChange?: (pagination: Pagination) => void
 };
 
 function Component({
@@ -63,14 +50,14 @@ function Component({
 	value,
 	onChange
 }: Properties) {
+	const options: number[] = [5, 10, 20];
+	const mainContext: MainContextValue = React.useContext(MainContext);
+	const locale: any = require(`locale/${mainContext.state.locale}/project/table/pagination.json`);
 	const initialState: State = {
 		...defaultState,
 		...(value !== undefined && { value })
 	};
 	const [state, dispatch] = React.useReducer(reducer, initialState);
-	const mainContext: MainContextValue = React.useContext(Main.Context);
-	const locale: any = require(`locale/${mainContext.state.locale}/project/table/pagination.json`);
-	const options: number[] = [5, 10, 20];
 	return (
 		<MuiTablePagination
 			component="div"
@@ -85,7 +72,7 @@ function Component({
 				</MuiBox>
 			)}
 			onPageChange={(event, page) => {
-				const pagination: Required<Pagination> = {
+				const pagination: Pagination = {
 					...state.value,
 					page
 				};
@@ -94,7 +81,7 @@ function Component({
 			}}
 			onRowsPerPageChange={event => {
 				const size: number = +event.target.value;
-				const pagination: Required<Pagination> = {
+				const pagination: Pagination = {
 					...state.value,
 					page: Math.floor(state.value.page * state.value.size / size),
 					size
@@ -106,16 +93,10 @@ function Component({
 	);
 }
 
-export type CollaborationTablePaginationSetup = Setup;
-export type CollaborationTablePaginationState = State;
-export type CollaborationTablePaginationAction = Action;
 export type CollaborationTablePaginationContextValue = ContextValue;
 export type CollaborationTablePaginationProperties = Properties;
-export const CollaborationTablePagination = Object.assign(Component, {
-	Context,
-	defaultState,
-	reducer,
-	setup
-});
+
+export const CollaborationTablePagination = Component;
+export const CollaborationTablePaginationContext = Context;
 
 export default CollaborationTablePagination;

@@ -1,5 +1,8 @@
 package brainary.tasking.service.project.goal;
 
+import java.util.List;
+import java.util.stream.Stream;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -8,14 +11,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import brainary.tasking.entity.project.ProjectEntity;
 import brainary.tasking.entity.project.goal.GoalEntity;
-import brainary.tasking.payload.ChangelogPayload;
+import brainary.tasking.entity.project.goal.IssueEntity;
+import brainary.tasking.payload.common.ChangelogPayload;
 import brainary.tasking.payload.project.goal.GoalPayload;
 import brainary.tasking.repository.project.goal.GoalRepository;
 import brainary.tasking.validator.project.ProjectValidator;
 import brainary.tasking.validator.project.goal.GoalValidator;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
+import jakarta.transaction.Transactional;
 
 @Service(value = "service.project.goal")
 public class GoalService {
@@ -49,15 +57,20 @@ public class GoalService {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "project.not-found");
 		}
 		return goalRepository.findAll((goal, query, builder) -> {
-			Join<?, ?> project = goal.join("project");
+			Join<GoalEntity, ProjectEntity> project = goal.join("project");
 			Predicate equalProject = builder.equal(project.get("id"), projectId);
 			Predicate isActive = builder.isTrue(goal.get("active"));
-			return builder.and(equalProject, isActive);
+			Subquery<Long> subquery = query.subquery(Long.class);
+			Root<IssueEntity> issue = subquery.from(IssueEntity.class);
+			subquery.select(issue.get("id")).where(builder.equal(issue.get("goal"), goal));
+			Predicate isNotIssue = builder.not(builder.exists(subquery));
+			return builder.and(equalProject, isNotIssue, isActive);
 		}, pageable)
 			.map(goalEntity -> modelMapper.map(goalEntity, GoalPayload.class));
 	}
 
-	public ChangelogPayload<GoalPayload> update(GoalPayload newGoalPayload) {
+	@Transactional
+	public List<ChangelogPayload<GoalPayload>> update(GoalPayload newGoalPayload) {
 		if (!projectValidator.isActive(newGoalPayload.getProject().getId())) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "project.not-found");
 		}
@@ -73,7 +86,30 @@ public class GoalService {
 				GoalPayload oldGoalPayload = modelMapper.map(goalEntity, GoalPayload.class);
 				newGoalPayload.setActive(true);
 				goalRepository.save(modelMapper.map(newGoalPayload, GoalEntity.class));
-				return new ChangelogPayload<GoalPayload>(oldGoalPayload, newGoalPayload);
+				ChangelogPayload<GoalPayload> changelogPayload = new ChangelogPayload<>(oldGoalPayload, newGoalPayload);
+				Integer difference = newGoalPayload.getIndex() - oldGoalPayload.getIndex();
+				if (difference == 0) {
+					return List.of(changelogPayload);
+				}
+				Integer direction = difference < 0 ? -1 : +1;
+				return Stream.concat(Stream.of(changelogPayload), goalRepository.findAll((goal, query, builder) -> {
+					Join<?, ?> project = goal.join("project");
+					Predicate equalProject = builder.equal(project.get("id"), newGoalPayload.getProject().getId());
+					Predicate notEqualId = builder.notEqual(goal.get("id"), newGoalPayload.getId());
+					Predicate isActive = builder.isTrue(goal.get("active"));
+					Predicate betweenIndex = direction < 0
+						? builder.between(goal.get("index"), newGoalPayload.getIndex(), oldGoalPayload.getIndex())
+						: builder.between(goal.get("index"), oldGoalPayload.getIndex(), newGoalPayload.getIndex());
+					return builder.and(equalProject, notEqualId, isActive, betweenIndex);
+				})
+					.stream()
+					.map(affectedGoalEntity -> {
+						GoalPayload oldAffectedGoalPayload = modelMapper.map(affectedGoalEntity, GoalPayload.class);
+						affectedGoalEntity.setIndex(affectedGoalEntity.getIndex() - direction);
+						GoalPayload newAffectedGoalPayload = modelMapper.map(goalRepository.save(affectedGoalEntity), GoalPayload.class);
+						return new ChangelogPayload<>(oldAffectedGoalPayload, newAffectedGoalPayload);
+					}))
+					.toList();
 			})
 			.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "project.goal.not-found"));
 	}

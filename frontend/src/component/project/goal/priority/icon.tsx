@@ -24,20 +24,21 @@ function Component({
 	value
 }: Properties) {
 	switch (value.id as PriorityId) {
-		case PriorityId.HIGHER:
+		case PriorityId.Higher:
 			return <KeyboardDoubleArrowUpSharp sx={{ color: red[500] }} />;
-		case PriorityId.HIGH:
+		case PriorityId.High:
 			return <KeyboardArrowUpSharp sx={{ color: red[500] }} />;
-		case PriorityId.MEDIUM:
+		case PriorityId.Medium:
 			return <DragHandleSharp sx={{ color: amber[500] }} />;
-		case PriorityId.LOW:
+		case PriorityId.Low:
 			return <KeyboardArrowDownSharp sx={{ color: green[500] }} />;
-		case PriorityId.LOWER:
+		case PriorityId.Lower:
 			return <KeyboardDoubleArrowDownSharp sx={{ color: green[500] }} />;
 	}
 }
 
 export type PriorityIconProperties = Properties;
+
 export const PriorityIcon = Component;
 
 export default PriorityIcon;

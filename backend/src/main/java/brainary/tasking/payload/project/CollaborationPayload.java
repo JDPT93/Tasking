@@ -11,11 +11,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@Schema(name = "project.collaboration")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(name = "project.collaboration")
 public class CollaborationPayload implements Serializable {
 
 	private Integer id;

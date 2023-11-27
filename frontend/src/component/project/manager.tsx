@@ -8,7 +8,7 @@ import {
 	Button as MuiButton
 } from "@mui/material";
 
-import Main, { MainContextValue } from "component/main";
+import { MainContext, MainContextValue } from "component/main";
 import ProjectDialog from "component/project/dialog";
 import ProjectTable from "component/project/table/table";
 
@@ -16,49 +16,24 @@ import Changelog from "model/common/changelog";
 import Page from "model/common/page";
 import Project from "model/project/project";
 
-interface Setup {
-
-}
-
-const setup: Setup = {
-
-};
-
 interface State {
-	readonly dialog: {
-		readonly open: boolean
-	};
+	readonly create: boolean;
 }
 
-const defaultState: State = {
-	dialog: {
-		open: false
-	}
+export const defaultState: State = {
+	create: false
 };
 
 type Action =
-	{ type: "dialog.close" } |
-	{ type: "dialog.open" }
+	{ type: "create.toggle" }
 	;
 
-function reducer(state: State, action: Action): State {
+export function reducer(state: State, action: Action): State {
 	switch (action.type) {
-		case "dialog.close": {
+		case "create.toggle": {
 			return {
 				...state,
-				dialog: {
-					...state.dialog,
-					open: false
-				}
-			};
-		}
-		case "dialog.open": {
-			return {
-				...state,
-				dialog: {
-					...state.dialog,
-					open: true
-				}
+				create: !state.create
 			};
 		}
 	}
@@ -86,9 +61,9 @@ function Component({
 	onRetrieve,
 	onUpdate
 }: Properties) {
-	const mainContext: MainContextValue = React.useContext(Main.Context);
-	const [state, dispatch] = React.useReducer(reducer, defaultState);
+	const mainContext: MainContextValue = React.useContext(MainContext);
 	const locale: any = require(`locale/${mainContext.state.locale}/project/manager.json`);
+	const [state, dispatch] = React.useReducer(reducer, defaultState);
 	return (
 		<Context.Provider value={{ state, dispatch }}>
 			<ProjectTable
@@ -100,16 +75,16 @@ function Component({
 					<MuiButton
 						startIcon={<AddIcon />}
 						variant="contained"
-						onClick={() => dispatch({ type: "dialog.open" })}
+						onClick={() => dispatch({ type: "create.toggle" })}
 					>
 						{locale.actions.create}
 					</MuiButton>
 				}
 			/>
 			<ProjectDialog
-				open={state.dialog.open}
+				open={state.create}
 				variant="create"
-				onCancel={() => dispatch({ type: "dialog.close" })}
+				onCancel={() => dispatch({ type: "create.toggle" })}
 				onError={onError}
 				onSuccess={onCreate}
 			/>
@@ -117,16 +92,10 @@ function Component({
 	);
 }
 
-export type ProjectManagerSetup = Setup;
-export type ProjectManagerState = State;
-export type ProjectManagerAction = Action;
 export type ProjectManagerContextValue = ContextValue;
 export type ProjectManagerProperties = Properties;
-export const ProjectManager = Object.assign(Component, {
-	Context,
-	defaultState,
-	reducer,
-	setup
-});
+
+export const ProjectManager = Component;
+export const ProjectManagerContext = Context;
 
 export default ProjectManager;

@@ -7,31 +7,23 @@ import {
 	TableSortLabel as MuiTableSortLabel
 } from "@mui/material";
 
-import Main, { MainContextValue } from "component/main";
+import { MainContext, MainContextValue } from "component/main";
 
-import Sort, { orderBy } from "model/common/sort";
-
-interface Setup {
-
-}
-
-const setup: Setup = {
-
-};
+import Sort, { defaultSort, orderBy } from "model/common/sort";
 
 interface State {
 	sort: Sort
 }
 
-const defaultState: State = {
-	sort: {}
+export const defaultState: State = {
+	sort: defaultSort
 };
 
 type Action =
 	{ type: "sort.change", payload: any }
 	;
 
-function reducer(state: State, action: Action): State {
+export function reducer(state: State, action: Action): State {
 	switch (action.type) {
 		case "sort.change": {
 			return {
@@ -58,13 +50,13 @@ function Component({
 	sort,
 	onSort
 }: Properties) {
+	const mainContext: MainContextValue = React.useContext(MainContext);
+	const locale: any = require(`locale/${mainContext.state.locale}/project/table/head.json`);
 	const initialState: State = {
 		...defaultState,
 		...(sort !== undefined && { sort })
 	};
 	const [state, dispatch] = React.useReducer(reducer, initialState);
-	const mainContext: MainContextValue = React.useContext(Main.Context);
-	const locale: any = require(`locale/${mainContext.state.locale}/project/table/head.json`);
 	return (
 		<Context.Provider value={{ state, dispatch }}>
 			<MuiTableHead>
@@ -72,7 +64,7 @@ function Component({
 					<MuiTableCell width="25%">
 						<MuiTableSortLabel
 							direction={state.sort["name"]}
-							onClick={event => {
+							onClick={(event: any) => {
 								const sort: Sort = { ...state.sort };
 								orderBy("name", sort);
 								dispatch({ type: "sort.change", payload: sort });
@@ -85,11 +77,9 @@ function Component({
 					<MuiTableCell width="calc(50% - 68px)">
 						<MuiTableSortLabel
 							direction={state.sort["description"]}
-							onClick={event => {
+							onClick={(event: any) => {
 								const sort: Sort = { ...state.sort };
-								console.log(sort);
 								orderBy("description", sort);
-								console.log(sort);
 								dispatch({ type: "sort.change", payload: sort });
 								onSort?.(sort);
 							}}
@@ -100,11 +90,9 @@ function Component({
 					<MuiTableCell width="25%">
 						<MuiTableSortLabel
 							direction={state.sort["leader.name"]}
-							onClick={event => {
+							onClick={(event: any) => {
 								const sort: Sort = { ...state.sort };
-								console.log(sort);
 								orderBy("leader.name", sort);
-								console.log(sort);
 								dispatch({ type: "sort.change", payload: sort });
 								onSort?.(sort);
 							}}
@@ -119,16 +107,10 @@ function Component({
 	);
 }
 
-export type ProjectTableHeadSetup = Setup;
-export type ProjectTableHeadState = State;
-export type ProjectTableHeadAction = Action;
 export type ProjectTableHeadContextValue = ContextValue;
 export type ProjectTableHeadProperties = Properties;
-export const ProjectTableHead = Object.assign(Component, {
-	Context,
-	defaultState,
-	reducer,
-	setup
-});
+
+export const ProjectTableHead = Component;
+export const ProjectTableHeadContext = Context;
 
 export default ProjectTableHead;

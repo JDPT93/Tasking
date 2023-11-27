@@ -7,31 +7,23 @@ import {
 	TableSortLabel as MuiTableSortLabel
 } from "@mui/material";
 
-import Main, { MainContextValue } from "component/main";
+import { MainContext, MainContextValue } from "component/main";
 
-import Sort, { orderBy } from "model/common/sort";
-
-interface Setup {
-
-}
-
-const setup: Setup = {
-
-};
+import Sort, { defaultSort, orderBy } from "model/common/sort";
 
 interface State {
-	sort: Sort
+	sort: Sort;
 }
 
-const defaultState: State = {
-	sort: {}
+export const defaultState: State = {
+	sort: defaultSort
 };
 
 type Action =
 	{ type: "sort.change", payload: any }
 	;
 
-function reducer(state: State, action: Action): State {
+export function reducer(state: State, action: Action): State {
 	switch (action.type) {
 		case "sort.change": {
 			return {
@@ -58,13 +50,13 @@ function Component({
 	sort,
 	onSort
 }: Properties) {
+	const mainContext: MainContextValue = React.useContext(MainContext);
+	const locale: any = require(`locale/${mainContext.state.locale}/project/table/head.json`);
 	const initialState: State = {
 		...defaultState,
 		...(sort !== undefined && { sort })
 	};
 	const [state, dispatch] = React.useReducer(reducer, initialState);
-	const mainContext: MainContextValue = React.useContext(Main.Context);
-	const locale: any = require(`locale/${mainContext.state.locale}/project/table/head.json`);
 	return (
 		<Context.Provider value={{ state, dispatch }}>
 			<MuiTableHead>
@@ -115,16 +107,10 @@ function Component({
 	);
 }
 
-export type CollaborationTableHeadSetup = Setup;
-export type CollaborationTableHeadState = State;
-export type CollaborationTableHeadAction = Action;
 export type CollaborationTableHeadContextValue = ContextValue;
 export type CollaborationTableHeadProperties = Properties;
-export const CollaborationTableHead = Object.assign(Component, {
-	Context,
-	defaultState,
-	reducer,
-	setup
-});
+
+export const CollaborationTableHead = Component;
+export const CollaborationTableHeadContext = Context;
 
 export default CollaborationTableHead;

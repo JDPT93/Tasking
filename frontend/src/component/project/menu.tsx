@@ -12,55 +12,39 @@ import {
 	Menu as MuiMenu
 } from "@mui/material";
 
-import Main, { MainContextValue } from "component/main";
+import { MainContext, MainContextValue } from "component/main";
 import ProjectDialog from "component/project/dialog";
 
 import Project from "model/project/project";
 import Changelog from "model/common/changelog";
 
-interface Setup {
-
-}
-
-const setup: Setup = {
-
-};
-
 interface State {
-	readonly dialog: {
-		readonly open: "delete" | "update" | null
-	};
+	readonly delete: boolean;
+	readonly update: boolean;
 }
 
-const defaultState: State = {
-	dialog: {
-		open: null
-	}
+export const defaultState: State = {
+	delete: false,
+	update: false
 };
 
 type Action =
-	{ type: "dialog.close" } |
-	{ type: "dialog.open", payload: "delete" | "update" }
+	{ type: "delete.toggle" } |
+	{ type: "update.toggle" }
 	;
 
-function reducer(state: State, action: Action): State {
+export function reducer(state: State, action: Action): State {
 	switch (action.type) {
-		case "dialog.close": {
+		case "delete.toggle": {
 			return {
 				...state,
-				dialog: {
-					...state.dialog,
-					open: null
-				}
+				delete: !state.delete
 			};
 		}
-		case "dialog.open": {
+		case "update.toggle": {
 			return {
 				...state,
-				dialog: {
-					...state.dialog,
-					open: action.payload
-				}
+				update: !state.update
 			};
 		}
 	}
@@ -90,16 +74,15 @@ function Component({
 	onDelete,
 	onUpdate
 }: Properties) {
-	const mainContext: MainContextValue = React.useContext(Main.Context);
-	const [state, dispatch] = React.useReducer(reducer, defaultState);
+	const mainContext: MainContextValue = React.useContext(MainContext);
 	const locale: any = require(`locale/${mainContext.state.locale}/project/menu.json`);
-	if (anchor !== null) console.log(value)
+	const [state, dispatch] = React.useReducer(reducer, defaultState);
 	return (
 		<Context.Provider value={{ state, dispatch }}>
 			<MuiMenu anchorEl={anchor} open={anchor !== null} onClose={onClose}>
 				<MuiMenuItem
 					onClick={() => {
-						dispatch({ type: "dialog.open", payload: "update" });
+						dispatch({ type: "update.toggle" });
 						onClose?.();
 					}}
 				>
@@ -110,7 +93,7 @@ function Component({
 				</MuiMenuItem>
 				<MuiMenuItem
 					onClick={() => {
-						dispatch({ type: "dialog.open", payload: "delete" });
+						dispatch({ type: "delete.toggle" });
 						onClose?.();
 					}}
 				>
@@ -121,24 +104,24 @@ function Component({
 				</MuiMenuItem>
 			</MuiMenu>
 			<ProjectDialog
-				open={state.dialog.open === "delete"}
+				open={state.delete}
 				value={value}
 				variant="delete"
-				onCancel={() => dispatch({ type: "dialog.close" })}
+				onCancel={() => dispatch({ type: "delete.toggle" })}
 				onError={onError}
 				onSuccess={(value: Project) => {
-					dispatch({ type: "dialog.close" });
+					dispatch({ type: "delete.toggle" });
 					setTimeout(() => onDelete?.(value), 250);
 				}}
 			/>
 			<ProjectDialog
-				open={state.dialog.open === "update"}
+				open={state.update}
 				value={value}
 				variant="update"
-				onCancel={() => dispatch({ type: "dialog.close" })}
+				onCancel={() => dispatch({ type: "update.toggle" })}
 				onError={onError}
 				onSuccess={(changelog: Changelog<Project>) => {
-					dispatch({ type: "dialog.close" });
+					dispatch({ type: "update.toggle" });
 					setTimeout(() => onUpdate?.(changelog), 250);
 				}}
 			/>
@@ -146,16 +129,10 @@ function Component({
 	);
 }
 
-export type ProjectMenuSetup = Setup;
-export type ProjectMenuState = State;
-export type ProjectMenuAction = Action;
 export type ProjectMenuContextValue = ContextValue;
 export type ProjectMenuProperties = Properties;
-export const ProjectMenu = Object.assign(Component, {
-	Context,
-	defaultState,
-	reducer,
-	setup
-});
+
+export const ProjectMenu = Component;
+export const ProjectMenuContext = Context;
 
 export default ProjectMenu;

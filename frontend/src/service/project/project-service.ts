@@ -5,7 +5,7 @@ import Service from "service/common/service";
 
 export default new class ProjectService extends Service {
 
-	create(project: Project): Promise<Response> {
+	public create(project: Project): Promise<Response> {
 		const body = JSON.stringify(project);
 		const headers = new Headers({
 			"Accept": "application/json",
@@ -19,11 +19,11 @@ export default new class ProjectService extends Service {
 			body,
 			headers,
 			method: "POST",
-			mode: "cors",
+			mode: "cors"
 		});
 	}
 
-	retrieveAll(pagination?: Pagination): Promise<Response> {
+	public retrieveAll(pagination?: Partial<Pagination>): Promise<Response> {
 		const headers = new Headers({
 			"Accept": "application/json"
 		});
@@ -44,11 +44,11 @@ export default new class ProjectService extends Service {
 		return fetch(`${this.endpoint}/api/project?${query.size === 0 ? "" : query.toString()}`, {
 			headers,
 			method: "GET",
-			mode: "cors",
+			mode: "cors"
 		});
 	}
 
-	retrieveById(projectId: number): Promise<Response> {
+	public retrieveById(projectId: number): Promise<Response> {
 		const headers = new Headers({
 			"Accept": "application/json"
 		});
@@ -59,7 +59,7 @@ export default new class ProjectService extends Service {
 		return fetch(`${this.endpoint}/api/project/${projectId}`, {
 			headers,
 			method: "GET",
-			mode: "cors",
+			mode: "cors"
 		});
 	}
 
@@ -77,11 +77,11 @@ export default new class ProjectService extends Service {
 			body,
 			headers,
 			method: "PUT",
-			mode: "cors",
+			mode: "cors"
 		});
 	}
 
-	deleteById(projectId: number): Promise<Response> {
+	public deleteById(projectId: number): Promise<Response> {
 		const headers = new Headers({
 			"Accept": "application/json"
 		});
@@ -92,7 +92,7 @@ export default new class ProjectService extends Service {
 		return fetch(`${this.endpoint}/api/project/${projectId}`, {
 			headers,
 			method: "DELETE",
-			mode: "cors",
+			mode: "cors"
 		});
 	}
 

@@ -17,46 +17,38 @@ import {
 	Typography as MuiTypography
 } from "@mui/material";
 
-import Main, { MainContextValue } from "component/main";
+import { MainContext, MainContextValue } from "component/main";
 import CollaborationTableHead from "component/project/collaboration/table/head";
 import CollaborationTablePagination from "component/project/collaboration/table/pagination";
 import CollaborationTableRow from "component/project/collaboration/table/row";
 
 import Changelog from "model/common/changelog";
 import Page, { defaultPage } from "model/common/page";
-import Pagination from "model/common/pagination";
+import Pagination, { defaultPagination } from "model/common/pagination";
 import Sort from "model/common/sort";
 import Collaboration from "model/project/collaboration";
 
 import collaborationService from "service/project/collaboration-service";
 
-interface Setup {
-
-}
-
-const setup: Setup = {
-
-};
-
 interface State {
 	readonly page: Page<Collaboration>;
-	readonly pagination: Required<Pagination>;
+	readonly pagination: Pagination;
 	readonly ready: boolean;
 }
 
-const defaultState: State = {
+export const defaultState: State = {
 	page: defaultPage,
-	pagination: CollaborationTablePagination.defaultState.value,
+	pagination: defaultPagination,
 	ready: false
 };
 
 type Action =
 	{ type: "page.load", payload: Page<Collaboration> } |
 	{ type: "page.reload" } |
-	{ type: "pagination.change", payload: Required<Pagination> }
+	{ type: "pagination.change", payload: Pagination }
 	;
 
-function reducer(state: State, action: Action): State {
+export function reducer(state: State, action: Action): State {
 	switch (action.type) {
 		case "page.load": {
 			return {
@@ -103,9 +95,9 @@ function Component({
 	onRetrieve,
 	onUpdate
 }: Properties) {
-	const [state, dispatch] = React.useReducer(reducer, defaultState);
-	const mainContext: MainContextValue = React.useContext(Main.Context);
+	const mainContext: MainContextValue = React.useContext(MainContext);
 	const locale: any = require(`locale/${mainContext.state.locale}/project/collaboration/table/table.json`);
+	const [state, dispatch] = React.useReducer(reducer, defaultState);
 	React.useEffect(() => {
 		if (!state.ready) {
 			collaborationService.retrieveAll(state.pagination)
@@ -137,7 +129,7 @@ function Component({
 					<MuiTable sx={{ minWidth: 650 }}>
 						<CollaborationTableHead
 							onSort={(sort: Sort) => {
-								const pagination: Required<Pagination> = {
+								const pagination: Pagination = {
 									...state.pagination,
 									sort
 								};
@@ -169,7 +161,7 @@ function Component({
 					</MuiTable>
 					<CollaborationTablePagination
 						count={state.page.totalElements}
-						onChange={(pagination: Required<Pagination>) => dispatch({ type: "pagination.change", payload: pagination })}
+						onChange={(pagination: Pagination) => dispatch({ type: "pagination.change", payload: pagination })}
 						value={state.pagination}
 					/>
 				</MuiTableContainer>
@@ -178,16 +170,10 @@ function Component({
 	);
 }
 
-export type CollaborationTableSetup = Setup;
-export type CollaborationTableState = State;
-export type CollaborationTableAction = Action;
 export type CollaborationTableContextValue = ContextValue;
 export type CollaborationTableProperties = Properties;
-export const CollaborationTable = Object.assign(Component, {
-	Context,
-	defaultState,
-	reducer,
-	setup
-});
+
+export const CollaborationTable = Component;
+export const CollaborationTableContext = Context;
 
 export default CollaborationTable;

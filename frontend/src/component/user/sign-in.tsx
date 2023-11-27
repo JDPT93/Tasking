@@ -21,27 +21,19 @@ import {
 	Snackbar as MuiSnackbar
 } from "@mui/material";
 
-import Main, { MainContextValue } from "component/main";
+import { MainContext, MainContextValue } from "component/main";
 
 import Authentication, { defaultAuthentication } from "model/user/authentication";
 import Authorization from "model/user/authorization";
 
 import userService from "service/user/user-service";
 
-interface Setup {
-
-}
-
-const setup: Setup = {
-
-};
-
 interface State {
 	readonly error: Error | null;
 	readonly value: Authentication;
 }
 
-const defaultState: State = {
+export const defaultState: State = {
 	error: null,
 	value: defaultAuthentication
 };
@@ -52,7 +44,7 @@ type Action =
 	{ type: "value.set", payload: Authentication }
 	;
 
-function reducer(state: State, action: Action): State {
+export function reducer(state: State, action: Action): State {
 	switch (action.type) {
 		case "error.hide": {
 			return {
@@ -93,13 +85,14 @@ function Component({
 	onError,
 	onSuccess
 }: Properties) {
-	const mainContext: MainContextValue = React.useContext(Main.Context);
+	const mainContext: MainContextValue = React.useContext(MainContext);
+	const locale: any = require(`locale/${mainContext.state.locale}/user/sign-in.json`);
 	const initialState: State = {
 		...defaultState,
 		...(value !== undefined && { value })
 	};
 	const [state, dispatch] = React.useReducer(reducer, initialState);
-	const locale: any = require(`locale/${mainContext.state.locale}/user/sign-in.json`);
+
 	return (
 		<MuiBox alignItems="center" display="flex" justifyContent="center" minHeight="100vh" padding={4}>
 			<MuiPaper component="main" elevation={2} square>
@@ -180,16 +173,10 @@ function Component({
 	);
 }
 
-export type SignInSetup = Setup;
-export type SignInState = State;
-export type SignInAction = Action;
 export type SignInContextValue = ContextValue;
 export type SignInProperties = Properties;
-export const SignIn = Object.assign(Component, {
-	Context,
-	defaultState,
-	reducer,
-	setup
-});
+
+export const SignIn = Component;
+export const SignInContext = Context;
 
 export default SignIn;

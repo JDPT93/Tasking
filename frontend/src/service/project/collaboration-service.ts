@@ -5,7 +5,7 @@ import Service from "service/common/service";
 
 export default new class CollaborationService extends Service {
 
-	create(collaboration: Collaboration): Promise<Response> {
+	public create(collaboration: Collaboration): Promise<Response> {
 		const body = JSON.stringify(collaboration);
 		const headers = new Headers({
 			"Accept": "application/json",
@@ -19,11 +19,11 @@ export default new class CollaborationService extends Service {
 			body,
 			headers,
 			method: "POST",
-			mode: "cors",
+			mode: "cors"
 		});
 	}
 
-	retrieveAll(pagination?: Pagination): Promise<Response> {
+	public retrieveAll(pagination?: Partial<Pagination>): Promise<Response> {
 		const headers = new Headers({
 			"Accept": "application/json"
 		});
@@ -44,7 +44,7 @@ export default new class CollaborationService extends Service {
 		return fetch(`${this.endpoint}/api/project/collaboration?${query.size === 0 ? "" : query.toString()}`, {
 			headers,
 			method: "GET",
-			mode: "cors",
+			mode: "cors"
 		});
 	}
 
@@ -62,11 +62,11 @@ export default new class CollaborationService extends Service {
 			body,
 			headers,
 			method: "PUT",
-			mode: "cors",
+			mode: "cors"
 		});
 	}
 
-	deleteById(collaborationId: number): Promise<Response> {
+	public deleteById(collaborationId: number): Promise<Response> {
 		const headers = new Headers({
 			"Accept": "application/json"
 		});
@@ -77,7 +77,7 @@ export default new class CollaborationService extends Service {
 		return fetch(`${this.endpoint}/api/project/collaboration/${collaborationId}`, {
 			headers,
 			method: "DELETE",
-			mode: "cors",
+			mode: "cors"
 		});
 	}
 

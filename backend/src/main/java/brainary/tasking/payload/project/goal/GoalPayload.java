@@ -11,11 +11,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@Schema(name = "project.goal")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(name = "project.goal")
 public class GoalPayload implements Serializable {
 
 	private Integer id;

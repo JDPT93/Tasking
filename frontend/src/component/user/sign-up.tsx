@@ -19,27 +19,19 @@ import {
 	Typography as MuiTypography
 } from "@mui/material";
 
-import Main, { MainContextValue } from "component/main";
+import { MainContext, MainContextValue } from "component/main";
 
 import Authorization from "model/user/authorization";
 import User, { defaultUser } from "model/user/user";
 
 import userService from "service/user/user-service";
 
-interface Setup {
-
-}
-
-const setup: Setup = {
-
-};
-
 interface State {
 	readonly error: Error | null;
 	readonly value: User;
 }
 
-const defaultState: State = {
+export const defaultState: State = {
 	error: null,
 	value: defaultUser
 };
@@ -50,7 +42,7 @@ type Action =
 	{ type: "value.set", payload: User }
 	;
 
-function reducer(state: State, action: Action): State {
+export function reducer(state: State, action: Action): State {
 	switch (action.type) {
 		case "error.hide": {
 			return {
@@ -89,13 +81,9 @@ function Component({
 	onError,
 	onSuccess
 }: Properties) {
-	const [state, dispatch] = React.useReducer(reducer, defaultState);
-	const mainContext: MainContextValue = React.useContext(Main.Context);
+	const mainContext: MainContextValue = React.useContext(MainContext);
 	const locale: any = require(`locale/${mainContext.state.locale}/user/sign-up.json`);
-	const user = mainContext.state.user;
-	if (user !== null) {
-		// return (<ErrorPage value={403} />);
-	}
+	const [state, dispatch] = React.useReducer(reducer, defaultState);
 	return (
 		<MuiBox alignItems="center" display="flex" justifyContent="center" minHeight="100vh" padding={4}>
 			<MuiPaper component="main" elevation={2} square>
@@ -137,16 +125,10 @@ function Component({
 	);
 }
 
-export type SignUpSetup = Setup;
-export type SignUpState = State;
-export type SignUpAction = Action;
 export type SignUpContextValue = ContextValue;
 export type SignUpProperties = Properties;
-export const SignUp = Object.assign(Component, {
-	Context,
-	defaultState,
-	reducer,
-	setup
-});
+
+export const SignUp = Component;
+export const SignUpContext = Context;
 
 export default SignUp;

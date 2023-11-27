@@ -13,6 +13,10 @@ import {
 	Theme as MuiTheme
 } from "@mui/material";
 
+import {
+	blue
+} from "@mui/material/colors";
+
 import ProjectBoard from "component/project/board";
 import ProjectIndex from "component/project/index";
 import SignUp from "component/user/sign-up";
@@ -23,41 +27,34 @@ import User from "model/user/user";
 import Authorization from "model/user/authorization";
 
 import userService from "service/user/user-service";
+import ProjectBacklog from "./project/backlog";
 
-interface Setup {
+type Locale = "spanish";
 
-}
-
-const setup: Setup = {
-
-};
+type Theme = "dark" | "light";
 
 interface State {
-	readonly locale: "spanish";
+	readonly locale: Locale;
 	readonly ready: boolean;
-	readonly theme: MuiTheme;
+	readonly theme: Theme;
 	readonly user: User | null;
 }
 
-const defaultState: State = {
+export const defaultState: State = {
 	locale: "spanish",
 	ready: false,
-	theme: muiCreateTheme({
-		palette: {
-			mode: "dark"
-		}
-	}),
+	theme: "dark",
 	user: null
 };
 
 type Action =
-	{ type: "locale.change", payload: any } |
-	{ type: "theme.change", payload: MuiTheme } |
+	{ type: "locale.change", payload: Locale } |
+	{ type: "theme.change", payload: Theme } |
 	{ type: "user.sign-in", payload: User } |
 	{ type: "user.sign-out" }
 	;
 
-function reducer(state: State, action: Action): State {
+export function reducer(state: State, action: Action): State {
 	switch (action.type) {
 		case "locale.change": {
 			return {
@@ -150,7 +147,14 @@ function Component({
 	}, []);
 	return (
 		<Context.Provider value={{ state, dispatch }}>
-			<MuiThemeProvider theme={state.theme} >
+			<MuiThemeProvider
+				theme={muiCreateTheme({
+					palette: {
+						mode: state.theme,
+						primary: blue
+					}
+				})}
+			>
 				<MuiCssBaseline />
 				<BrowserRouter>
 					<Wrapper>
@@ -158,7 +162,17 @@ function Component({
 							<Route index element={
 								state.ready
 									? state.user === null
-										? <SignIn value={{ email: "josedanielpereztorres@gmail.com", password: "1234567890" }} onSuccess={(authorization: Authorization) => dispatch({ type: "user.sign-in", payload: authorization.user })} />
+										?
+										<SignIn
+											value={{
+												email: "josedanielpereztorres@gmail.com",
+												password: "1234567890"
+											}}
+											onSuccess={(authorization: Authorization) => dispatch({
+												type: "user.sign-in",
+												payload: authorization.user
+											})}
+										/>
 										: <ProjectIndex />
 									: null
 							} />
@@ -166,7 +180,13 @@ function Component({
 								<Route index element={
 									state.ready
 										? state.user === null
-											? <SignIn onSuccess={(authorization: Authorization) => dispatch({ type: "user.sign-in", payload: authorization.user })} />
+											?
+											<SignIn
+												onSuccess={(authorization: Authorization) => dispatch({
+													type: "user.sign-in",
+													payload: authorization.user
+												})}
+											/>
 											: null
 										: null
 								} />
@@ -175,7 +195,13 @@ function Component({
 								<Route index element={
 									state.ready
 										? state.user === null
-											? <SignUp onSuccess={(authorization: Authorization) => dispatch({ type: "user.sign-in", payload: authorization.user })} />
+											?
+											<SignUp
+												onSuccess={(authorization: Authorization) => dispatch({
+													type: "user.sign-in",
+													payload: authorization.user
+												})}
+											/>
 											: null
 										: null
 								} />
@@ -196,9 +222,26 @@ function Component({
 												: <ProjectBoard />
 											: null
 									} />
+									<Route path="backlog">
+										<Route index element={
+											state.ready
+												? state.user === null
+													? null
+													: <ProjectBacklog />
+												: null
+										} />
+									</Route>
+									<Route path="board">
+										<Route index element={
+											state.ready
+												? state.user === null
+													? null
+													: <ProjectBoard />
+												: null
+										} />
+									</Route>
 								</Route>
 							</Route>
-							{/* <Route path="*" element={<ErrorPage value={404} />} /> */}
 						</Routes>
 					</Wrapper>
 				</BrowserRouter>
@@ -207,16 +250,10 @@ function Component({
 	);
 }
 
-export type MainSetup = Setup;
-export type MainState = State;
-export type MainAction = Action;
 export type MainContextValue = ContextValue;
 export type MainProperties = Properties;
-export const Main = Object.assign(Component, {
-	Context,
-	defaultState,
-	reducer,
-	setup
-});
+
+export const Main = Component;
+export const MainContext = Context;
 
 export default Main;

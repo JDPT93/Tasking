@@ -7,25 +7,17 @@ import {
 	Typography as MuiTypography
 } from "@mui/material";
 
-import Main, { MainContextValue } from "component/main";
+import { MainContext, MainContextValue } from "component/main";
 
 import Changelog from "model/common/changelog";
 import Goal, { defaultGoal } from "model/project/goal/goal";
-import PriorityInput from "component/project/goal/priority/input";
-
-interface Setup {
-
-}
-
-const setup: Setup = {
-
-};
+import goalService from "service/project/goal/goal-service";
 
 interface State {
 	readonly value: Goal;
 }
 
-const defaultState: State = {
+export const defaultState: State = {
 	value: defaultGoal
 };
 
@@ -33,7 +25,7 @@ type Action =
 	{ type: "value.set", payload: Goal }
 	;
 
-function reducer(state: State, action: Action): State {
+export function reducer(state: State, action: Action): State {
 	switch (action.type) {
 		case "value.set": {
 			return {
@@ -71,13 +63,13 @@ function Component({
 	onError,
 	onSuccess
 }: Properties) {
-	const mainContext: MainContextValue = React.useContext(Main.Context);
+	const mainContext: MainContextValue = React.useContext(MainContext);
+	const locale: any = require(`locale/${mainContext.state.locale}/project/goal/form.json`);
 	const initialState: State = {
 		...defaultState,
 		...(value !== undefined && { value })
 	};
 	const [state, dispatch] = React.useReducer(reducer, initialState);
-	const locale: any = require(`locale/${mainContext.state.locale}/project/goal/form.json`);
 	return (
 		<MuiStack
 			component="form"
@@ -85,29 +77,29 @@ function Component({
 			width={400}
 			onSubmit={(event: any) => {
 				event.preventDefault();
-				// goalService[variant](state.value)
-				// 	.then(async (response: Response) => {
-				// 		const body: any = await response.json();
-				// 		if (!response.ok) {
-				// 			const error: { message: string } = body;
-				// 			throw new Error(error.message);
-				// 		}
-				// 		switch (variant) {
-				// 			case "create": {
-				// 				const goal: Goal = body;
-				// 				onSuccess?.(goal);
-				// 				break;
-				// 			}
-				// 			case "update": {
-				// 				const changelog: Changelog<Goal> = body;
-				// 				onSuccess?.(changelog);
-				// 				break;
-				// 			}
-				// 		}
-				// 	})
-				// 	.catch((error: Error) => {
-				// 		onError?.(error);
-				// 	});
+				goalService[variant](state.value)
+					.then(async (response: Response) => {
+						const body: any = await response.json();
+						if (!response.ok) {
+							const error: { message: string } = body;
+							throw new Error(error.message);
+						}
+						switch (variant) {
+							case "create": {
+								const goal: Goal = body;
+								onSuccess?.(goal);
+								break;
+							}
+							case "update": {
+								const changelog: Changelog<Goal> = body;
+								onSuccess?.(changelog);
+								break;
+							}
+						}
+					})
+					.catch((error: Error) => {
+						onError?.(error);
+					});
 			}}
 		>
 			<MuiTypography marginLeft={1} variant="h6">{locale.titles[variant]}</MuiTypography>
@@ -148,16 +140,10 @@ function Component({
 	);
 }
 
-export type GoalFormSetup = Setup;
-export type GoalFormState = State;
-export type GoalFormAction = Action;
 export type GoalFormContextValue = ContextValue;
 export type GoalFormProperties = Properties;
-export const GoalForm = Object.assign(Component, {
-	Context,
-	defaultState,
-	reducer,
-	setup
-});
+
+export const GoalForm = Component;
+export const GoalFormContext = Context;
 
 export default GoalForm;

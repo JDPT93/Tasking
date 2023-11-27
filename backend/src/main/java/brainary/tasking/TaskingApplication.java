@@ -37,10 +37,10 @@ public class TaskingApplication implements CommandLineRunner {
 	private brainary.tasking.repository.project.CollaborationRepository collaborationRepository;
 
 	@Autowired
-	private brainary.tasking.repository.project.stage.TypeRepository stageTypeRepository;
+	private brainary.tasking.repository.project.goal.stage.TypeRepository stageTypeRepository;
 
 	@Autowired
-	private brainary.tasking.repository.project.stage.StageRepository stageRepository;
+	private brainary.tasking.repository.project.goal.stage.StageRepository stageRepository;
 
 	@Autowired
 	private brainary.tasking.repository.project.goal.TypeRepository goalTypeRepository;
@@ -79,8 +79,8 @@ public class TaskingApplication implements CommandLineRunner {
 			}).toList());
 			projectRepository.saveAll(loadJson(brainary.tasking.entity.project.ProjectEntity.class, "data/project/projects.json"));
 			collaborationRepository.saveAll(loadJson(brainary.tasking.entity.project.CollaborationEntity.class, "data/project/collaborations.json"));
-			stageTypeRepository.saveAll(loadJson(brainary.tasking.entity.project.stage.TypeEntity.class, "data/project/stage/types.json"));
-			stageRepository.saveAll(loadJson(brainary.tasking.entity.project.stage.StageEntity.class, "data/project/stage/stages.json"));
+			stageTypeRepository.saveAll(loadJson(brainary.tasking.entity.project.goal.stage.TypeEntity.class, "data/project/stage/types.json"));
+			stageRepository.saveAll(loadJson(brainary.tasking.entity.project.goal.stage.StageEntity.class, "data/project/stage/stages.json"));
 			goalTypeRepository.saveAll(loadJson(brainary.tasking.entity.project.goal.TypeEntity.class, "data/project/goal/types.json"));
 			priorityRepository.saveAll(loadJson(brainary.tasking.entity.project.goal.PriorityEntity.class, "data/project/goal/priorities.json"));
 			issueRepository.saveAll(loadJson(brainary.tasking.entity.project.goal.IssueEntity.class, "data/project/goal/issues.json"));

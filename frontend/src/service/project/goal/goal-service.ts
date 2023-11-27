@@ -5,7 +5,7 @@ import Service from "service/common/service";
 
 export default new class GoalService extends Service {
 
-	create(goal: Goal): Promise<Response> {
+	public create(goal: Goal): Promise<Response> {
 		const body = JSON.stringify(goal);
 		const headers = new Headers({
 			"Accept": "application/json",
@@ -19,11 +19,11 @@ export default new class GoalService extends Service {
 			body,
 			headers,
 			method: "POST",
-			mode: "cors",
+			mode: "cors"
 		});
 	}
 
-	retrieveByProjectId(projectId: number, pagination?: Pagination): Promise<Response> {
+	public retrieveByProjectId(projectId: number, pagination?: Partial<Pagination>): Promise<Response> {
 		const headers = new Headers({
 			"Accept": "application/json"
 		});
@@ -44,7 +44,7 @@ export default new class GoalService extends Service {
 		return fetch(`${this.endpoint}/api/project/${projectId}/goal?${query.size === 0 ? "" : query.toString()}`, {
 			headers,
 			method: "GET",
-			mode: "cors",
+			mode: "cors"
 		});
 	}
 
@@ -62,11 +62,11 @@ export default new class GoalService extends Service {
 			body,
 			headers,
 			method: "PUT",
-			mode: "cors",
+			mode: "cors"
 		});
 	}
 
-	deleteById(goalId: number): Promise<Response> {
+	public deleteById(goalId: number): Promise<Response> {
 		const headers = new Headers({
 			"Accept": "application/json"
 		});
@@ -77,7 +77,7 @@ export default new class GoalService extends Service {
 		return fetch(`${this.endpoint}/api/project/goal/${goalId}`, {
 			headers,
 			method: "DELETE",
-			mode: "cors",
+			mode: "cors"
 		});
 	}
 
